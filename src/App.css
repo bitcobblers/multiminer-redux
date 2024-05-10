@@ -1,7 +1,16 @@
-.logo.vite:hover {
-  filter: drop-shadow(0 0 2em #747bff);
+/*
+ * @NOTE: Prepend a `~` to css file paths that are in your node_modules
+ *        See https://github.com/webpack-contrib/sass-loader#imports
+ */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+    Arial, sans-serif;
+  margin: auto;
 }
 
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafb);
+.theme-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1rem;
 }
