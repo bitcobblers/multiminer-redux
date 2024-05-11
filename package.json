@@ -12,6 +12,50 @@
     "tauri": "tauri",
     "prepare": "husky"
   },
+  "jest": {
+    "testEnvironmentOptions": {
+      "testURL": "http://localhost/"
+    },
+    "testEnvironment": "jsdom",
+    "verbose": true,
+    "transform": {
+      "\\.(ts|tsx|js|jsx)$": "ts-jest"
+    },
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/src/__tests__/fileMock.ts",
+      "\\.(css|less|sass|scss)$": "identity-obj-proxy"
+    },
+    "moduleFileExtensions": [
+      "js",
+      "jsx",
+      "ts",
+      "tsx",
+      "json"
+    ],
+    "collectCoverage": false,
+    "coverageDirectory": "./coverage",
+    "collectCoverageFrom": [
+      "!./src/__tests__/**",
+      "./src/**/*.{ts,tsx}"
+    ],
+    "coveragePathIgnorePatterns": [
+      "./node_modules/",
+      "./release/"
+    ],
+    "coverageReporters": [
+      "lcov",
+      "text"
+    ],
+    "moduleDirectories": [
+      "./node_modules",
+      "./release/app/node_modules"
+    ],
+    "testPathIgnorePatterns": [
+      "./node_modules/",
+      "./release/",
+      "./__tests__/fileMock.ts"
+    ]
+  },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
       "eslint --cache"
@@ -44,6 +88,7 @@
   "devDependencies": {
     "@tauri-apps/cli": "^1",
     "@types/async-lock": "^1.4.2",
+    "@types/jest": "^29.5.12",
     "@types/path-browserify": "^1.0.2",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
@@ -53,8 +98,10 @@
     "eslint-config-airbnb-typescript": "^18.0.0",
     "husky": "^9.0.11",
     "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "lint-staged": "^15.2.2",
     "prettier": "^3.2.5",
+    "ts-jest": "^29.1.2",
     "typescript": "^5.0.2",
     "vite": "^5.0.0"
   }
