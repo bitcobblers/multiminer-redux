@@ -1,6 +1,6 @@
-export { type CpuComputeTable } from './CpuComputeTable';
-export { type CpuSummaryTable } from './CpuSummaryTable';
-export { type GpuComputeTable } from './GpuComputeTable';
-export { type GpuSummaryTable } from './GpuSummaryTable';
-export { type CoinsTable } from './CoinsTable';
-export { type WorkersGraphs } from './WorkersGraphs';
+export { CpuComputeTable } from './CpuComputeTable';
+export { CpuSummaryTable } from './CpuSummaryTable';
+export { GpuComputeTable } from './GpuComputeTable';
+export { GpuSummaryTable } from './GpuSummaryTable';
+export { CoinsTable } from './CoinsTable';
+export { WorkersGraphs } from './WorkersGraphs';
