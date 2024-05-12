@@ -17,13 +17,16 @@ export function enableMonitors() {
       filter(({ state }) => state === 'active'),
     )
     .subscribe(async () => {
-      const status = await minerApi.status();
-      const monitor = monitors.find((m) => m.name === status.miner);
+      const minerStatus = await minerApi.status();
+      const monitor = monitors.find((m) => m.name === minerStatus.miner);
 
       if (monitor) {
-        const results = await Promise.allSettled(monitor.statsUrls.map(async (url) => minerApi.stats(API_PORT, url)));
-        // eslint-disable-next-line @typescript-eslint/no-shadow
-        const stats = results.filter(({ status }) => status === 'fulfilled').map((p) => (p as PromiseFulfilledResult<string>).value);
+        const results = await Promise.allSettled(
+          monitor.statsUrls.map(async (url) => minerApi.stats(API_PORT, url)),
+        );
+        const stats = results
+          .filter(({ status }) => status === 'fulfilled')
+          .map((p) => (p as PromiseFulfilledResult<string>).value);
 
         monitor.update(stats);
       }

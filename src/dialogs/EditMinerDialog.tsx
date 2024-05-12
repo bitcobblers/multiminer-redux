@@ -3,9 +3,25 @@
 import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Dialog from '@mui/material/Dialog';
-import { DialogTitle, DialogContent, TextField, Stack, MenuItem, FormControl, Divider, Button } from '@mui/material';
+import {
+  DialogTitle,
+  DialogContent,
+  TextField,
+  Stack,
+  MenuItem,
+  FormControl,
+  Divider,
+  Button,
+} from '@mui/material';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import { AlgorithmName, AVAILABLE_ALGORITHMS, AVAILABLE_MINERS, Miner, MinerInfo, MinerRelease } from '../models';
+import {
+  AlgorithmName,
+  AVAILABLE_ALGORITHMS,
+  AVAILABLE_MINERS,
+  Miner,
+  MinerInfo,
+  MinerRelease,
+} from '../models';
 import { AlgorithmMenuItem } from '../components/AlgorithmMenuItem';
 import { MinerTypeMenuItem } from '../components/MinerTypeMenuItem';
 import { CustomDialogActions } from './CustomDialogActions';
@@ -48,7 +64,13 @@ export function EditMinerDialog(props: EditMinerDialogProps) {
     return selectedMiner?.versions.map((r) => r.tag) ?? [];
   }, [availableMiners, kind]);
 
-  const availableMinersAsMinerInfo = useMemo(() => availableMiners.map((m) => AVAILABLE_MINERS.find((x) => x.name === m.name)).filter((m) => m !== undefined) as MinerInfo[], [availableMiners]);
+  const availableMinersAsMinerInfo = useMemo(
+    () =>
+      availableMiners
+        .map((m) => AVAILABLE_MINERS.find((x) => x.name === m.name))
+        .filter((m) => m !== undefined) as MinerInfo[],
+    [availableMiners],
+  );
 
   useLoadData(async ({ getMinerReleases }) => {
     const onlineMiners = await getMinerReleasesOnline();
@@ -115,7 +137,10 @@ export function EditMinerDialog(props: EditMinerDialogProps) {
                 value={watch('name') ?? null}
                 {...register('name', {
                   required: 'A miner must have a name',
-                  validate: (val) => (existingMiners.filter((m) => m.id !== miner.id).find((m) => m.name === val) ? 'A miner already exists with the same name.' : undefined),
+                  validate: (val) =>
+                    (existingMiners.filter((m) => m.id !== miner.id).find((m) => m.name === val)
+                      ? 'A miner already exists with the same name.'
+                      : undefined),
                 })}
                 error={!!errors?.name}
                 helperText={errors?.name?.message}
@@ -129,14 +154,26 @@ export function EditMinerDialog(props: EditMinerDialogProps) {
                     </MenuItem>
                   ))}
               </TextField>
-              <TextField required label="Version" select value={pickVersion(watch('version'))} {...register('version')}>
+              <TextField
+                required
+                label="Version"
+                select
+                value={pickVersion(watch('version'))}
+                {...register('version')}
+              >
                 {minerTypeVersions.map((version) => (
                   <MenuItem key={version} value={version}>
                     {version}
                   </MenuItem>
                 ))}
               </TextField>
-              <TextField required label="Algorithm" select value={pickAlgorithm(watch('algorithm'))} {...register('algorithm')}>
+              <TextField
+                required
+                label="Algorithm"
+                select
+                value={pickAlgorithm(watch('algorithm'))}
+                {...register('algorithm')}
+              >
                 {minerTypeAlgorithms.map((alg) => (
                   <MenuItem key={alg.name} value={alg.name}>
                     <AlgorithmMenuItem algorithm={alg} />
@@ -144,8 +181,19 @@ export function EditMinerDialog(props: EditMinerDialogProps) {
                 ))}
               </TextField>
               <Stack direction="row" gap={1} alignItems="center">
-                <TextField style={{ width: '22rem' }} spellCheck="false" label="Parameters" {...register('parameters')} value={watch('parameters') ?? ''} />
-                <Button startIcon={<OpenInNewIcon />} size="small" variant="outlined" onClick={openReference}>
+                <TextField
+                  style={{ width: '22rem' }}
+                  spellCheck="false"
+                  label="Parameters"
+                  {...register('parameters')}
+                  value={watch('parameters') ?? ''}
+                />
+                <Button
+                  startIcon={<OpenInNewIcon />}
+                  size="small"
+                  variant="outlined"
+                  onClick={openReference}
+                >
                   Reference
                 </Button>
               </Stack>

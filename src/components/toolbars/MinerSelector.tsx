@@ -17,13 +17,22 @@ export function MinerSelector() {
 
   const setDefaultMiner = async (name: string) => {
     const appSettings = await getAppSettings();
-    await setAppSettings({ ...appSettings, settings: { ...appSettings.settings, defaultMiner: name } });
+    await setAppSettings({
+      ...appSettings,
+      settings: { ...appSettings.settings, defaultMiner: name },
+    });
   };
 
   return (
     <FormControl size="small" sx={{ minWidth: '12rem' }}>
       <InputLabel id="miner-label">Miner</InputLabel>
-      <Select labelId="miner-label" sx={{ fontSize: '0.8rem' }} label="Miner" value={profile ?? ''} onChange={($event) => setDefaultMiner($event.target.value)}>
+      <Select
+        labelId="miner-label"
+        sx={{ fontSize: '0.8rem' }}
+        label="Miner"
+        value={profile ?? ''}
+        onChange={($event) => setDefaultMiner($event.target.value)}
+      >
         {(miners ?? Array<Miner>())
           .sort((a, b) => a.name.localeCompare(b.name))
           .map((miner) => (

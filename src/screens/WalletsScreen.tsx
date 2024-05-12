@@ -1,7 +1,17 @@
 import { useState } from 'react';
 import { v4 as uuid } from 'uuid';
 
-import { Button, Container, TableContainer, TableCell, TableHead, TableRow, TableBody, Box, Table } from '@mui/material';
+import {
+  Button,
+  Container,
+  TableContainer,
+  TableCell,
+  TableHead,
+  TableRow,
+  TableBody,
+  Box,
+  Table,
+} from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useSnackbar } from 'notistack';
 
@@ -12,7 +22,13 @@ import { EditWalletDialog } from '../dialogs/EditWalletDialog';
 import * as config from '../services/AppSettingsService';
 import { useLoadData } from '../hooks';
 
-const getEmptyWallet = (): Wallet => ({ id: uuid(), name: '', network: 'ETH', address: '', memo: '' });
+const getEmptyWallet = (): Wallet => ({
+  id: uuid(),
+  name: '',
+  network: 'ETH',
+  address: '',
+  memo: '',
+});
 
 export function WalletsScreen() {
   const { enqueueSnackbar } = useSnackbar();
@@ -85,7 +101,16 @@ export function WalletsScreen() {
           },
         }}
       >
-        <EditWalletDialog key="edit-new-wallet" open={isEditingNew} onSave={handleOnAddWalletSave} onCancel={handleOnAddWalletCancel} wallet={newWallet} isNew existingWallets={wallets} coins={[]} />
+        <EditWalletDialog
+          key="edit-new-wallet"
+          open={isEditingNew}
+          onSave={handleOnAddWalletSave}
+          onCancel={handleOnAddWalletCancel}
+          wallet={newWallet}
+          isNew
+          existingWallets={wallets}
+          coins={[]}
+        />
         <TableContainer>
           <Table aria-label="Wallets">
             <TableHead>
@@ -101,7 +126,13 @@ export function WalletsScreen() {
               {wallets.map((w) => (
                 <TableRow key={w.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                   <TableCell>
-                    <EditWalletControls wallet={w} existingWallets={wallets} coins={coins} onEditSave={handleOnEditWalletSave} onRemoveConfirm={handleOnRemoveWalletConfirm} />
+                    <EditWalletControls
+                      wallet={w}
+                      existingWallets={wallets}
+                      coins={coins}
+                      onEditSave={handleOnEditWalletSave}
+                      onRemoveConfirm={handleOnRemoveWalletConfirm}
+                    />
                   </TableCell>
                   <TableCell>{w.name}</TableCell>
                   <TableCell>{w.network}</TableCell>

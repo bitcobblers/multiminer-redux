@@ -50,8 +50,21 @@ export function EditMinerControls(props: EditMinerControlsProps) {
   return (
     <Stack direction="row" spacing={1}>
       <RemoveMinerDialog open={removeOpen} onClose={handleRemoveClose} />
-      <EditMinerDialog open={editOpen} miner={miner} existingMiners={existingMiners} autoReset={false} onSave={handleEditSave} onCancel={handleEditCancel} />
-      <Tooltip title={isDefault ? 'Cannot remove miner because it is currently selected as the default miner.' : 'Delete Miner'}>
+      <EditMinerDialog
+        open={editOpen}
+        miner={miner}
+        existingMiners={existingMiners}
+        autoReset={false}
+        onSave={handleEditSave}
+        onCancel={handleEditCancel}
+      />
+      <Tooltip
+        title={
+          isDefault
+            ? 'Cannot remove miner because it is currently selected as the default miner.'
+            : 'Delete Miner'
+        }
+      >
         <div>
           <IconButton aria-label="Delete Miner" disabled={isDefault} onClick={handleOnRemoveClick}>
             <DeleteIcon />

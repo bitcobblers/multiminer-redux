@@ -2,7 +2,19 @@ import { useMemo, useState } from 'react';
 import { useSnackbar } from 'notistack';
 
 import CheckIcon from '@mui/icons-material/Check';
-import { Container, TableContainer, TableCell, TableHead, TableRow, TableBody, Chip, Table, FormControlLabel, Switch, TextField } from '@mui/material';
+import {
+  Container,
+  TableContainer,
+  TableCell,
+  TableHead,
+  TableRow,
+  TableBody,
+  Chip,
+  Table,
+  FormControlLabel,
+  Switch,
+  TextField,
+} from '@mui/material';
 import { ALL_COINS, Coin, Wallet } from '../models';
 import { getCoins, setCoins } from '../services/AppSettingsService';
 import * as formatter from '../services/Formatters';
@@ -53,7 +65,9 @@ export function CoinsScreen() {
     () => coins
       .filter((c) => {
         const isOptionallyEnabled = enabledOnly ? c.coin.enabled : true;
-        const isOptionallyFiltered = filter ? `${c.name} ${c.coin.symbol}`.toLocaleLowerCase().includes(filter.toLocaleLowerCase()) : true;
+        const isOptionallyFiltered = filter
+          ? `${c.name} ${c.coin.symbol}`.toLocaleLowerCase().includes(filter.toLocaleLowerCase())
+          : true;
         return isOptionallyEnabled && isOptionallyFiltered;
       })
       .sort((a, b) => a.coin.symbol.localeCompare(b.coin.symbol))
@@ -98,8 +112,16 @@ export function CoinsScreen() {
   return (
     <Container>
       <ScreenHeader title="Coins">
-        <TextField size="small" sx={{ mr: '1rem' }} placeholder="Filter..." onChange={(event) => setFilter(event.target.value)} />
-        <FormControlLabel control={<Switch checked={enabledOnly} onChange={handleEnabledOnlyChange} />} label="Only Show Enabled" />
+        <TextField
+          size="small"
+          sx={{ mr: '1rem' }}
+          placeholder="Filter..."
+          onChange={(event) => setFilter(event.target.value)}
+        />
+        <FormControlLabel
+          control={<Switch checked={enabledOnly} onChange={handleEnabledOnlyChange} />}
+          label="Only Show Enabled"
+        />
       </ScreenHeader>
       <TableContainer>
         <Table aria-label="Coins">
@@ -118,14 +140,24 @@ export function CoinsScreen() {
             {filteredCoins.map((c) => (
               <TableRow key={c.id}>
                 <TableCell>
-                  <EditCoinControls icon={c.icon} blockchains={c.blockchains} coin={c.coin} wallets={wallets} onSave={handleOnEditCoinSave} />
+                  <EditCoinControls
+                    icon={c.icon}
+                    blockchains={c.blockchains}
+                    coin={c.coin}
+                    wallets={wallets}
+                    onSave={handleOnEditCoinSave}
+                  />
                 </TableCell>
                 <TableCell align="center" sx={{ p: '0.1rem' }}>
                   {c.coin.enabled && <CheckIcon sx={{ fontSize: '1.8rem' }} color="success" />}
                 </TableCell>
                 <TableCell>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <img src={c.icon} alt="icon" style={{ height: '1.5rem', marginRight: '0.5rem' }} />
+                    <img
+                      src={c.icon}
+                      alt="icon"
+                      style={{ height: '1.5rem', marginRight: '0.5rem' }}
+                    />
                     {c.coin.symbol}
                   </div>
                 </TableCell>

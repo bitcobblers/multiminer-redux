@@ -21,7 +21,10 @@ interface EditWalletControlsProps {
   onRemoveConfirm: (name: string, id: string) => void;
 }
 
-export class EditWalletControls extends React.Component<EditWalletControlsProps, EditWalletControlsState> {
+export class EditWalletControls extends React.Component<
+EditWalletControlsProps,
+EditWalletControlsState
+> {
   constructor(props: EditWalletControlsProps) {
     super(props);
 
@@ -80,8 +83,23 @@ export class EditWalletControls extends React.Component<EditWalletControlsProps,
 
     return (
       <Stack direction="row" spacing={1}>
-        <EditWalletDialog open={editOpen} wallet={wallet} existingWallets={existingWallets} coins={usedCoins} isNew={false} onCancel={this.handleCancelEditWallet} onSave={this.handleSaveWallet} />
-        <RemoveWalletDialog open={removeOpen} name={wallet.name} id={wallet.id} coins={usedCoins} onCancel={this.handleCancelRemoveWallet} onRemove={this.handleRemoveWallet} />
+        <EditWalletDialog
+          open={editOpen}
+          wallet={wallet}
+          existingWallets={existingWallets}
+          coins={usedCoins}
+          isNew={false}
+          onCancel={this.handleCancelEditWallet}
+          onSave={this.handleSaveWallet}
+        />
+        <RemoveWalletDialog
+          open={removeOpen}
+          name={wallet.name}
+          id={wallet.id}
+          coins={usedCoins}
+          onCancel={this.handleCancelRemoveWallet}
+          onRemove={this.handleRemoveWallet}
+        />
         <Tooltip title="Remove Wallet">
           <IconButton aria-label="Remove Wallet" onClick={this.handleOpenRemoveDialog}>
             <DeleteIcon />

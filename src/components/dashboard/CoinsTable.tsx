@@ -1,4 +1,15 @@
-import { Button, Table, TableContainer, TableCell, TableHead, TableRow, TableBody, Tooltip, IconButton, Typography } from '@mui/material';
+import {
+  Button,
+  Table,
+  TableContainer,
+  TableCell,
+  TableHead,
+  TableRow,
+  TableBody,
+  Tooltip,
+  IconButton,
+  Typography,
+} from '@mui/material';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import StopIcon from '@mui/icons-material/Stop';
 import { LinearProgressWithLabel } from '..';
@@ -68,12 +79,23 @@ export function CoinsTable() {
             .map((c) => (
               <TableRow key={c.symbol}>
                 <TableCell>
-                  <CurrentIndicator current={c.current} onStart={() => nextCoin(c.symbol)} onStop={() => stopMiner()} />
+                  <CurrentIndicator
+                    current={c.current}
+                    onStart={() => nextCoin(c.symbol)}
+                    onStop={() => stopMiner()}
+                  />
                 </TableCell>
                 <TableCell>
-                  <Button onClick={async () => openBrowser(c.symbol, c.address)} sx={{ minWidth: '5rem' }}>
+                  <Button
+                    onClick={async () => openBrowser(c.symbol, c.address)}
+                    sx={{ minWidth: '5rem' }}
+                  >
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <img src={c.icon} alt="icon" style={{ height: '1.5rem', marginRight: '0.5rem' }} />
+                      <img
+                        src={c.icon}
+                        alt="icon"
+                        style={{ height: '1.5rem', marginRight: '0.5rem' }}
+                      />
                       {c.symbol}
                     </div>
                   </Button>

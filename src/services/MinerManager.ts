@@ -3,7 +3,20 @@ import path from 'path-browserify';
 import * as miningService from './MinerService';
 import * as config from './AppSettingsService';
 import { minerApi } from '../shared/MinerApi';
-import { ALL_COINS, CoinDefinition, AVAILABLE_MINERS, AVAILABLE_ALGORITHMS, Miner, Coin, MinerInfo, Wallet, MinerState, minerState$, addAppNotice, AlgorithmName } from '../models';
+import {
+  ALL_COINS,
+  CoinDefinition,
+  AVAILABLE_MINERS,
+  AVAILABLE_ALGORITHMS,
+  Miner,
+  Coin,
+  MinerInfo,
+  Wallet,
+  MinerState,
+  minerState$,
+  addAppNotice,
+  AlgorithmName,
+} from '../models';
 import { getMiners, getAppSettings, watchers$ as settingsWatcher$ } from './AppSettingsService';
 import { downloadMiner } from './DownloadManager';
 import * as coinStrategy from './strategies';
@@ -45,7 +58,13 @@ function updateState(newState: Partial<MinerState>) {
   minerState$.next(mergedState);
 }
 
-function getConnectionString(symbol: string, address: string, memo: string, name: string, referral: string) {
+function getConnectionString(
+  symbol: string,
+  address: string,
+  memo: string,
+  name: string,
+  referral: string,
+) {
   const sanitize = (value: string) => value.trim().replace(/\s+/g, '');
 
   if (memo === '') {
@@ -55,7 +74,11 @@ function getConnectionString(symbol: string, address: string, memo: string, name
   return `${symbol}:${sanitize(address)}:${sanitize(memo)}.${sanitize(name)}#${referral}`;
 }
 
-export async function selectCoin(symbol: string | null, onError: (message: string) => void, onSuccess: (selection: CoinSelection) => Promise<void>) {
+export async function selectCoin(
+  symbol: string | null,
+  onError: (message: string) => void,
+  onSuccess: (selection: CoinSelection) => Promise<void>,
+) {
   const { profile, currentCoin } = minerState$.getValue();
   const appSettings = await config.getAppSettings();
   const allMiners = await config.getMiners();
@@ -108,7 +131,13 @@ async function changeCoin(symbol: string | null) {
       const appSettings = await config.getAppSettings();
       const { miner, minerInfo, coin, coinInfo, wallet } = selection;
 
-      const cs = getConnectionString(coin.symbol, wallet.address, wallet.memo, appSettings.settings.workerName, getRandom(coinInfo.referrals));
+      const cs = getConnectionString(
+        coin.symbol,
+        wallet.address,
+        wallet.memo,
+        appSettings.settings.workerName,
+        getRandom(coinInfo.referrals),
+      );
       const filePath = path.join(miner.version, minerInfo.exe);
       const minerArgs = minerInfo.getArgs(miner.algorithm, cs, appSettings.pools[miner.algorithm]);
       const extraArgs = miner.parameters;
@@ -119,13 +148,21 @@ async function changeCoin(symbol: string | null) {
         return;
       }
 
-      console.log(`Selected coin ${coin.symbol} to run for ${coin.duration} hours.  Path: ${filePath} -- Args: ${mergedArgs}`);
+      console.log(
+        `Selected coin ${coin.symbol} to run for ${coin.duration} hours.  Path: ${filePath} -- Args: ${mergedArgs}`,
+      );
 
       const downloadResult = await downloadMiner(miner.kind, miner.version);
 
       if (downloadResult === true) {
         await miningService.stopMiner();
-        await miningService.startMiner(miner.name, coin.symbol, minerInfo, miner.version, mergedArgs);
+        await miningService.startMiner(
+          miner.name,
+          coin.symbol,
+          minerInfo,
+          miner.version,
+          mergedArgs,
+        );
       }
     },
   );
@@ -173,9 +210,19 @@ async function setInitialState() {
   const defaultMiner = await getDefaultMiner(appSettings.settings.defaultMiner);
 
   if (minerState.state === 'active') {
-    updateState({ state: 'active', currentCoin: minerState.currentCoin, miner: minerState.miner, profile: minerState.profile, algorithm: minerState.algorithm });
+    updateState({
+      state: 'active',
+      currentCoin: minerState.currentCoin,
+      miner: minerState.miner,
+      profile: minerState.profile,
+      algorithm: minerState.algorithm,
+    });
   } else {
-    updateState({ profile: defaultMiner.name, miner: defaultMiner.kind, algorithm: lookupAlgorithm(defaultMiner.algorithm) });
+    updateState({
+      profile: defaultMiner.name,
+      miner: defaultMiner.kind,
+      algorithm: lookupAlgorithm(defaultMiner.algorithm),
+    });
   }
 
   miningService.minerExited$.subscribe(() => {
@@ -203,7 +250,11 @@ async function setInitialState() {
 
   settingsWatcher$.settings.subscribe(async (updatedAppSettings) => {
     const miner = await getDefaultMiner(updatedAppSettings.settings.defaultMiner);
-    updateState({ profile: miner.name, miner: miner.kind, algorithm: lookupAlgorithm(miner.algorithm) });
+    updateState({
+      profile: miner.name,
+      miner: miner.kind,
+      algorithm: lookupAlgorithm(miner.algorithm),
+    });
   });
 }
 

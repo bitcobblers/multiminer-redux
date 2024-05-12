@@ -92,8 +92,12 @@ function updateWorkers(uuid: string) {
 }
 
 async function updateCoins(coins: ConfiguredCoin[]) {
-  const queriedCoins = await Promise.allSettled(coins.map((cm) => updateCoin(cm.symbol, cm.address)));
-  const fullfilledCoins = queriedCoins.filter(({ status }) => status === 'fulfilled').map((p) => (p as PromiseFulfilledResult<UnmineableCoin | null>).value);
+  const queriedCoins = await Promise.allSettled(
+    coins.map((cm) => updateCoin(cm.symbol, cm.address)),
+  );
+  const fullfilledCoins = queriedCoins
+    .filter(({ status }) => status === 'fulfilled')
+    .map((p) => (p as PromiseFulfilledResult<UnmineableCoin | null>).value);
   const updatedCoins = fullfilledCoins.filter((c): c is UnmineableCoin => c !== null);
   const currentCoin = coins.find((c) => c.current);
 

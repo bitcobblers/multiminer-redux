@@ -1,9 +1,18 @@
 export function number(value: number | undefined, maxDigits = 8) {
-  return value === undefined ? 'N/A' : value.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: maxDigits });
+  return value === undefined
+    ? 'N/A'
+    : value.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: maxDigits });
 }
 
 export function currency(value: number | undefined, maxDigits = 2) {
-  return value === undefined ? 'N/A' : value.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: maxDigits });
+  return value === undefined
+    ? 'N/A'
+    : value.toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: maxDigits,
+    });
 }
 
 export function hashrate(value: number | undefined | null, scale?: 'M' | 'K') {
@@ -13,7 +22,8 @@ export function hashrate(value: number | undefined | null, scale?: 'M' | 'K') {
 
   if (scale === 'M') {
     return `${number(value, 2)}MH/s`;
-  } if (scale === 'K') {
+  }
+  if (scale === 'K') {
     return `${number(value / 1000, 2)}KH/s`;
   }
 
@@ -58,7 +68,9 @@ export function difficulty(value: string | undefined) {
 }
 
 export function progress(mined: number | undefined, threshold: number | undefined) {
-  return mined === undefined || threshold === undefined || mined === 0 || threshold === 0 ? 0 : (100 * mined) / threshold;
+  return mined === undefined || threshold === undefined || mined === 0 || threshold === 0
+    ? 0
+    : (100 * mined) / threshold;
 }
 
 export function minedValue(mined: number | undefined, price: number | undefined) {
@@ -78,8 +90,15 @@ export function uptime(value: number | undefined) {
 
   const totalDays = Math.floor(flooredValue / SECONDS_PER_DAY);
   const totalHours = Math.floor((flooredValue - totalDays * SECONDS_PER_DAY) / SECONDS_PER_HOUR);
-  const totalMinutes = Math.floor((flooredValue - totalDays * SECONDS_PER_DAY - totalHours * SECONDS_PER_HOUR) / SECONDS_PER_MINUTE);
-  const totalSeconds = flooredValue - totalDays * SECONDS_PER_DAY - totalHours * SECONDS_PER_HOUR - totalMinutes * SECONDS_PER_MINUTE;
+  const totalMinutes = Math.floor(
+    (flooredValue - totalDays * SECONDS_PER_DAY - totalHours * SECONDS_PER_HOUR) /
+      SECONDS_PER_MINUTE,
+  );
+  const totalSeconds =
+    flooredValue -
+    totalDays * SECONDS_PER_DAY -
+    totalHours * SECONDS_PER_HOUR -
+    totalMinutes * SECONDS_PER_MINUTE;
 
   const daysStr = totalDays ? `${totalDays}d` : '';
   const hoursStr = totalHours ? `${totalHours}hr` : '';

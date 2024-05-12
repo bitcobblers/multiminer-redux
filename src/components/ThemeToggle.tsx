@@ -1,7 +1,7 @@
 import { styled, useTheme } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
-// import { AppearanceSettings } from '../models/AppSettings';
-// import { getAppSettings, setAppSettings } from '../services/AppSettingsService';
+import { AppearanceSettings } from '../models/AppSettings';
+import { getAppSettings, setAppSettings } from '../services/AppSettingsService';
 
 const StyledSwitch = styled(Switch)(({ theme }) => ({
   width: 62,
@@ -52,11 +52,15 @@ const StyledSwitch = styled(Switch)(({ theme }) => ({
 
 export function ThemeToggle() {
   const currentTheme = useTheme();
-  // const setTheme = async (theme: AppearanceSettings['theme']) => {
-  //   const appSettings = await getAppSettings();
-  //   await setAppSettings({ ...appSettings, appearance: { ...appSettings.appearance, theme } });
-  // };
+  const setTheme = async (theme: AppearanceSettings['theme']) => {
+    const appSettings = await getAppSettings();
+    await setAppSettings({ ...appSettings, appearance: { ...appSettings.appearance, theme } });
+  };
 
-  // return <StyledSwitch checked={currentTheme.palette.mode === 'dark'} onChange={($event) => setTheme($event.target.checked ? 'dark' : 'light')} />;
-  return <StyledSwitch checked={currentTheme.palette.mode === 'dark'} />;
+  return (
+    <StyledSwitch
+      checked={currentTheme.palette.mode === 'dark'}
+      onChange={($event) => setTheme($event.target.checked ? 'dark' : 'light')}
+    />
+  );
 }

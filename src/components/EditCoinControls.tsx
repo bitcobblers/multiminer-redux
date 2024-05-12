@@ -34,7 +34,16 @@ export function EditCoinControls(props: EditCoinControlsProps) {
 
   return (
     <Stack direction="row" spacing={1}>
-      <EditCoinDialog open={open} icon={icon} symbol={coin.symbol} blockchains={blockchains} onSave={handleSave} onCancel={handleCancel} wallets={wallets} coin={coin} />
+      <EditCoinDialog
+        open={open}
+        icon={icon}
+        symbol={coin.symbol}
+        blockchains={blockchains}
+        onSave={handleSave}
+        onCancel={handleCancel}
+        wallets={wallets}
+        coin={coin}
+      />
       <Tooltip title="Edit Coin">
         <IconButton aria-label="Edit Coin" onClick={handleOnEditClick}>
           <EditIcon />

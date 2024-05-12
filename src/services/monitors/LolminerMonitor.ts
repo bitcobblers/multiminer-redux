@@ -51,7 +51,8 @@ function updateStats(stats: MinerAppStatistics) {
   addGpuStats(
     stats.Workers.map((worker) => {
       const hashrate = stats.Algorithms[0].Worker_Performance[worker.Index];
-      const efficiency = hashrate === 0 || worker.Power === 0 ? 0 : (hashrate / worker.Power) * 1000;
+      const efficiency =
+        hashrate === 0 || worker.Power === 0 ? 0 : (hashrate / worker.Power) * 1000;
 
       return {
         id: worker.Index.toString(),
@@ -72,7 +73,8 @@ function updateStats(stats: MinerAppStatistics) {
 
   const totalHashrate = stats.Algorithms[0].Total_Performance;
   const totalPower = stats.Workers.map((w) => w.Power).reduce((a, b) => a + b, 0);
-  const totalEfficiency = totalHashrate === 0 || totalPower === 0 ? 0 : (totalHashrate / totalPower) * 1000;
+  const totalEfficiency =
+    totalHashrate === 0 || totalPower === 0 ? 0 : (totalHashrate / totalPower) * 1000;
 
   addMinerStat({
     hashrate: totalHashrate,

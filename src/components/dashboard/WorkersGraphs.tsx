@@ -1,7 +1,16 @@
 import { useState, useEffect } from 'react';
 
 import dateFormat from 'dateformat';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
 import { Line } from 'react-chartjs-2';
 
 import { Tabs, Tab, Typography } from '@mui/material';
@@ -19,7 +28,11 @@ function shrink<T>(items: T[]) {
   return result;
 }
 
-function WorkersGraph(props: { algorithm: string; stat: AlgorithmStat | undefined, scale: string; }) {
+function WorkersGraph(props: {
+  algorithm: string;
+  stat: AlgorithmStat | undefined;
+  scale: string;
+}) {
   const { algorithm, stat, scale } = props;
 
   if (stat === undefined || stat.workers === undefined || stat.chart === undefined) {
@@ -53,10 +66,15 @@ function WorkersGraph(props: { algorithm: string; stat: AlgorithmStat | undefine
     },
   };
 
-  const chr = stat.workers.map((w) => w.chr).reduce((previous, current) => Number(previous) + Number(current), 0);
-  const rhr = stat.workers.map((w) => w.rhr).reduce((previous, current) => Number(previous) + Number(current), 0);
+  const chr = stat.workers
+    .map((w) => w.chr)
+    .reduce((previous, current) => Number(previous) + Number(current), 0);
+  const rhr = stat.workers
+    .map((w) => w.rhr)
+    .reduce((previous, current) => Number(previous) + Number(current), 0);
 
-  const timestamps = shrink(stat?.chart.calculated.timestamps).map((ts) => dateFormat(new Date(ts), 'yyyy/mm/dd HH:MM:ss'));
+  const timestamps = shrink(stat?.chart.calculated.timestamps).map((ts) =>
+    dateFormat(new Date(ts), 'yyyy/mm/dd HH:MM:ss'));
   const calculatedData = shrink(stat?.chart.calculated.data);
   const reportedData = shrink(stat?.chart.reported.data);
 

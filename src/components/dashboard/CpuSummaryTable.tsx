@@ -1,11 +1,19 @@
-import { Table, TableContainer, TableCell, TableHead, TableRow, TableBody, Typography } from '@mui/material';
+import {
+  Table,
+  TableContainer,
+  TableCell,
+  TableHead,
+  TableRow,
+  TableBody,
+  Typography,
+} from '@mui/material';
 import * as formatter from '../../services/Formatters';
 import { cpuStatistics$ } from '../../services/StatisticsAggregator';
 import { useObservableState } from '../../hooks';
 
 export function CpuSummaryTable() {
   const [cpu] = useObservableState(cpuStatistics$, null);
-  const { hashrate, accepted, rejected, cores, threads, algorithm, difficulty, uptime } = cpu ?? { };
+  const { hashrate, accepted, rejected, cores, threads, algorithm, difficulty, uptime } = cpu ?? {};
 
   if (cpu === null || Object.values(cpu).find((x) => x !== undefined) === undefined) {
     return <Typography>No data to display!</Typography>;

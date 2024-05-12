@@ -75,7 +75,10 @@ function updateStats(stats: MinerAppStatistics) {
     }),
   );
 
-  const totalEfficiency = stats.miner.total_power_consume === 0 ? undefined : stats.miner.total_hashrate_raw / 1000 / stats.miner.total_power_consume;
+  const totalEfficiency =
+    stats.miner.total_power_consume === 0
+      ? undefined
+      : stats.miner.total_hashrate_raw / 1000 / stats.miner.total_power_consume;
 
   addMinerStat({
     hashrate: stats.miner.total_hashrate_raw / 1000000,

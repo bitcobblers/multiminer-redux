@@ -18,7 +18,10 @@ export function MonitorScreen(): JSX.Element {
   return (
     <Container>
       <ScreenHeader title="Monitor">
-        <Button startIcon={isPaused ? <PlayArrowIcon /> : <PauseIcon />} onClick={() => setIsPaused(!isPaused)}>
+        <Button
+          startIcon={isPaused ? <PlayArrowIcon /> : <PauseIcon />}
+          onClick={() => setIsPaused(!isPaused)}
+        >
           {isPaused ? 'Resume' : 'Pause'}
         </Button>
         <Button startIcon={<DeleteIcon />} onClick={clearLog}>

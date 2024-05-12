@@ -1,7 +1,18 @@
 import { useState } from 'react';
 import { v4 as uuid } from 'uuid';
 
-import { Container, Box, Button, TableContainer, TableCell, TableHead, TableRow, TableBody, Table, Tooltip } from '@mui/material';
+import {
+  Container,
+  Box,
+  Button,
+  TableContainer,
+  TableCell,
+  TableHead,
+  TableRow,
+  TableBody,
+  Table,
+  Tooltip,
+} from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import AddIcon from '@mui/icons-material/Add';
 import ErrorIcon from '@mui/icons-material/Error';
@@ -14,7 +25,14 @@ import { ScreenHeader, EditMinerControls } from '../components';
 import { EditMinerDialog } from '../dialogs/EditMinerDialog';
 import { useLoadData, useProfile } from '../hooks';
 
-const getEmptyMiner = (): Miner => ({ id: uuid(), kind: 'lolminer', name: '', version: '', algorithm: 'etchash', parameters: '' });
+const getEmptyMiner = (): Miner => ({
+  id: uuid(),
+  kind: 'lolminer',
+  name: '',
+  version: '',
+  algorithm: 'etchash',
+  parameters: '',
+});
 
 export function MinersScreen() {
   const { enqueueSnackbar } = useSnackbar();
@@ -103,7 +121,15 @@ export function MinersScreen() {
           },
         }}
       >
-        <EditMinerDialog key="edit-new-miner" open={newOpen} miner={newMiner} existingMiners={miners} autoReset onSave={addMiner} onCancel={() => setNewOpen(false)} />
+        <EditMinerDialog
+          key="edit-new-miner"
+          open={newOpen}
+          miner={newMiner}
+          existingMiners={miners}
+          autoReset
+          onSave={addMiner}
+          onCancel={() => setNewOpen(false)}
+        />
         <TableContainer>
           <Table aria-label="Miners">
             <TableHead>
@@ -122,13 +148,23 @@ export function MinersScreen() {
                 <TableRow key={m.id}>
                   <TableCell>{validateMiner(m)}</TableCell>
                   <TableCell>
-                    <EditMinerControls miner={m} isDefault={profile === m.name} onSave={saveMiner} existingMiners={miners} onRemove={removeMiner} />
+                    <EditMinerControls
+                      miner={m}
+                      isDefault={profile === m.name}
+                      onSave={saveMiner}
+                      existingMiners={miners}
+                      onRemove={removeMiner}
+                    />
                   </TableCell>
                   <TableCell>
                     {m.name === profile ? (
                       <CheckIcon />
                     ) : (
-                      <Button variant="outlined" size="small" onClick={() => setDefaultMiner(m.name)}>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={() => setDefaultMiner(m.name)}
+                      >
                         Set Default
                       </Button>
                     )}

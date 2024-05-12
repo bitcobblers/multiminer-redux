@@ -1,25 +1,31 @@
 module.exports = {
+  plugins: [
+    '@typescript-eslint',
+    '@stylistic/ts',
+  ],
   extends: [
     'airbnb',
     'airbnb-typescript',
+    // 'prettier',
   ],
   rules: {
     // A temporary hack related to IDE not resolving correct package.json
     'import/no-extraneous-dependencies': 'off',
+    'import/prefer-default-export': 'off',
     // Since React 17 and typescript 4.1 you can safely disable the rule
     'react/react-in-jsx-scope': 'off',
-    'import/prefer-default-export': 'off',
-    'no-unused-vars': 'off',
-    '@typescript-eslint/no-unused-vars': ['warn'],
-    'promise/catch-or-return': 'off',
-    'promise/always-return': 'off',
-    'no-console': 'off',
-    'max-len': 'off',
-    'object-curly-newline': 'off',
     'react/jsx-one-expression-per-line': 'off',
     'react/jsx-no-useless-fragment': 'off',
-    'jest/no-commented-out-tests': 'off',
     'react/function-component-definition': 'off',
+    'jest/no-commented-out-tests': 'off',
+    'promise/catch-or-return': 'off',
+    'promise/always-return': 'off',
+    'implicit-arrow-linebreak': 'off',
+    'no-unused-vars': 'off',
+    'no-console': 'off',
+    'operator-linebreak': 'off',
+    'object-curly-newline': 'off',
+    '@typescript-eslint/no-unused-vars': ['warn'],
   },
   parserOptions: {
     ecmaVersion: 2020,

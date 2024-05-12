@@ -8,7 +8,13 @@ type StartedCallback = (coin: string) => void;
 type ErrorCallback = (message: string) => void;
 
 export interface MinerApi {
-  start: (profile: string, coin: string, miner: { name: MinerName; exe: string }, version: string, args: string) => Promise<string | null>;
+  start: (
+    profile: string,
+    coin: string,
+    miner: { name: MinerName; exe: string },
+    version: string,
+    args: string,
+  ) => Promise<string | null>;
   stop: () => Promise<void>;
   status: () => Promise<MinerState>;
   stats: (port: number, args: string) => Promise<string>;
@@ -19,7 +25,13 @@ export interface MinerApi {
 }
 
 export const minerApi = {
-  start: (_: string, __: string, ___: { name: MinerName; exe: string }, ____: string, _____: string) => Promise.resolve(''),
+  start: (
+    _: string,
+    __: string,
+    ___: { name: MinerName; exe: string },
+    ____: string,
+    _____: string,
+  ) => Promise.resolve(''),
   stop: () => Promise.resolve(),
   status: () => Promise.resolve({
     state: 'inactive',
