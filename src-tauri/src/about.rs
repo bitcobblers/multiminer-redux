@@ -1,4 +1,5 @@
 use tauri::command;
+use webbrowser;
 
 #[command]
 pub fn about_get_name() -> String {
@@ -8,4 +9,9 @@ pub fn about_get_name() -> String {
 #[command]
 pub fn about_get_version() -> String {
     env!("CARGO_PKG_VERSION").into()
+}
+
+#[command]
+pub fn about_open_browser(url: String) {
+    let _ = webbrowser::open(&url);
 }
