@@ -20,6 +20,28 @@ export default defineConfig(async () => ({
   },
 
   build: {
-    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          if (/src\/assets\/.+$/.test(id)) {
+            return 'assets';
+          }
+
+          if (/src\/.+$/.test(id)) {
+            return 'src';
+          }
+
+          if (/node_modules\/@mui\/.+$/.test(id)) {
+            return 'mui';
+          }
+
+          if ((/node_modules\/.+$/.test(id))) {
+            return 'vendor';
+          }
+
+          return undefined;
+        },
+      },
+    },
   },
 }));
