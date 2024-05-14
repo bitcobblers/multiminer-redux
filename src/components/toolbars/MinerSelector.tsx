@@ -2,7 +2,7 @@ import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 
 import { Miner } from '../../models';
 import { useLoadData, useObservableState, useProfile } from '../../hooks';
-import { getAppSettings, setAppSettings, watchers$ } from '../../services/AppSettingsService';
+import { getAppSettings, setAppSettings, watchers$ } from '../../services/SettingsService';
 
 export function MinerSelector() {
   const [miners, setLoadedMiners] = useObservableState(watchers$.miners, []);

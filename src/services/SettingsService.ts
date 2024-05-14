@@ -1,7 +1,15 @@
 /* eslint-disable @typescript-eslint/lines-between-class-members */
 import { Subject } from 'rxjs';
-import { Coin, Wallet, Miner, AppSettings, DefaultSettings, SettingsSchemaType, MinerRelease } from '../models';
-import { settingsApi } from '../shared/SettingsApi';
+import { Store } from 'tauri-plugin-store-api';
+import {
+  Coin,
+  Wallet,
+  Miner,
+  AppSettings,
+  DefaultSettings,
+  SettingsSchemaType,
+  MinerRelease,
+} from '../models';
 
 class WatchersObservable {
   wallets = new Subject<Wallet[]>();
@@ -11,22 +19,25 @@ class WatchersObservable {
   minerReleases = new Subject<MinerRelease[]>();
 }
 
+type SettingsTypes = Wallet[] & Coin[] & Miner[] & AppSettings & MinerRelease[];
+
+const store = new Store('.settings.dat');
+
 export const watchers$ = new WatchersObservable();
 
 async function get<T>(key: keyof SettingsSchemaType, defaultValue: T) {
-  const content = await settingsApi.read(key);
+  const content = await store.get<T>(key);
 
-  if (content === '""') {
+  if (content === null) {
     return defaultValue;
   }
 
-  return JSON.parse(content) as T;
+  return content;
 }
 
 async function set<T>(key: keyof SettingsSchemaType, setting: T) {
-  const content = JSON.stringify(setting);
-
-  await settingsApi.write(key, content);
+  await store.set(key, setting);
+  await store.save();
 }
 
 export const getWallets = () => get<Wallet[]>('wallets', DefaultSettings.wallets);
@@ -41,21 +52,32 @@ export const setMiners = (miners: Miner[]) => set('miners', miners);
 export const getAppSettings = () => get<AppSettings>('settings', DefaultSettings.settings);
 export const setAppSettings = (settings: AppSettings) => set('settings', settings);
 
-export const getMinerReleases = () => get<MinerRelease[]>('minerReleases', DefaultSettings.minerReleases);
+export const getMinerReleases = () =>
+  get<MinerRelease[]>('minerReleases', DefaultSettings.minerReleases);
 export const setMinerReleases = (releases: MinerRelease[]) => set('minerReleases', releases);
 
-settingsApi.watch('wallets');
-settingsApi.watch('coins');
-settingsApi.watch('miners');
-settingsApi.watch('settings');
-settingsApi.watch('minerReleases');
+export const importSettings = async (path: string) => {
+  console.log(`importing settings from: ${path}`);
+  return Promise.resolve(false);
+};
 
-settingsApi.changed((key, content) => {
-  console.log(`Config change detected: ${key}: ${content}`);
+export const exportSettings = async (path: string) => {
+  console.log(`exporting settings to: ${path}`);
+  return Promise.resolve(false);
+};
 
-  const typedKey = key as keyof WatchersObservable;
+function watchSetting(setting: keyof WatchersObservable) {
+  store.onKeyChange<SettingsTypes>(setting, (value) => {
+    if (value !== null) {
+      watchers$[setting].next(value);
+    }
+  });
+}
 
-  if (typedKey in watchers$) {
-    watchers$[typedKey].next(JSON.parse(content));
-  }
-});
+export const enableSettingsWatchers = () => {
+  watchSetting('wallets');
+  watchSetting('coins');
+  watchSetting('miners');
+  watchSetting('settings');
+  watchSetting('minerReleases');
+};

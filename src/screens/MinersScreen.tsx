@@ -19,7 +19,7 @@ import ErrorIcon from '@mui/icons-material/Error';
 import { useSnackbar } from 'notistack';
 
 import { Miner, AVAILABLE_ALGORITHMS } from '../models';
-import { setMiners, getAppSettings, setAppSettings } from '../services/AppSettingsService';
+import { setMiners, getAppSettings, setAppSettings } from '../services/SettingsService';
 
 import { ScreenHeader, EditMinerControls } from '../components';
 import { EditMinerDialog } from '../dialogs/EditMinerDialog';

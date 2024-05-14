@@ -1,7 +1,7 @@
 import { ReplaySubject, timer, throttleTime } from 'rxjs';
 
 import { ALL_COINS, refreshData$ } from '../models';
-import * as config from './AppSettingsService';
+import * as config from './SettingsService';
 import { tickerApi } from '../shared/TickerApi';
 
 export type CoinTicker = {
@@ -19,7 +19,9 @@ const updater$ = timer(0, UPDATE_INTERVAL);
 
 export async function updateTicker() {
   const coins = (await config.getCoins()).filter((c) => c.enabled);
-  const ids = coins.map((c) => ALL_COINS.find((cd) => cd.symbol === c.symbol)?.id ?? '').filter((c) => c !== '');
+  const ids = coins
+    .map((c) => ALL_COINS.find((cd) => cd.symbol === c.symbol)?.id ?? '')
+    .filter((c) => c !== '');
   const result = Array<CoinTicker>();
 
   if (ids.length === 0) {

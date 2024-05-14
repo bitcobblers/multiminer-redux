@@ -16,7 +16,7 @@ import {
   TextField,
 } from '@mui/material';
 import { ALL_COINS, Coin, Wallet } from '../models';
-import { getCoins, setCoins } from '../services/AppSettingsService';
+import { getCoins, setCoins } from '../services/SettingsService';
 import * as formatter from '../services/Formatters';
 import { ScreenHeader, EditCoinControls } from '../components';
 import { useLoadData } from '../hooks';
@@ -62,16 +62,17 @@ export function CoinsScreen() {
   const [enabledOnly, setEnabledOnly] = useState(false);
   const [filter, setFilter] = useState<string>('');
   const filteredCoins = useMemo(
-    () => coins
-      .filter((c) => {
-        const isOptionallyEnabled = enabledOnly ? c.coin.enabled : true;
-        const isOptionallyFiltered = filter
-          ? `${c.name} ${c.coin.symbol}`.toLocaleLowerCase().includes(filter.toLocaleLowerCase())
-          : true;
-        return isOptionallyEnabled && isOptionallyFiltered;
-      })
-      .sort((a, b) => a.coin.symbol.localeCompare(b.coin.symbol))
-      .map((x) => x),
+    () =>
+      coins
+        .filter((c) => {
+          const isOptionallyEnabled = enabledOnly ? c.coin.enabled : true;
+          const isOptionallyFiltered = filter
+            ? `${c.name} ${c.coin.symbol}`.toLocaleLowerCase().includes(filter.toLocaleLowerCase())
+            : true;
+          return isOptionallyEnabled && isOptionallyFiltered;
+        })
+        .sort((a, b) => a.coin.symbol.localeCompare(b.coin.symbol))
+        .map((x) => x),
     [coins, enabledOnly, filter],
   );
 

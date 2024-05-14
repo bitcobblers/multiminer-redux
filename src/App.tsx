@@ -7,7 +7,17 @@ import './App.css';
 // Material.
 import { BugReport } from '@mui/icons-material';
 import { createTheme, ThemeProvider, useTheme } from '@mui/material/styles';
-import { Button, ListItemIcon, ListItemText, CssBaseline, Drawer, List, Box, PaletteMode, ListItemButton } from '@mui/material';
+import {
+  Button,
+  ListItemIcon,
+  ListItemText,
+  CssBaseline,
+  Drawer,
+  List,
+  Box,
+  PaletteMode,
+  ListItemButton,
+} from '@mui/material';
 import { SnackbarProvider, SnackbarKey, useSnackbar } from 'notistack';
 import { lightGreen, teal } from '@mui/material/colors';
 
@@ -24,15 +34,29 @@ import { aboutApi } from './shared/AboutApi';
 import { Toolbar } from './components/Toolbar';
 import { appNotice$, addAppNotice } from './models';
 import { useObservable } from './hooks';
-import { HomeScreen, WalletsScreen, CoinsScreen, MinersScreen, MonitorScreen, SettingsScreen, AboutScreen } from './screens';
+import {
+  HomeScreen,
+  WalletsScreen,
+  CoinsScreen,
+  MinersScreen,
+  MonitorScreen,
+  SettingsScreen,
+  AboutScreen,
+} from './screens';
 import { minerExited$, minerStarted$ } from './services/MinerService';
-import { getAppSettings, watchers$ } from './services/AppSettingsService';
+import { getAppSettings, watchers$ } from './services/SettingsService';
 
 const drawerWidth = 200;
 
 const links = [
   { id: 0, to: '/', icon: <HomeIcon />, text: 'Home', screen: <HomeScreen /> },
-  { id: 1, to: '/wallets', icon: <AccountBalanceWalletIcon />, text: 'Wallets', screen: <WalletsScreen /> },
+  {
+    id: 1,
+    to: '/wallets',
+    icon: <AccountBalanceWalletIcon />,
+    text: 'Wallets',
+    screen: <WalletsScreen />,
+  },
   { id: 2, to: '/coins', icon: <AddShoppingCartIcon />, text: 'Coins', screen: <CoinsScreen /> },
   { id: 3, to: '/miners', icon: <RocketLaunchIcon />, text: 'Miners', screen: <MinersScreen /> },
   { id: 4, to: '/monitor', icon: <MonitorIcon />, text: 'Monitor', screen: <MonitorScreen /> },
@@ -57,9 +81,7 @@ function NavLink(props: { id: number; to: string; icon: JSX.Element; text: strin
 function NavScreen(props: { id: number; to: string; screen: JSX.Element }) {
   const { id, to, screen } = props;
 
-  return (
-    <Route key={id} path={to} element={screen} />
-  );
+  return <Route key={id} path={to} element={screen} />;
 }
 
 function safeReverse<T>(items: Array<T>) {
@@ -70,7 +92,9 @@ function AppContent() {
   const { enqueueSnackbar } = useSnackbar();
 
   useObservable(appNotice$, ({ variant, message }) => enqueueSnackbar(message, { variant }));
-  useObservable(minerStarted$, ({ coin }) => addAppNotice('success', `Miner is now mining ${coin}`));
+  useObservable(minerStarted$, ({ coin }) =>
+    addAppNotice('success', `Miner is now mining ${coin}`),
+  );
   useObservable(minerExited$, () => addAppNotice('default', 'Miner exited.'));
 
   return (
@@ -92,7 +116,14 @@ function AppContent() {
         >
           <List style={{ width: drawerWidth }}>{links.map(NavLink)}</List>
           <div style={{ textAlign: 'center', marginBottom: '0.4rem' }}>
-            <Button variant="text" size="small" startIcon={<BugReport />} onClick={() => aboutApi.openBrowser('https://github.com/bitcobblers/multiminer/issues/new/choose')}>
+            <Button
+              variant="text"
+              size="small"
+              startIcon={<BugReport />}
+              onClick={() =>
+                aboutApi.openBrowser('https://github.com/bitcobblers/multiminer/issues/new/choose')
+              }
+            >
               Report a bug
             </Button>
           </div>
@@ -153,13 +184,16 @@ export function App() {
     });
   }, [themeMode]);
 
-  const dismissButton = (key: SnackbarKey) => (
-    <Button onClick={closeSnack(key)}>Dismiss</Button>
-  );
+  const dismissButton = (key: SnackbarKey) => <Button onClick={closeSnack(key)}>Dismiss</Button>;
 
   return (
     <ThemeProvider theme={mdTheme}>
-      <SnackbarProvider maxSnack={5} ref={snackRef} anchorOrigin={{ vertical: 'top', horizontal: 'right' }} action={dismissButton}>
+      <SnackbarProvider
+        maxSnack={5}
+        ref={snackRef}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        action={dismissButton}
+      >
         <CssBaseline />
         <AppContent />
       </SnackbarProvider>

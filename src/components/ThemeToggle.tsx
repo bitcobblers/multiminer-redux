@@ -1,7 +1,7 @@
 import { styled, useTheme } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
 import { AppearanceSettings } from '../models/AppSettings';
-import { getAppSettings, setAppSettings } from '../services/AppSettingsService';
+import { getAppSettings, setAppSettings } from '../services/SettingsService';
 
 const StyledSwitch = styled(Switch)(({ theme }) => ({
   width: 62,

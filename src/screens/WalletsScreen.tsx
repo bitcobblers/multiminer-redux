@@ -19,7 +19,7 @@ import { Wallet, Coin } from '../models';
 import { ScreenHeader } from '../components';
 import { EditWalletControls } from '../components/EditWalletControls';
 import { EditWalletDialog } from '../dialogs/EditWalletDialog';
-import * as config from '../services/AppSettingsService';
+import * as config from '../services/SettingsService';
 import { useLoadData } from '../hooks';
 
 const getEmptyWallet = (): Wallet => ({

@@ -10,9 +10,11 @@ describe('Observable Hook', () => {
     let value = '';
 
     // Act.
-    renderHook(() => useObservable(observable, (s) => {
-      value = s;
-    }));
+    renderHook(() =>
+      useObservable(observable, (s) => {
+        value = s;
+      }),
+    );
 
     observable.next('expected');
 

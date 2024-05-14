@@ -1,5 +1,5 @@
 import { Coin, ALL_COINS, MinerState, minerState$, enabledCoins$ } from '../models';
-import * as config from './AppSettingsService';
+import * as config from './SettingsService';
 import { CoinTicker, ticker$ } from './CoinFeed';
 import { UnmineableCoin, unmineableCoins$ } from './UnmineableFeed';
 

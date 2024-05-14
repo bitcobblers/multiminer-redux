@@ -1,7 +1,7 @@
 import path from 'path-browserify';
 
 import * as miningService from './MinerService';
-import * as config from './AppSettingsService';
+import * as config from './SettingsService';
 import { minerApi } from '../shared/MinerApi';
 import {
   ALL_COINS,
@@ -17,7 +17,7 @@ import {
   addAppNotice,
   AlgorithmName,
 } from '../models';
-import { getMiners, getAppSettings, watchers$ as settingsWatcher$ } from './AppSettingsService';
+import { getMiners, getAppSettings, watchers$ as settingsWatcher$ } from './SettingsService';
 import { downloadMiner } from './DownloadManager';
 import * as coinStrategy from './strategies';
 

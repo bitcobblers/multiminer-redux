@@ -3,7 +3,7 @@ import { act } from 'react-test-renderer';
 import { AppSettings } from '../../models';
 import { useProfile } from '../../hooks';
 
-import * as settings from '../../services/AppSettingsService';
+import * as settings from '../../services/SettingsService';
 
 describe('Profile Hook', () => {
   const defaultAppSettings: AppSettings = {

@@ -35,7 +35,7 @@ export default defineConfig(async () => ({
             return 'mui';
           }
 
-          if ((/node_modules\/.+$/.test(id))) {
+          if (/node_modules\/.+$/.test(id)) {
             return 'vendor';
           }
 

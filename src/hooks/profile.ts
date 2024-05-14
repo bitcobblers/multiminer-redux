@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { watchers$ } from '../services/AppSettingsService';
+import { watchers$ } from '../services/SettingsService';
 import { useLoadData } from './loadData';
 import { useObservable } from './observable';
 

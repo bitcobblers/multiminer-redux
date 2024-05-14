@@ -21,6 +21,9 @@
     "transform": {
       "\\.(ts|tsx|js|jsx)$": "ts-jest"
     },
+    "transformIgnorePatterns": [
+      "node_modules/(?!(tauri-plugin-store-api)/)"
+    ],
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/src/__tests__/fileMock.ts",
       "\\.(css|less|sass|scss)$": "identity-obj-proxy"
@@ -101,6 +104,7 @@
     "react-hook-form": "^7.51.4",
     "react-router-dom": "^6.23.1",
     "rxjs": "^7.8.1",
+    "tauri-plugin-store-api": "github:tauri-apps/tauri-plugin-store#v1",
     "uuid": "^9.0.1"
   },
   "devDependencies": {

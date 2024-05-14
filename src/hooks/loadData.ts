@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { AppSettings, Coin, Miner, MinerRelease, Wallet } from '../models';
-import * as settings from '../services/AppSettingsService';
+import * as settings from '../services/SettingsService';
 
 type SettingsApi = {
   getWallets: () => Promise<Wallet[]>;
