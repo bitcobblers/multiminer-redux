@@ -15,10 +15,10 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import { useSnackbar } from 'notistack';
 import { useForm } from 'react-hook-form';
+import { open as openDlg, save as saveDlg } from '@tauri-apps/api/dialog';
 import { AppSettings, DefaultSettings } from '../models';
 import { ConfigurableControl, ScreenHeader, ThemeToggle } from '../components';
 import { setAppSettings, importSettings, exportSettings } from '../services/SettingsService';
-import { dialogApi } from '../shared/DialogApi';
 import { loggingApi } from '../shared/LoggingApi';
 import { useLoadData } from '../hooks';
 
@@ -55,30 +55,42 @@ export function SettingsScreen() {
   };
 
   const onExport = async () => {
-    const path = await dialogApi.getSaveFile();
+    const path = await saveDlg({
+      defaultPath: '.',
+      filters: [{ name: 'JSON', extensions: ['json'] }],
+    });
 
-    if (path !== '') {
-      const result = await exportSettings(path);
+    if (!path) {
+      return;
+    }
 
-      if (result) {
-        enqueueSnackbar(`Export settings failed: ${result}.`, { variant: 'error' });
-      } else {
-        enqueueSnackbar('Settings exported', { variant: 'success' });
-      }
+    const result = await exportSettings(path);
+
+    if (result) {
+      enqueueSnackbar('Settings exported', { variant: 'success' });
+    } else {
+      enqueueSnackbar(`Export settings failed: ${result}.`, { variant: 'error' });
     }
   };
 
   const onImport = async () => {
-    const path = await dialogApi.getOpenFile();
+    const path = (await openDlg({
+      defaultPath: '.',
+      filters: [{ name: 'JSON', extensions: ['json'] }],
+      multiple: false,
+      directory: false,
+    })) as string | null;
 
-    if (path !== '') {
-      const result = await importSettings(path);
+    if (!path) {
+      return;
+    }
 
-      if (result) {
-        enqueueSnackbar(`Import settings failed: ${result}.`, { variant: 'error' });
-      } else {
-        enqueueSnackbar('Settings imported', { variant: 'success' });
-      }
+    const result = await importSettings(path);
+
+    if (result) {
+      enqueueSnackbar('Settings imported', { variant: 'success' });
+    } else {
+      enqueueSnackbar(`Import settings failed: ${result}.`, { variant: 'error' });
     }
   };
 

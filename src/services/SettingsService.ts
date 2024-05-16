@@ -58,12 +58,42 @@ export const setMinerReleases = (releases: MinerRelease[]) => set('minerReleases
 
 export const importSettings = async (path: string) => {
   console.log(`importing settings from: ${path}`);
-  return Promise.resolve(false);
+
+  const importedStore = new Store(path);
+  const entries = await importedStore.entries();
+
+  await store.clear();
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const [key, value] of entries) {
+    console.log(`importing key: ${key}`);
+
+    // eslint-disable-next-line no-await-in-loop
+    await store.set(key, value);
+  }
+
+  await store.save();
+  return true;
 };
 
 export const exportSettings = async (path: string) => {
   console.log(`exporting settings to: ${path}`);
-  return Promise.resolve(false);
+
+  const exportedStore = new Store(path);
+  const entries = await store.entries();
+
+  await exportedStore.clear();
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const [key, value] of entries) {
+    console.log(`exporting key: ${key}`);
+
+    // eslint-disable-next-line no-await-in-loop
+    await exportedStore.set(key, value);
+  }
+
+  await exportedStore.save();
+  return true;
 };
 
 function watchSetting(setting: keyof WatchersObservable) {
