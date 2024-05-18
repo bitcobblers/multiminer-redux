@@ -1,4 +1,5 @@
 import { Subject } from 'rxjs';
+import { info } from 'tauri-plugin-log-api';
 import { minerApi } from '../shared/MinerApi';
 import { addAppNotice, MinerInfo } from '../models';
 
@@ -13,7 +14,7 @@ export async function startMiner(
   version: string,
   args: string,
 ) {
-  console.log(`Starting miner with the following parameters: ${args}`);
+  info(`Starting miner with the following parameters: ${args}`);
   const error = await minerApi.start(
     profile,
     coin,
@@ -31,7 +32,7 @@ export async function stopMiner() {
   const status = await minerApi.status();
 
   if (status.state === 'active') {
-    console.log('Stopping miner.');
+    info('Stopping miner.');
 
     await minerApi.stop();
   }

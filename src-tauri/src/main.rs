@@ -11,6 +11,7 @@ fn main() {
             about::about_open_browser,
         ])
         .plugin(tauri_plugin_store::Builder::default().build())
+        .plugin(tauri_plugin_log::Builder::default().build())
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

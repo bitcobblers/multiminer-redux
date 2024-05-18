@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/lines-between-class-members */
 import { Subject } from 'rxjs';
 import { Store } from 'tauri-plugin-store-api';
+import { debug } from 'tauri-plugin-log-api';
 import {
   Coin,
   Wallet,
@@ -57,8 +58,6 @@ export const getMinerReleases = () =>
 export const setMinerReleases = (releases: MinerRelease[]) => set('minerReleases', releases);
 
 export const importSettings = async (path: string) => {
-  console.log(`importing settings from: ${path}`);
-
   const importedStore = new Store(path);
   const entries = await importedStore.entries();
 
@@ -66,7 +65,7 @@ export const importSettings = async (path: string) => {
 
   // eslint-disable-next-line no-restricted-syntax
   for (const [key, value] of entries) {
-    console.log(`importing key: ${key}`);
+    debug(`importing key: ${key}`);
 
     // eslint-disable-next-line no-await-in-loop
     await store.set(key, value);
@@ -77,8 +76,6 @@ export const importSettings = async (path: string) => {
 };
 
 export const exportSettings = async (path: string) => {
-  console.log(`exporting settings to: ${path}`);
-
   const exportedStore = new Store(path);
   const entries = await store.entries();
 
@@ -86,7 +83,7 @@ export const exportSettings = async (path: string) => {
 
   // eslint-disable-next-line no-restricted-syntax
   for (const [key, value] of entries) {
-    console.log(`exporting key: ${key}`);
+    debug(`exporting key: ${key}`);
 
     // eslint-disable-next-line no-await-in-loop
     await exportedStore.set(key, value);

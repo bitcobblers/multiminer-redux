@@ -11,15 +11,14 @@ import {
 import DownloadIcon from '@mui/icons-material/Download';
 import UploadIcon from '@mui/icons-material/Upload';
 import SaveIcon from '@mui/icons-material/Save';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import { useSnackbar } from 'notistack';
 import { useForm } from 'react-hook-form';
 import { open as openDlg, save as saveDlg } from '@tauri-apps/api/dialog';
+import { info, error } from 'tauri-plugin-log-api';
 import { AppSettings, DefaultSettings } from '../models';
 import { ConfigurableControl, ScreenHeader, ThemeToggle } from '../components';
 import { setAppSettings, importSettings, exportSettings } from '../services/SettingsService';
-import { loggingApi } from '../shared/LoggingApi';
 import { useLoadData } from '../hooks';
 
 // react-hook-form's API requires prop spreading to register controls
@@ -38,8 +37,8 @@ export function SettingsScreen() {
   useLoadData(async ({ getAppSettings }) => {
     getAppSettings()
       .then((s) => reset(s))
-      .catch((error) => {
-        console.log(`Unable to load settings: ${error}`);
+      .catch((errorMessage) => {
+        error(`Unable to load settings: ${errorMessage}`);
       });
   });
 
@@ -64,6 +63,7 @@ export function SettingsScreen() {
       return;
     }
 
+    info(`exporting settings to: ${path}`);
     const result = await exportSettings(path);
 
     if (result) {
@@ -94,10 +94,6 @@ export function SettingsScreen() {
     }
   };
 
-  const onOpenLogs = async () => {
-    await loggingApi.openLogFolder();
-  };
-
   const pickCoinStrategy = (current: string) => (current === undefined ? 'normal' : current);
 
   const DefaultSpacing = 2;
@@ -113,9 +109,6 @@ export function SettingsScreen() {
         </Button>
         <Button startIcon={<SettingsBackupRestoreIcon />} onClick={() => onReset()}>
           Restore Defaults
-        </Button>
-        <Button startIcon={<OpenInNewIcon />} onClick={() => onOpenLogs()}>
-          Open Logs
         </Button>
       </ScreenHeader>
       <Typography variant="h5" sx={{ my: 2 }}>
@@ -208,7 +201,7 @@ export function SettingsScreen() {
               helperText={errors?.pools?.kawpow?.message}
             />
           </ConfigurableControl>
-          <ConfigurableControl description="The URL to use when connecting to a mining pool using the autolycos algorithm.">
+          <ConfigurableControl description="The URL to use when connecting to a mining pool using the autolykos algorithm.">
             <TextField
               required
               spellCheck="false"

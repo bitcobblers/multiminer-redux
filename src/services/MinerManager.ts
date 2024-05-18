@@ -1,5 +1,6 @@
 import path from 'path-browserify';
 
+import { debug } from 'tauri-plugin-log-api';
 import * as miningService from './MinerService';
 import * as config from './SettingsService';
 import { minerApi } from '../shared/MinerApi';
@@ -148,7 +149,7 @@ async function changeCoin(symbol: string | null) {
         return;
       }
 
-      console.log(
+      debug(
         `Selected coin ${coin.symbol} to run for ${coin.duration} hours.  Path: ${filePath} -- Args: ${mergedArgs}`,
       );
 

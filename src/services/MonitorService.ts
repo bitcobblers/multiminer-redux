@@ -1,4 +1,5 @@
 import { interval, withLatestFrom, map, filter } from 'rxjs';
+import { debug } from 'tauri-plugin-log-api';
 import { minerState$, API_PORT } from '../models';
 import { minerApi } from '../shared/MinerApi';
 import { lolminerMonitor, nbminerMonitor, trexminerMonitor, xmrigMonitor } from './monitors';
@@ -32,5 +33,5 @@ export function enableMonitors() {
       }
     });
 
-  console.log(`Enabled miner monitor support for: ${monitorNames.join(', ')}.`);
+  debug(`Enabled miner monitor support for: ${monitorNames.join(', ')}.`);
 }

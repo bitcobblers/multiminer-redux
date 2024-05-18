@@ -1,10 +1,11 @@
+import { debug } from 'tauri-plugin-log-api';
 import { Coin, ALL_COINS, MinerState, minerState$, enabledCoins$ } from '../models';
 import * as config from './SettingsService';
 import { CoinTicker, ticker$ } from './CoinFeed';
 import { UnmineableCoin, unmineableCoins$ } from './UnmineableFeed';
 
 function minerStateChanged(state: MinerState) {
-  console.log(`Miner state changed to ${state.state}`);
+  debug(`Miner state changed to ${state.state}`);
 
   const updatedCoins = enabledCoins$.getValue().map((c) => ({
     ...c,
@@ -15,7 +16,7 @@ function minerStateChanged(state: MinerState) {
 }
 
 function tickerUpdated(coins: CoinTicker[]) {
-  console.log('Updating coins from ticker feed.');
+  debug('Updating coins from ticker feed.');
 
   const updatedCoins = enabledCoins$.getValue().map((c) => {
     const ticker = coins.find((t) => t.symbol === c.symbol);
@@ -34,7 +35,7 @@ function tickerUpdated(coins: CoinTicker[]) {
 }
 
 function unmineableCoinsUpdated(coins: UnmineableCoin[]) {
-  console.log('Updating coins from unmineable feed.');
+  debug('Updating coins from unmineable feed.');
 
   const updatedCoins = enabledCoins$.getValue().map((c) => {
     const ticker = coins.find((t) => t.symbol === c.symbol);
@@ -56,7 +57,7 @@ function unmineableCoinsUpdated(coins: UnmineableCoin[]) {
 }
 
 function reloadCoins(coins: Coin[]) {
-  console.log('Reloading coins from configuration.');
+  debug('Reloading coins from configuration.');
 
   const updateCoins = async () => {
     const { currentCoin } = minerState$.getValue();
@@ -92,7 +93,7 @@ const unmineableCoinsSubscription = unmineableCoins$.subscribe(unmineableCoinsUp
 const configWatcherSubscription = config.watchers$.coins.subscribe(reloadCoins);
 
 export function cleanup() {
-  console.log('Cleaning up data service.');
+  debug('Cleaning up data service.');
 
   minerStateSubscription.unsubscribe();
   tickerSubscription?.unsubscribe();
