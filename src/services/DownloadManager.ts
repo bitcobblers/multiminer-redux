@@ -1,9 +1,8 @@
-import AsyncLock from 'async-lock';
-import { AVAILABLE_MINERS, MinerInfo, MinerRelease, addAppNotice } from '../models';
+import { debug, warn, error } from 'tauri-plugin-log-api';
+import { fetch } from '@tauri-apps/api/http';
+import { AVAILABLE_MINERS, MinerRelease, addAppNotice } from '../models';
 import { downloadApi } from '../shared/DownloadApi';
 import * as config from './SettingsService';
-
-const MAX_VERSION_HISTORY = 10;
 
 type ReleaseAsset = {
   name: string;
@@ -16,51 +15,74 @@ type MinerReleaseData = {
   assets: Array<ReleaseAsset>;
 };
 
-const lock = new AsyncLock();
-let minerReleases = Array<MinerRelease>();
+async function getReleases(owner: string, repo: string): Promise<MinerReleaseData[] | null> {
+  const url = `https://api.github.com/repos/${owner}/${repo}/releases`;
 
-async function cacheReleases(descriptors: MinerInfo[]) {
-  const previouslyCachedReleases = await config.getMinerReleases();
+  try {
+    debug(`Fetching releases for ${url}`);
+    const response = await fetch<MinerReleaseData[]>(url, {
+      method: 'GET',
+      headers: {
+        'User-Agent': 'Tauri',
+      },
+    });
 
+    if (response.ok) {
+      return response.data;
+    }
+
+    warn(`Failed to fetch releases for ${owner}/${repo}: ${response.status}`);
+  } catch (e) {
+    let message;
+
+    if (e instanceof Error) {
+      message = e.message;
+    } else {
+      message = String(e);
+    }
+
+    error(message);
+  }
+
+  return null;
+}
+
+export function getMinerReleases() {
+  return config.getMinerReleases();
+}
+
+export async function syncMinerReleases() {
   const miners = await Promise.all(
-    descriptors.map((info) =>
-      downloadApi.getMinerReleases(info.owner, info.repo).then((r) => {
-        if (r === '') {
-          return null;
-        }
+    AVAILABLE_MINERS.map(async (info) => {
+      const releases = await getReleases(info.owner, info.repo);
 
-        const releases = (JSON.parse(r) as MinerReleaseData[]).slice(0, MAX_VERSION_HISTORY);
-        const data = {
-          name: info.name,
-          versions: releases
-            .map((release) => ({
-              tag: release.tag_name,
-              published: release.published_at,
-              url:
-                release.assets.find((x) => info.assetPattern.test(x.name))?.browser_download_url ??
-                '',
-            }))
-            .filter((x) => x.url !== ''),
-        } as MinerRelease;
+      if (!releases) {
+        warn(`Unable to fetch releases for ${info.owner}/${info.repo}`);
+        return null;
+      }
 
-        return data;
-      }),
-    ),
+      debug(`Found ${releases.length} releases for ${info.owner}/${info.repo}`);
+
+      return {
+        name: info.name,
+        versions: releases
+          .map((release) => ({
+            tag: release.tag_name,
+            published: release.published_at,
+            url:
+              release.assets.find((x) => info.assetPattern.test(x.name))?.browser_download_url ??
+              '',
+          }))
+          .filter((x) => x.url !== ''),
+      } as MinerRelease;
+    }),
   );
 
   const allMiners = miners.filter((miner) => miner !== null) as MinerRelease[];
-  return allMiners.length ? allMiners : previouslyCachedReleases;
-}
 
-export async function getMinerReleases() {
-  await lock.acquire('miners', async () => {
-    if (minerReleases.length === 0) {
-      minerReleases = await cacheReleases(AVAILABLE_MINERS);
-      await config.setMinerReleases(minerReleases);
-    }
-  });
-
-  return minerReleases;
+  if (allMiners.length > 0) {
+    await config.setMinerReleases(allMiners);
+  }
 }
 
 export async function downloadMiner(name: string, version: string) {

@@ -23,13 +23,20 @@
         "message": false,
         "open": true,
         "save": true
+      },
+      "http": {
+        "all": false,
+        "request": true,
+        "scope": [
+          "https://api.github.com/repos/*"
+        ]
       }
     },
     "windows": [
       {
         "title": "multiminer-redux",
-        "width": 800,
-        "height": 600
+        "width": 1024,
+        "height": 768
       }
     ],
     "security": {
