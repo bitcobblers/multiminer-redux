@@ -2,7 +2,7 @@ import { debug, warn, error } from 'tauri-plugin-log-api';
 import { fetch } from '@tauri-apps/api/http';
 import { AVAILABLE_MINERS, MinerRelease, addAppNotice } from '../models';
 import { downloadApi } from '../shared/DownloadApi';
-import * as config from './SettingsService';
+import { getMinerReleases, setMinerReleases } from './SettingsService';
 
 type ReleaseAsset = {
   name: string;
@@ -47,10 +47,6 @@ async function getReleases(owner: string, repo: string): Promise<MinerReleaseDat
   return null;
 }
 
-export function getMinerReleases() {
-  return config.getMinerReleases();
-}
-
 export async function syncMinerReleases() {
   const miners = await Promise.all(
     AVAILABLE_MINERS.map(async (info) => {
@@ -81,7 +77,7 @@ export async function syncMinerReleases() {
   const allMiners = miners.filter((miner) => miner !== null) as MinerRelease[];
 
   if (allMiners.length > 0) {
-    await config.setMinerReleases(allMiners);
+    await setMinerReleases(allMiners);
   }
 }
 

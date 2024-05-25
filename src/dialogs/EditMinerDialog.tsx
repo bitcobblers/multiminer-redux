@@ -27,7 +27,6 @@ import { MinerTypeMenuItem } from '../components/MinerTypeMenuItem';
 import { CustomDialogActions } from './CustomDialogActions';
 import { aboutApi } from '../shared/AboutApi';
 import { useLoadData } from '../hooks';
-import { getMinerReleases as getMinerReleasesOnline } from '../services/DownloadManager';
 
 type EditMinerDialogProps = {
   open: boolean;
@@ -73,13 +72,7 @@ export function EditMinerDialog(props: EditMinerDialogProps) {
   );
 
   useLoadData(async ({ getMinerReleases }) => {
-    const onlineMiners = await getMinerReleasesOnline();
-
-    if (onlineMiners.length > 0) {
-      setAvailableMiners(onlineMiners);
-    } else {
-      setAvailableMiners(await getMinerReleases());
-    }
+    setAvailableMiners(await getMinerReleases());
   });
 
   const pickAlgorithm = (current: AlgorithmName) => {
@@ -138,9 +131,9 @@ export function EditMinerDialog(props: EditMinerDialogProps) {
                 {...register('name', {
                   required: 'A miner must have a name',
                   validate: (val) =>
-                    (existingMiners.filter((m) => m.id !== miner.id).find((m) => m.name === val)
+                    existingMiners.filter((m) => m.id !== miner.id).find((m) => m.name === val)
                       ? 'A miner already exists with the same name.'
-                      : undefined),
+                      : undefined,
                 })}
                 error={!!errors?.name}
                 helperText={errors?.name?.message}
