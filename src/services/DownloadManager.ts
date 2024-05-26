@@ -1,7 +1,8 @@
-import { debug, warn, error } from 'tauri-plugin-log-api';
-import { fetch } from '@tauri-apps/api/http';
+import { debug, info, warn, error } from 'tauri-plugin-log-api';
+import { ResponseType, fetch, getClient } from '@tauri-apps/api/http';
+import { appLocalDataDir, downloadDir, join } from '@tauri-apps/api/path';
+import { fs, invoke } from '@tauri-apps/api';
 import { AVAILABLE_MINERS, MinerRelease, addAppNotice } from '../models';
-import { downloadApi } from '../shared/DownloadApi';
 import { getMinerReleases, setMinerReleases } from './SettingsService';
 
 type ReleaseAsset = {
@@ -47,26 +48,49 @@ async function getReleases(owner: string, repo: string): Promise<MinerReleaseDat
   return null;
 }
 
+async function arrangeMinerFiles(path: string) {
+  const rootFiles = await fs.readDir(path);
+
+  debug(`found ${rootFiles.length} files`);
+
+  if (rootFiles.length > 1) {
+    return;
+  }
+
+  const allFiles = await fs.readDir(rootFiles[0].path);
+
+  // Move all of the files to the root.
+  for (const file of allFiles) {
+    const newPath = await join(path, file.name!);
+
+    debug(`moving ${file.path} to ${newPath}`);
+
+    await fs.renameFile(file.path, newPath);
+  }
+
+  await fs.removeDir(rootFiles[0].path);
+}
+
 export async function syncMinerReleases() {
   const miners = await Promise.all(
-    AVAILABLE_MINERS.map(async (info) => {
-      const releases = await getReleases(info.owner, info.repo);
+    AVAILABLE_MINERS.map(async (desc) => {
+      const releases = await getReleases(desc.owner, desc.repo);
 
       if (!releases) {
-        warn(`Unable to fetch releases for ${info.owner}/${info.repo}`);
+        warn(`Unable to fetch releases for ${desc.owner}/${desc.repo}`);
         return null;
       }
 
-      debug(`Found ${releases.length} releases for ${info.owner}/${info.repo}`);
+      debug(`Found ${releases.length} releases for ${desc.owner}/${desc.repo}`);
 
       return {
-        name: info.name,
+        name: desc.name,
         versions: releases
           .map((release) => ({
             tag: release.tag_name,
             published: release.published_at,
             url:
-              release.assets.find((x) => info.assetPattern.test(x.name))?.browser_download_url ??
+              release.assets.find((x) => desc.assetPattern.test(x.name))?.browser_download_url ??
               '',
           }))
           .filter((x) => x.url !== ''),
@@ -81,17 +105,48 @@ export async function syncMinerReleases() {
   }
 }
 
-export async function downloadMiner(name: string, version: string) {
+export async function ensureMiner(name: string, version: string) {
   const miner = (await getMinerReleases()).find((m) => m.name === name);
   const url = miner?.versions.find((r) => r.tag === version)?.url;
+  const downloadFolder = await downloadDir();
+  const localFolder = await appLocalDataDir();
+  const savePath = await join(downloadFolder, `${name}-${version}.zip`);
+  const installPath = await join(localFolder, 'miners', name, version);
 
-  if (url !== undefined) {
-    return downloadApi.downloadMiner(name, version, url);
+  if (await fs.exists(installPath)) {
+    info(`Miner ${name} version ${version} already installed.`);
+    return true;
   }
 
-  addAppNotice(
-    'error',
-    `Unable to download miner '${name}': URL for version ${version} not found.`,
-  );
-  return false;
+  if (!url) {
+    addAppNotice(
+      'error',
+      `Unable to download miner '${name}': URL for version ${version} not found.`,
+    );
+
+    return false;
+  }
+
+  info(`Downloading ${name} version ${version} from ${url} to ${savePath}`);
+
+  const client = await getClient();
+  const response = await client.get(url, {
+    responseType: ResponseType.Binary,
+  });
+
+  if (!response.ok) {
+    addAppNotice('error', `Failed to download miner '${name}': ${response.status}`);
+
+    return false;
+  }
+
+  await fs.writeBinaryFile(savePath, response.data as any);
+  info('Download complete.');
+
+  info('Installing miner');
+  await invoke('extract_zip', { path: savePath, savePath: installPath });
+  await arrangeMinerFiles(installPath);
+  info('Installation complete.');
+
+  return true;
 }

@@ -19,7 +19,7 @@ import {
   AlgorithmName,
 } from '../models';
 import { getMiners, getAppSettings, watchers$ as settingsWatcher$ } from './SettingsService';
-import { downloadMiner } from './DownloadManager';
+import { ensureMiner } from './DownloadManager';
 import * as coinStrategy from './strategies';
 
 type CoinSelection = {
@@ -153,9 +153,9 @@ async function changeCoin(symbol: string | null) {
         `Selected coin ${coin.symbol} to run for ${coin.duration} hours.  Path: ${filePath} -- Args: ${mergedArgs}`,
       );
 
-      const downloadResult = await downloadMiner(miner.kind, miner.version);
+      const minerAvailable = await ensureMiner(miner.kind, miner.version);
 
-      if (downloadResult === true) {
+      if (minerAvailable) {
         await miningService.stopMiner();
         await miningService.startMiner(
           miner.name,
