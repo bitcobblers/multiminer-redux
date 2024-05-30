@@ -13,8 +13,10 @@
     "allowlist": {
       "all": false,
       "shell": {
-        "all": false,
-        "open": true
+        "all": true,
+        "open": true,
+        "sidecar": false,
+        "execute": true
       },
       "dialog": {
         "all": false,

@@ -5,11 +5,13 @@ import { enableMonitors } from './services/MonitorService';
 import { enableDataService } from './services/DataService';
 import { enableSettingsWatchers } from './services/SettingsService';
 import { syncMinerReleases } from './services/DownloadManager';
+import { disableMinerOutputListener, enableMinerOutputListener } from './services/MinerService';
 
 window.addEventListener('load', () => {
   enableMonitors();
   enableDataService();
   enableSettingsWatchers();
+  enableMinerOutputListener();
   syncMinerReleases();
 });
 

@@ -12,10 +12,9 @@ tauri-build = { version = "1", features = [] }
 
 [dependencies]
 log = "0.4.21"
-tauri = { version = "1", features = [ "fs-remove-dir", "fs-rename-file", "fs-read-dir", "fs-exists", "fs-create-dir", "fs-read-file", "fs-remove-file", "fs-write-file", "path-all", "http-request",
+tauri = { version = "1", features = [ "shell-all", "fs-remove-dir", "fs-rename-file", "fs-read-dir", "fs-exists", "fs-create-dir", "fs-read-file", "fs-remove-file", "fs-write-file", "path-all", "http-request",
   "dialog-save",
   "dialog-open",
-  "shell-open",
 ] }
 tauri-plugin-store = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
 tauri-plugin-log = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
