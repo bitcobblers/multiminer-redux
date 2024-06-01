@@ -18,6 +18,7 @@ export function Toolbar({ drawerWidth }: { drawerWidth: number }) {
         px: 2,
         backgroundColor: theme.palette.background.paper,
         borderTop: `2px solid ${theme.palette.divider}`,
+        zIndex: 1,
       }}
     >
       <MinerSummary />
