@@ -157,13 +157,7 @@ async function changeCoin(symbol: string | null) {
 
       if (minerAvailable) {
         await miningService.stopMiner();
-        await miningService.startMiner(
-          miner.name,
-          coin.symbol,
-          minerInfo,
-          miner.version,
-          mergedArgs,
-        );
+        await miningService.startMiner(coin.symbol, minerInfo, miner.version, mergedArgs);
       }
     },
   );

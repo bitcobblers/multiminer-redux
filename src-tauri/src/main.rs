@@ -5,7 +5,8 @@ mod about;
 mod miner;
 mod extract;
 
-fn main() {
+#[tokio::main]
+async fn main() {
     tauri::Builder::default()
         .setup(|app| {
             miner::setup_miner(app.handle());
