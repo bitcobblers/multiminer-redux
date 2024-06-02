@@ -1,7 +1,6 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-mod about;
 mod miner;
 mod extract;
 
@@ -13,9 +12,6 @@ async fn main() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
-            about::about_get_name,
-            about::about_get_version,
-            about::about_open_browser,
             extract::extract_zip,
             miner::is_miner_running,
             miner::run_miner,

@@ -14,6 +14,7 @@ import {
   Button,
 } from '@mui/material';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import { open as openExternal } from '@tauri-apps/api/shell';
 import {
   AlgorithmName,
   AVAILABLE_ALGORITHMS,
@@ -25,7 +26,6 @@ import {
 import { AlgorithmMenuItem } from '../components/AlgorithmMenuItem';
 import { MinerTypeMenuItem } from '../components/MinerTypeMenuItem';
 import { CustomDialogActions } from './CustomDialogActions';
-import { aboutApi } from '../shared/AboutApi';
 import { useLoadData } from '../hooks';
 
 type EditMinerDialogProps = {
@@ -111,7 +111,7 @@ export function EditMinerDialog(props: EditMinerDialogProps) {
     const currentMiner = availableMinersAsMinerInfo.find((m) => m.name === kind);
 
     if (currentMiner !== undefined) {
-      aboutApi.openBrowser(currentMiner.optionsUrl);
+      openExternal(currentMiner.optionsUrl);
     }
   };
 

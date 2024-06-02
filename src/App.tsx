@@ -29,7 +29,7 @@ import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 import MonitorIcon from '@mui/icons-material/Monitor';
 import SettingsIcon from '@mui/icons-material/Settings';
 import InfoIcon from '@mui/icons-material/Info';
-import { aboutApi } from './shared/AboutApi';
+import { open as openExternal } from '@tauri-apps/api/shell';
 
 import { Toolbar } from './components/Toolbar';
 import { appNotice$, addAppNotice } from './models';
@@ -121,7 +121,7 @@ function AppContent() {
               size="small"
               startIcon={<BugReport />}
               onClick={() =>
-                aboutApi.openBrowser('https://github.com/bitcobblers/multiminer/issues/new/choose')
+                openExternal('https://github.com/bitcobblers/multiminer/issues/new/choose')
               }
             >
               Report a bug

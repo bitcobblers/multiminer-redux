@@ -2,7 +2,8 @@ import { GitHub } from '@mui/icons-material';
 import { Button, Container, Divider, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { useState } from 'react';
-import { aboutApi } from '../shared/AboutApi';
+import { open } from '@tauri-apps/api/shell';
+import { getName, getVersion } from '@tauri-apps/api/app';
 import { ScreenHeader } from '../components';
 import { useLoadData } from '../hooks';
 
@@ -12,7 +13,7 @@ function ExternalLink(props: { label: string; text: string; url: string }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center' }}>
       <Typography>{label}:&nbsp;</Typography>
-      <Button onClick={async () => aboutApi.openBrowser(url)}>{text}</Button>
+      <Button onClick={() => open(url)}>{text}</Button>
     </div>
   );
 }
@@ -22,8 +23,8 @@ export function AboutScreen(): JSX.Element {
   const [appVersion, setAppVersion] = useState('');
 
   useLoadData(async () => {
-    setAppName(await aboutApi.getName());
-    setAppVersion(await aboutApi.getVersion());
+    setAppName(await getName());
+    setAppVersion(await getVersion());
   });
 
   return (
@@ -32,10 +33,7 @@ export function AboutScreen(): JSX.Element {
       <Box sx={{ my: 2 }}>
         <Typography variant="h6">Application Name - BitCobblers {appName}</Typography>
         <Typography variant="h6">Application Version - {appVersion}</Typography>
-        <Button
-          onClick={async () => aboutApi.openBrowser('https://github.com/bitcobblers/multiminer')}
-          sx={{ my: 1 }}
-        >
+        <Button onClick={() => open('https://github.com/bitcobblers/multiminer')} sx={{ my: 1 }}>
           <GitHub />
           &nbsp;Project Page
         </Button>
