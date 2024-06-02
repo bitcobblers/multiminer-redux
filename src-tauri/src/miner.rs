@@ -43,7 +43,7 @@ struct MinerExitedPayload {
     code: i32,
 }
 
-pub fn setup_miner(app: AppHandle) -> () {
+pub fn setup_miner(app: AppHandle) {
     app.manage(MinerState {
         context: Mutex::new(None)
     });
@@ -53,10 +53,7 @@ pub fn setup_miner(app: AppHandle) -> () {
 pub fn is_miner_running(miner_state: State<MinerState>) -> bool {
     let context = miner_state.context.lock().unwrap();
 
-    match *context {
-        Some(_) => true,
-        None => false
-    }
+    context.is_some()
 }
 
 #[tauri::command]

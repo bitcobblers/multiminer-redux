@@ -1,5 +1,4 @@
 use tauri::command;
-use webbrowser;
 
 #[command]
 pub fn about_get_name() -> String {
