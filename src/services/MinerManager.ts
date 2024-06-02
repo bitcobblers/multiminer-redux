@@ -1,5 +1,4 @@
-import path from 'path-browserify';
-
+import { join } from '@tauri-apps/api/path';
 import { debug } from 'tauri-plugin-log-api';
 import * as miningService from './MinerService';
 import * as config from './SettingsService';
@@ -139,7 +138,7 @@ async function changeCoin(symbol: string | null) {
         appSettings.settings.workerName,
         getRandom(coinInfo.referrals),
       );
-      const filePath = path.join(miner.version, minerInfo.exe);
+      const filePath = await join(miner.version, minerInfo.exe);
       const minerArgs = minerInfo.getArgs(miner.algorithm, cs, appSettings.pools[miner.algorithm]);
       const extraArgs = miner.parameters;
       const mergedArgs = `${minerArgs} ${extraArgs}`;
