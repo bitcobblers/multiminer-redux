@@ -1,7 +1,7 @@
 import { interval, withLatestFrom, map, filter } from 'rxjs';
-import { debug } from 'tauri-plugin-log-api';
+import { debug, error, warn } from 'tauri-plugin-log-api';
+import { fetch } from '@tauri-apps/api/http';
 import { minerState$, API_PORT } from '../models';
-import { minerApi } from '../shared/MinerApi';
 import { lolminerMonitor, nbminerMonitor, trexminerMonitor, xmrigMonitor } from './monitors';
 
 const UPDATE_INTERVAL = 1000 * 5;
@@ -14,22 +14,44 @@ export function enableMonitors() {
   monitor$
     .pipe(
       withLatestFrom(minerState$),
-      map(([, miner]) => ({ state: miner.state })),
+      map(([, miner]) => miner),
       filter(({ state }) => state === 'active'),
     )
-    .subscribe(async () => {
-      const minerStatus = await minerApi.status();
-      const monitor = monitors.find((m) => m.name === minerStatus.miner);
+    .subscribe(async ({ miner }) => {
+      const monitor = monitors.find((m) => m.name === miner);
 
       if (monitor) {
         const results = await Promise.allSettled(
-          monitor.statsUrls.map(async (url) => minerApi.stats(API_PORT, url)),
+          monitor.statsUrls.map(async (url) => {
+            const fullUrl = `http://localhost:${API_PORT}/${url}`;
+            const response = await fetch<string>(fullUrl, {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            });
+
+            if (response.ok) {
+              return response.data;
+            }
+
+            error(`REST call to ${fullUrl} failed with ${response.status}.`);
+            return null;
+          }),
         );
+
         const stats = results
           .filter(({ status }) => status === 'fulfilled')
-          .map((p) => (p as PromiseFulfilledResult<string>).value);
+          .map((p) => p as PromiseFulfilledResult<string | null>)
+          .filter((p) => p !== null)
+          .map((p) => p.value as string)
+          .filter((content) => content);
 
-        monitor.update(stats);
+        if (stats.length !== monitor.statsUrls.length) {
+          warn(`Failed to fetch stats for ${monitor.name}.`);
+        } else {
+          monitor.update(stats);
+        }
       }
     });
 

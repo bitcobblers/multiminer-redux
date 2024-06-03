@@ -6,8 +6,10 @@ import { enableDataService } from './services/DataService';
 import { enableSettingsWatchers } from './services/SettingsService';
 import { syncMinerReleases } from './services/DownloadManager';
 import { enableMinerOutputListener } from './services/MinerService';
+import { initializeMinerManager } from './services/MinerManager';
 
 window.addEventListener('load', () => {
+  initializeMinerManager();
   enableMonitors();
   enableDataService();
   enableSettingsWatchers();
