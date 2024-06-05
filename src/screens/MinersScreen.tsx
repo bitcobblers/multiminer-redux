@@ -158,7 +158,13 @@ export function MinersScreen() {
                   </TableCell>
                   <TableCell>
                     {m.name === profile ? (
-                      <CheckIcon />
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        disabled
+                      >
+                        Default
+                      </Button>
                     ) : (
                       <Button
                         variant="outlined"
