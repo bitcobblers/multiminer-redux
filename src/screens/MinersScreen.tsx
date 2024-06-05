@@ -13,7 +13,6 @@ import {
   Table,
   Tooltip,
 } from '@mui/material';
-import CheckIcon from '@mui/icons-material/Check';
 import AddIcon from '@mui/icons-material/Add';
 import ErrorIcon from '@mui/icons-material/Error';
 import { useSnackbar } from 'notistack';

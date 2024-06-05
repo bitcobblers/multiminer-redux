@@ -47,6 +47,7 @@
         "scope": [
           "https://api.github.com/repos/*",
           "https://github.com/*",
+          "https://api.coingecko.com/api/v3/*",
           "http://localhost:60090/*"
         ]
       },
