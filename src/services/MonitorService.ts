@@ -1,6 +1,6 @@
 import { interval, withLatestFrom, map, filter } from 'rxjs';
 import { debug, error, warn } from 'tauri-plugin-log-api';
-import { fetch } from '@tauri-apps/api/http';
+import { ResponseType, fetch } from '@tauri-apps/api/http';
 import { minerState$, API_PORT } from '../models';
 import { lolminerMonitor, nbminerMonitor, trexminerMonitor, xmrigMonitor } from './monitors';
 
@@ -26,9 +26,7 @@ export function enableMonitors() {
             const fullUrl = `http://localhost:${API_PORT}/${url}`;
             const response = await fetch<string>(fullUrl, {
               method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
-              },
+              responseType: ResponseType.Text,
             });
 
             if (response.ok) {
@@ -43,8 +41,7 @@ export function enableMonitors() {
         const stats = results
           .filter(({ status }) => status === 'fulfilled')
           .map((p) => p as PromiseFulfilledResult<string | null>)
-          .filter((p) => p !== null)
-          .map((p) => p.value as string)
+          .map((p) => p?.value as string)
           .filter((content) => content);
 
         if (stats.length !== monitor.statsUrls.length) {

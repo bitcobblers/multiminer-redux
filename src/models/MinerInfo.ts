@@ -54,6 +54,6 @@ export const AVAILABLE_MINERS: MinerInfo[] = [
     optionsUrl: 'https://xmrig.com/docs/miner/command-line-options',
     exe: 'xmrig.exe',
     getArgs: (_alg, cs, url) =>
-      `-o ${url} -a rx -k -u ${cs} -p x --cpu-priority=0 --t 2 --http-host=127.0.0.1 --http-port=${API_PORT}`,
+      `-o ${url} -a rx -k -u ${cs} -p x --api-worker-id 127.0.0.1 --http-port ${API_PORT}`,
   },
 ];
