@@ -2,7 +2,6 @@ import { join } from '@tauri-apps/api/path';
 import { debug } from 'tauri-plugin-log-api';
 import * as miningService from './MinerService';
 import * as config from './SettingsService';
-import { minerApi } from '../shared/MinerApi';
 import {
   ALL_COINS,
   CoinDefinition,
@@ -177,18 +176,14 @@ export async function nextCoin(symbol?: string) {
   await changeCoin(symbol === undefined ? null : symbol);
 }
 
-export async function stopMiner() {
+export function stopMiner() {
   clearTimeout(timeout);
-  await miningService.stopMiner();
+  miningService.stopMiner();
 }
 
 export async function startMiner() {
   clearTimeout(timeout);
   await changeCoin(null);
-}
-
-async function getMinerState() {
-  return minerApi.status();
 }
 
 async function getDefaultMiner(defaultMiner: string) {
@@ -198,26 +193,15 @@ async function getDefaultMiner(defaultMiner: string) {
   return miner !== undefined ? miner : miners[0];
 }
 
-async function setInitialState() {
-  const minerState = await getMinerState();
+export async function initializeMinerManager() {
   const appSettings = await getAppSettings();
   const defaultMiner = await getDefaultMiner(appSettings.settings.defaultMiner);
 
-  if (minerState.state === 'active') {
-    updateState({
-      state: 'active',
-      currentCoin: minerState.currentCoin,
-      miner: minerState.miner,
-      profile: minerState.profile,
-      algorithm: minerState.algorithm,
-    });
-  } else {
-    updateState({
-      profile: defaultMiner.name,
-      miner: defaultMiner.kind,
-      algorithm: lookupAlgorithm(defaultMiner.algorithm),
-    });
-  }
+  updateState({
+    profile: defaultMiner.name,
+    miner: defaultMiner.kind,
+    algorithm: lookupAlgorithm(defaultMiner.algorithm),
+  });
 
   miningService.minerExited$.subscribe(() => {
     updateState({
@@ -251,5 +235,3 @@ async function setInitialState() {
     });
   });
 }
-
-setInitialState();

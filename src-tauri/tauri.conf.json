@@ -46,7 +46,8 @@
         "request": true,
         "scope": [
           "https://api.github.com/repos/*",
-          "https://github.com/*"
+          "https://github.com/*",
+          "http://localhost:60090/*"
         ]
       },
       "path": {

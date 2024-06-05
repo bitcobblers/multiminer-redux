@@ -6,8 +6,8 @@ use std::thread::JoinHandle;
 
 use os_pipe::pipe;
 use shared_child::SharedChild;
-use tauri::{AppHandle, Manager, State};
 use tauri::async_runtime::{block_on, channel, Sender};
+use tauri::{AppHandle, Manager, State};
 use tokio::sync::mpsc::Receiver;
 
 pub struct MinerApplication {
@@ -45,7 +45,7 @@ struct MinerExitedPayload {
 
 pub fn setup_miner(app: AppHandle) {
     app.manage(MinerState {
-        context: Mutex::new(None)
+        context: Mutex::new(None),
     });
 }
 
@@ -76,7 +76,8 @@ pub fn run_miner(
     path: String,
     args: String,
     miner_state: State<MinerState>,
-    app: AppHandle) -> Result<(), String> {
+    app: AppHandle,
+) -> Result<(), String> {
     let mut context = miner_state.context.lock().unwrap();
     let handle = app.app_handle();
 
@@ -88,19 +89,13 @@ pub fn run_miner(
             while let Some(event) = rx.recv().await {
                 let _ = match event {
                     MinerEvent::Output(message) => {
-                        handle.emit_all("miner-output", MinerOutputPayload {
-                            message
-                        })
+                        handle.emit_all("miner-output", MinerOutputPayload { message })
                     }
                     MinerEvent::Error(message) => {
-                        handle.emit_all("miner-error", MinerErrorPayload {
-                            error: message
-                        })
+                        handle.emit_all("miner-error", MinerErrorPayload { error: message })
                     }
                     MinerEvent::Exited(code) => {
-                        handle.emit_all("miner-exited", MinerExitedPayload {
-                            code
-                        })
+                        handle.emit_all("miner-exited", MinerExitedPayload { code })
                     }
                 };
             }
@@ -112,37 +107,25 @@ pub fn run_miner(
     Ok(())
 }
 
-fn spawn_wait_for_exit(
-    tx: Sender<MinerEvent>,
-    child: Arc<SharedChild>) -> JoinHandle<()> {
+fn spawn_wait_for_exit(tx: Sender<MinerEvent>, child: Arc<SharedChild>) -> JoinHandle<()> {
     thread::spawn(move || {
         let _ = match child.wait() {
             Ok(status) => {
-                block_on(async move {
-                    tx.send(MinerEvent::Exited(status.code().unwrap())).await
-                })
+                block_on(async move { tx.send(MinerEvent::Exited(status.code().unwrap())).await })
             }
-            Err(e) => {
-                block_on(async move {
-                    tx.send(MinerEvent::Error(e.to_string())).await
-                })
-            }
+            Err(e) => block_on(async move { tx.send(MinerEvent::Error(e.to_string())).await }),
         };
     })
 }
 
-fn spawn_reader<T: Read + Send + 'static>(
-    tx: Sender<MinerEvent>,
-    pipe: T) -> JoinHandle<()> {
+fn spawn_reader<T: Read + Send + 'static>(tx: Sender<MinerEvent>, pipe: T) -> JoinHandle<()> {
     thread::spawn(move || {
         let reader = BufReader::new(pipe);
 
         for line in reader.lines() {
             let tx_ = tx.clone();
 
-            let _ = block_on(async move {
-                tx_.send(MinerEvent::Output(line.unwrap())).await
-            });
+            let _ = block_on(async move { tx_.send(MinerEvent::Output(line.unwrap())).await });
         }
     })
 }
@@ -153,13 +136,15 @@ impl MinerApplication {
         let (stderr_reader, stderr_writer) = pipe().unwrap();
         let mut command = Command::new(path);
 
-        command.arg(args);
-        command.stdout(stdout_writer);
-        command.stderr(stderr_writer);
+        args.split_whitespace().for_each(|arg| {
+            command.arg(arg);
+        });
 
-        let root_child = SharedChild::spawn(&mut command)
-            .expect("Could not execute miner");
+        command
+            .stdout(stdout_writer)
+            .stderr(stderr_writer);
 
+        let root_child = SharedChild::spawn(&mut command).expect("Could not execute miner");
         let shared_child = Arc::new(root_child);
         let (tx, rx) = channel(1);
 
@@ -177,7 +162,12 @@ impl MinerApplication {
     }
 
     pub fn stop(&mut self) {
-        self.child.take().unwrap().kill().unwrap();
+        self.child
+            .take()
+            .unwrap()
+            .kill()
+            .expect("Could not kill miner");
+
         self.stdout_task.take().unwrap().join().unwrap();
         self.stderr_task.take().unwrap().join().unwrap();
         self.wait_task.take().unwrap().join().unwrap();
