@@ -1,11 +1,9 @@
-use std::io::{BufRead, BufReader, Read, Write};
-use std::os::windows::process::CommandExt;
-use std::process::{Command, Stdio};
+use std::io::{BufRead, BufReader, Read};
+use std::process::Command;
 use std::sync::{Arc, Mutex};
 use std::thread;
 use std::thread::JoinHandle;
 
-use log::debug;
 use os_pipe::pipe;
 use shared_child::SharedChild;
 use tauri::async_runtime::{block_on, channel, Sender};
@@ -136,18 +134,17 @@ impl MinerApplication {
     pub fn start(path: String, args: String) -> Result<MinerApplication, String> {
         let (stdout_reader, stdout_writer) = pipe().unwrap();
         let (stderr_reader, stderr_writer) = pipe().unwrap();
-
         let mut command = Command::new(path);
 
+        args.split_whitespace().for_each(|arg| {
+            command.arg(arg);
+        });
+
         command
-            .arg(args)
             .stdout(stdout_writer)
             .stderr(stderr_writer);
 
         let root_child = SharedChild::spawn(&mut command).expect("Could not execute miner");
-
-        debug!("Miner started with PID: {}", root_child.id());
-
         let shared_child = Arc::new(root_child);
         let (tx, rx) = channel(1);
 
@@ -165,24 +162,14 @@ impl MinerApplication {
     }
 
     pub fn stop(&mut self) {
-        debug!("Sending Ctrl-C to miner");
-
         self.child
             .take()
             .unwrap()
             .kill()
             .expect("Could not kill miner");
 
-        // .take_stdin().expect("Could not get stdin")
-        // .write(&[3]).expect("Could not write to stdin");
-
-        // debug!("Waiting for stdout task to complete");
-        // self.stdout_task.take().unwrap().join().unwrap();
-        //
-        // debug!("Waiting for stderr task to complete");
-        // self.stderr_task.take().unwrap().join().unwrap();
-        //
-        // debug!("Waiting for wait task to complete");
-        // self.wait_task.take().unwrap().join().unwrap();
+        self.stdout_task.take().unwrap().join().unwrap();
+        self.stderr_task.take().unwrap().join().unwrap();
+        self.wait_task.take().unwrap().join().unwrap();
     }
 }
