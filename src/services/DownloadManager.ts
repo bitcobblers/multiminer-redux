@@ -127,6 +127,7 @@ export async function ensureMiner(name: string, version: string) {
     return false;
   }
 
+  addAppNotice('info', `Installing ${name} ${version}.`);
   info(`Downloading ${name} version ${version} from ${url} to ${savePath}`);
 
   const client = await getClient();
