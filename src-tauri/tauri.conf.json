@@ -48,6 +48,7 @@
           "https://api.github.com/repos/*",
           "https://github.com/*",
           "https://api.coingecko.com/api/v3/*",
+          "https://api.unmineable.com/v4/*",
           "http://localhost:60090/*"
         ]
       },

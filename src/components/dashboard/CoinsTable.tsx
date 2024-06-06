@@ -16,18 +16,14 @@ import { LinearProgressWithLabel } from '..';
 import * as formatter from '../../services/Formatters';
 import { nextCoin, stopMiner } from '../../services/MinerManager';
 import { enabledCoins$ } from '../../models';
-import { unmineableApi } from '../../shared/UnmineableApi';
 import { useObservableState } from '../../hooks';
+import { openBrowser } from '../../services/UnmineableFeed';
 
 type CurrentIndicatorProps = {
   current: boolean;
   onStart: () => void;
   onStop: () => void;
 };
-
-async function openBrowser(coin: string, address: string) {
-  await unmineableApi.openBrowser(coin, address);
-}
 
 function CurrentIndicator(props: CurrentIndicatorProps) {
   const { current, onStart, onStop } = props;
