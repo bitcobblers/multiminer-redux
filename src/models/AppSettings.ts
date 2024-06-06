@@ -4,7 +4,6 @@ export type GeneralSettings = {
   workerName: string;
   defaultMiner: string;
   coinStrategy: CoinSelectionStrategy;
-  proxy: string;
 };
 
 export type AppearanceSettings = {

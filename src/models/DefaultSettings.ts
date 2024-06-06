@@ -25,7 +25,6 @@ export const DefaultSettings: SettingsSchemaType = {
       workerName: 'default',
       defaultMiner: 'nbminer',
       coinStrategy: 'normal',
-      proxy: '',
     },
     pools: {
       etchash: 'etchash.unmineable.com:3333',

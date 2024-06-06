@@ -152,16 +152,6 @@ export function SettingsScreen() {
             </TextField>
           </ConfigurableControl>
         </Stack>
-        <Stack sx={{ width: '25rem', mt: 2 }}>
-          <ConfigurableControl description="The optional proxy server to use for network calls.">
-            <TextField
-              spellCheck="false"
-              label="Proxy Server (http or socks)"
-              {...register('settings.proxy')}
-              fullWidth
-            />
-          </ConfigurableControl>
-        </Stack>
         <Divider sx={{ mt: 2 }} />
         <Typography variant="h5" sx={{ my: 2 }}>
           Appearance

@@ -11,7 +11,6 @@ describe('Profile Hook', () => {
       workerName: '',
       defaultMiner: 'default',
       coinStrategy: 'normal',
-      proxy: '',
     },
     appearance: {
       theme: 'light',
@@ -44,7 +43,6 @@ describe('Profile Hook', () => {
         workerName: '',
         defaultMiner: 'updated',
         coinStrategy: 'normal',
-        proxy: '',
       },
       appearance: {
         theme: 'light',
