@@ -73,15 +73,3 @@ export async function disableMinerOutputListener() {
     stopExitedListener();
   }
 }
-
-// minerApi.started((coin: string) => {
-//   minerStarted$.next({ coin });
-// });
-
-// minerApi.exited((code: number | void) => {
-//   minerExited$.next(code);
-// });
-
-// minerApi.error((message: string) => {
-//   addAppNotice('error', message);
-// });
