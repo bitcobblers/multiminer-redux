@@ -12,9 +12,6 @@ describe('Profile Hook', () => {
       defaultMiner: 'default',
       coinStrategy: 'normal',
     },
-    appearance: {
-      theme: 'light',
-    },
     pools: {
       etchash: '',
       kawpow: '',
@@ -43,9 +40,6 @@ describe('Profile Hook', () => {
         workerName: '',
         defaultMiner: 'updated',
         coinStrategy: 'normal',
-      },
-      appearance: {
-        theme: 'light',
       },
       pools: {
         etchash: '',
