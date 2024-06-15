@@ -1,9 +1,15 @@
 export { type Chain, ALL_CHAINS } from './Chains';
-export { type CoinDefinition, ALL_COINS } from './CoinDefinition';
+export { type CoinDefinition, ALL_COINS, ALL_REFERRALS } from './CoinDefinition';
 export { type CoinSelection } from './CoinSelection';
 export { type Wallet } from './Wallet';
 export { type Coin } from './Coin';
-export { type AlgorithmName, type AlgorithmKind, type MinerName, type CoinSelectionStrategy, API_PORT } from './Enums';
+export {
+  type AlgorithmName,
+  type AlgorithmKind,
+  type MinerName,
+  type CoinSelectionStrategy,
+  API_PORT,
+} from './Enums';
 export { type AlgorithmInfo, AVAILABLE_ALGORITHMS } from './AlgorithmInfo';
 export { type GeneralSettings, type AppSettings } from './AppSettings';
 export { type Miner } from './Miner';

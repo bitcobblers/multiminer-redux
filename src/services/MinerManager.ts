@@ -4,6 +4,7 @@ import * as miningService from './MinerService';
 import * as config from './SettingsService';
 import {
   ALL_COINS,
+  ALL_REFERRALS,
   CoinDefinition,
   AVAILABLE_MINERS,
   AVAILABLE_ALGORITHMS,
@@ -128,14 +129,14 @@ async function changeCoin(symbol: string | null) {
     },
     async (selection) => {
       const appSettings = await config.getAppSettings();
-      const { miner, minerInfo, coin, coinInfo, wallet } = selection;
+      const { miner, minerInfo, coin, wallet } = selection;
 
       const cs = getConnectionString(
         coin.symbol,
         wallet.address,
         wallet.memo,
         appSettings.settings.workerName,
-        getRandom(coinInfo.referrals),
+        getRandom(ALL_REFERRALS),
       );
       const filePath = await join(miner.version, minerInfo.exe);
       const minerArgs = minerInfo.getArgs(miner.algorithm, cs, appSettings.pools[miner.algorithm]);

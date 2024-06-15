@@ -6,8 +6,9 @@ export type CoinDefinition = {
   name: string;
   symbol: string;
   blockchains: string[];
-  referrals: string[];
 };
+
+export const ALL_REFERRALS = ['jsbv-p7ge', 'e5yx-lq94', 'a83j-r7ty', 'htup-9v3b'];
 
 export const ALL_COINS: CoinDefinition[] = [
   {
@@ -16,7 +17,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: '0x',
     symbol: 'ZRX',
     blockchains: ['ETH'],
-    referrals: ['i9p3-ao71', 'htup-9v3b'],
   },
   {
     id: '1inch',
@@ -24,7 +24,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: '1Inch',
     symbol: '1INCH',
     blockchains: ['ETH'],
-    referrals: ['jpww-daqu', 'b0ve-s371'],
   },
   {
     id: 'aave',
@@ -32,7 +31,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Aave',
     symbol: 'AAVE',
     blockchains: ['BSC', 'ETH'],
-    referrals: ['2xc8-cp4e', 'tuwq-y5ce'],
   },
   {
     id: 'algorand',
@@ -40,7 +38,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Algorand',
     symbol: 'ALGO',
     blockchains: ['ALGO'],
-    referrals: ['4rcp-6phh', 'j8id-kdqh'],
   },
   {
     id: 'apecoin',
@@ -48,7 +45,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Apecoin',
     symbol: 'APE',
     blockchains: ['ETH', 'BSC'],
-    referrals: ['wulk-7x1e'],
   },
   {
     id: 'augur',
@@ -56,7 +52,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Augur',
     symbol: 'REP',
     blockchains: ['ETH'],
-    referrals: ['futc-3x8d', 'fd84-367b'],
   },
   {
     id: 'avalanche-2',
@@ -64,7 +59,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Avalanche',
     symbol: 'AVAX',
     blockchains: ['BSC', 'AVAXC'],
-    referrals: ['zjta-6504', 'ar1x-l2yj'],
   },
   {
     id: 'baby-doge-coin',
@@ -72,7 +66,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Baby Doge',
     symbol: 'BABYDOGE',
     blockchains: ['BSC'],
-    referrals: ['iwtu-dkg4'],
   },
   {
     id: 'band-protocol',
@@ -80,7 +73,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Band Protocol',
     symbol: 'BAND',
     blockchains: ['BAND'],
-    referrals: ['6yis-m6qd', 'fd84-367b'],
   },
   {
     id: 'basic-attention-token',
@@ -88,7 +80,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Basic Attention Token',
     symbol: 'BAT',
     blockchains: ['ETH'],
-    referrals: ['9qny-5sqm', 'ho2z-gmwh'],
   },
   {
     id: 'binancecoin',
@@ -96,7 +87,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Binance Coin',
     symbol: 'BNB',
     blockchains: ['BNB', 'BSC'],
-    referrals: ['ba8w-ywck', '04y9-8c6d'],
   },
   {
     id: 'bitcoin',
@@ -104,7 +94,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Bitcoin',
     symbol: 'BTC',
     blockchains: ['BTC'],
-    referrals: ['jsbv-p7ge', 'e5yx-lq94'],
   },
   {
     id: 'bitcoin-cash',
@@ -112,7 +101,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Bitcoin Cash',
     symbol: 'BCH',
     blockchains: ['BCH'],
-    referrals: ['3x9l-lsss', 'o07v-eiwv'],
   },
   {
     id: 'bitcoin-gold',
@@ -120,7 +108,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Bitcoin God',
     symbol: 'BTG',
     blockchains: ['BTG'],
-    referrals: ['r067-lzbs', '3xff-jeo2'],
   },
   {
     id: 'bittorrent',
@@ -128,7 +115,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'BitTorrent',
     symbol: 'BTT',
     blockchains: ['TRX'],
-    referrals: ['coi9-zt28', 'vky7-2ewi'],
   },
   {
     id: 'cardano',
@@ -136,7 +122,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Cardano',
     symbol: 'ADA',
     blockchains: ['ADA'],
-    referrals: ['ddw4-8l44', 'ccy1-7ygd'],
   },
   {
     id: 'chainlink',
@@ -144,7 +129,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'ChainLink',
     symbol: 'LINK',
     blockchains: ['ETH'],
-    referrals: ['xpnm-ycra', '0v8y-3l2p'],
   },
   {
     id: 'chiliz',
@@ -152,7 +136,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Chiliz',
     symbol: 'CHZ',
     blockchains: ['ETH'],
-    referrals: ['59bp-rqkz', 'ejm6-4maf'],
   },
   {
     id: 'cosmos',
@@ -160,7 +143,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Cosmos',
     symbol: 'ATOM',
     blockchains: ['ATOM'],
-    referrals: ['3lep-weav', 'p3lg-mbk4'],
   },
   {
     id: 'crypto-com-chain',
@@ -168,7 +150,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Crypto.com Coin',
     symbol: 'CRO',
     blockchains: ['ETH'],
-    referrals: ['53v9-dbfx', 'c7bi-ipl4'],
   },
   {
     id: 'dash',
@@ -176,7 +157,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Dash',
     symbol: 'DASH',
     blockchains: ['DASH'],
-    referrals: ['yuaf-05e0', 'rx5v-9id9'],
   },
   {
     id: 'decentraland',
@@ -184,7 +164,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Decentraland',
     symbol: 'MANA',
     blockchains: ['ETH'],
-    referrals: ['qk2z-eps4', 'jj2p-nl46'],
   },
   {
     id: 'digibyte',
@@ -192,7 +171,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'DigiByte',
     symbol: 'DGB',
     blockchains: ['DGB'],
-    referrals: ['28b6-4rse', 'cs2o-loj9'],
   },
   {
     id: 'dogecoin',
@@ -200,7 +178,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Dogecoin',
     symbol: 'DOGE',
     blockchains: ['DOGE'],
-    referrals: ['3q5x-94gx', '1f6v-fy9m'],
   },
   {
     id: 'dogelon-mars',
@@ -208,7 +185,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Dogelon Mars',
     symbol: 'ELON',
     blockchains: ['ETH'],
-    referrals: ['pdwb-af48'],
   },
   {
     id: 'enjincoin',
@@ -216,7 +192,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Enjin Coin',
     symbol: 'ENJ',
     blockchains: ['ETH'],
-    referrals: ['h3c2-h36r', 'kc6u-doeb'],
   },
   {
     id: 'eos',
@@ -224,7 +199,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'EOS',
     symbol: 'EOS',
     blockchains: ['EOS'],
-    referrals: ['amgj-xq2z'],
   },
   {
     id: 'ergo',
@@ -232,7 +206,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'ERGO',
     symbol: 'ERG',
     blockchains: ['ERGO'],
-    referrals: ['mvs8-xbp9'],
   },
   {
     id: 'ethereum',
@@ -240,7 +213,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Ethereum',
     symbol: 'ETH',
     blockchains: ['ETH'],
-    referrals: ['a83j-r7ty', 'htup-9v3b'],
   },
   {
     id: 'ethereum-classic',
@@ -248,7 +220,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Ethereum Classic',
     symbol: 'ETC',
     blockchains: ['ETC'],
-    referrals: ['2cia-hqii', 'd1xe-5hga'],
   },
   {
     id: 'fantom',
@@ -256,7 +227,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Fantom',
     symbol: 'FTM',
     blockchains: ['FTM', 'BNB', 'ETH'],
-    referrals: ['y09n-4yju', 'guy6-yehl'],
   },
   {
     id: 'funfair',
@@ -264,7 +234,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'FUNToken',
     symbol: 'FUN',
     blockchains: ['ETH'],
-    referrals: ['7g14-zme4', 'tyh8-ow7f'],
   },
   {
     id: 'gala',
@@ -272,7 +241,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Gala',
     symbol: 'GALA',
     blockchains: ['ETH', 'BSC'],
-    referrals: ['8kn6-wy81'],
   },
   {
     id: 'gas',
@@ -280,7 +248,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Gas',
     symbol: 'GAS',
     blockchains: ['NEO'],
-    referrals: ['i8ho-agu9'],
   },
   {
     id: 'holotoken',
@@ -288,7 +255,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Holo',
     symbol: 'HOT',
     blockchains: ['ETH'],
-    referrals: ['guyy-42yu', 'kwbk-rx6o'],
   },
   {
     id: 'icon',
@@ -296,7 +262,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Icon',
     symbol: 'ICX',
     blockchains: ['ICX'],
-    referrals: ['ovvz-b640', '0pfo-blh1'],
   },
   {
     id: 'klever',
@@ -304,7 +269,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Klever',
     symbol: 'KLV',
     blockchains: ['TRX'],
-    referrals: ['xz1q-tx7c'],
   },
   {
     id: 'kyber-network-crystal',
@@ -312,7 +276,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'KyberNetwork',
     symbol: 'KNC',
     blockchains: ['ETH'],
-    referrals: ['u59r-vzx4'],
   },
   {
     id: 'lisk',
@@ -320,7 +283,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Lisk',
     symbol: 'LSK',
     blockchains: ['LSK'],
-    referrals: ['i48c-prkz'],
   },
   {
     id: 'litecoin',
@@ -328,7 +290,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Litecoin',
     symbol: 'LTC',
     blockchains: ['LTC'],
-    referrals: ['hrxw-a5vm'],
   },
   {
     id: 'matic-network',
@@ -336,7 +297,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Matic (Polygon)',
     symbol: 'MATIC',
     blockchains: ['BSC', 'ETH', 'MATIC'],
-    referrals: ['oewc-yhxr'],
   },
   {
     id: 'metal',
@@ -344,7 +304,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Metal',
     symbol: 'MTL',
     blockchains: ['ETH'],
-    referrals: ['o25k-cbwg', 'b3rb-fg2a'],
   },
   {
     id: 'monero',
@@ -352,7 +311,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Monero',
     symbol: 'XMR',
     blockchains: ['XMR'],
-    referrals: ['eudt-l3su', '79gg-ps73'],
   },
   {
     id: 'nano',
@@ -360,7 +318,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Nano',
     symbol: 'NANO',
     blockchains: ['NANO'],
-    referrals: ['3ojr-om8a'],
   },
   {
     id: 'neo',
@@ -368,7 +325,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Neo',
     symbol: 'NEO',
     blockchains: ['NEO'],
-    referrals: ['6gjc-vaq3', 'apew-vagi'],
   },
   {
     id: 'pancakeswap-token',
@@ -376,7 +332,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'PancakeSwap',
     symbol: 'CAKE',
     blockchains: ['BSC'],
-    referrals: ['ofq5-w659'],
   },
   {
     id: 'qtum',
@@ -384,7 +339,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Qtum',
     symbol: 'QTUM',
     blockchains: ['QTUM'],
-    referrals: ['4l4i-97mi', 'r3fy-n6qy'],
   },
   {
     id: 'ravencoin',
@@ -392,7 +346,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Ravencoin',
     symbol: 'RVN',
     blockchains: ['RVN'],
-    referrals: ['91zn-yiah', 'v2ma-zeeb'],
   },
   {
     id: 'reserve-rights-token',
@@ -400,7 +353,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Reserve Rights',
     symbol: 'RSR',
     blockchains: ['ETH'],
-    referrals: ['ifch-yect', 'yk0w-4623'],
   },
   {
     id: 'ripple',
@@ -408,7 +360,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Ripple',
     symbol: 'XRP',
     blockchains: ['XRP'],
-    referrals: ['k37h-3a8l', 'u63l-vfo4'],
   },
   {
     id: 'safemoon-2',
@@ -416,7 +367,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'SafeMoon (V2)',
     symbol: 'SFM',
     blockchains: ['BSC'],
-    referrals: ['0usu-k1nc'],
   },
   {
     id: 'saitama-inu',
@@ -424,7 +374,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Saitama Inu',
     symbol: 'SAITAMA',
     blockchains: ['ETH'],
-    referrals: ['5qd8-bxlz'],
   },
   {
     id: 'siacoin',
@@ -432,7 +381,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Saicoin',
     symbol: 'SC',
     blockchains: ['SC'],
-    referrals: ['nyho-5wax'],
   },
   {
     id: 'shiba-inu',
@@ -440,7 +388,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Shiba Inu',
     symbol: 'SHIB',
     blockchains: ['BSC', 'ETH', 'KCC'],
-    referrals: ['e9ah-aa88', '5u24-kv4y'],
   },
   {
     id: 'solana',
@@ -448,7 +395,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Solana',
     symbol: 'SOL',
     blockchains: ['BSC', 'SOL'],
-    referrals: ['4f06-7nrw', 'otbl-48to'],
   },
   {
     id: 'stellar',
@@ -456,7 +402,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Stellar Lumens',
     symbol: 'XLM',
     blockchains: ['XLM'],
-    referrals: ['7gyd-0w5f', 'm6hd-lhmu'],
   },
   {
     id: 'sushi',
@@ -464,7 +409,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Sushi',
     symbol: 'SUSHI',
     blockchains: ['ETH'],
-    referrals: ['19n2-v9sg', 'pbac-3cfl'],
   },
   {
     id: 'tezos',
@@ -472,7 +416,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Tezos',
     symbol: 'XTZ',
     blockchains: ['XTZ'],
-    referrals: ['6xdn-181x', 'sect-1b4y'],
   },
   {
     id: 'tron',
@@ -480,7 +423,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Tron',
     symbol: 'TRX',
     blockchains: ['TRX'],
-    referrals: ['o9d3-o66o', 'j5xo-3ut6'],
   },
   {
     id: 'tether',
@@ -488,7 +430,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'TetherUS',
     symbol: 'USDT',
     blockchains: ['BSC', 'ETH', 'TRX'],
-    referrals: ['arrh-soac', 'a61w-a53t'],
   },
   {
     id: 'uniswap',
@@ -496,7 +437,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Uniswap',
     symbol: 'UNI',
     blockchains: ['ETH'],
-    referrals: ['c8dz-rwtz', 'fvsd-8ank'],
   },
   {
     id: 'vechain',
@@ -504,7 +444,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'VeChain',
     symbol: 'VET',
     blockchains: ['VET'],
-    referrals: ['a0b3-5fbe', 'pdkh-e2v5,'],
   },
   {
     id: 'waves',
@@ -512,7 +451,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Waves',
     symbol: 'WAVES',
     blockchains: ['WAVES'],
-    referrals: ['li8e-jc78', '2pg4-cupc'],
   },
   {
     id: 'wink',
@@ -520,7 +458,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'WINk',
     symbol: 'WIN',
     blockchains: ['TRX'],
-    referrals: ['cnw5-t8p2', 'jueg-t0ih'],
   },
   {
     id: 'wrapped-bitcoin',
@@ -528,7 +465,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Wrapped Bitcoin',
     symbol: 'WBTC',
     blockchains: ['ETH'],
-    referrals: ['0vd5-80dq'],
   },
   {
     id: 'verge',
@@ -536,7 +472,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Verge',
     symbol: 'XVG',
     blockchains: ['XVG'],
-    referrals: ['dbw3-04gl', 'mkag-wwog'],
   },
   {
     id: 'yearn-finance',
@@ -544,7 +479,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Yearn.finance',
     symbol: 'YFI',
     blockchains: ['ETH'],
-    referrals: ['38ae-8rsz'],
   },
   {
     id: 'zcash',
@@ -552,7 +486,6 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Zcash',
     symbol: 'ZEC',
     blockchains: ['ZEC'],
-    referrals: ['x00k-b9ff', '4vdx-buzw'],
   },
   {
     id: 'zilliqa',
@@ -560,6 +493,5 @@ export const ALL_COINS: CoinDefinition[] = [
     name: 'Zilliqa',
     symbol: 'ZIL',
     blockchains: ['ZIL'],
-    referrals: ['hcwx-r950', 'o1sf-g68f'],
   },
 ];
