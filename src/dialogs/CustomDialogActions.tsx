@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 import { DialogActions, Button } from '@mui/material';
 
 interface CustomDialogActionsProps {
@@ -9,7 +10,16 @@ interface CustomDialogActionsProps {
   primaryButtonDisabled?: boolean;
 }
 
-export function CustomDialogActions(props: CustomDialogActionsProps) {
+export function CustomDialogActions(
+  props: CustomDialogActionsProps = {
+    onCancel: () => {},
+    onConfirm: undefined,
+    primaryButtonDisabled: undefined,
+    buttonType: 'button',
+    buttonText: 'Save',
+    secondaryButtonText: 'Cancel',
+  },
+) {
   const {
     onConfirm,
     onCancel,
@@ -36,11 +46,3 @@ export function CustomDialogActions(props: CustomDialogActionsProps) {
     </DialogActions>
   );
 }
-
-CustomDialogActions.defaultProps = {
-  onConfirm: undefined,
-  primaryButtonDisabled: undefined,
-  buttonType: 'button',
-  buttonText: 'Save',
-  secondaryButtonText: 'Cancel',
-};
