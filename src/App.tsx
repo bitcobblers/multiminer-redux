@@ -132,7 +132,7 @@ function AppContent() {
           sx={{
             marginBottom: '3.5rem',
             flex: 1,
-            '& .MuiContainer-root': { ml: 0 },
+            '& .MuiContainer-root': { ml: 0, maxWidth: '99%' },
           }}
         >
           <Routes>{safeReverse(links).map(NavScreen)}</Routes>
