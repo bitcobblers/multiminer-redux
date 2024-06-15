@@ -1,4 +1,5 @@
 use std::io::{BufRead, BufReader, Read};
+use std::os::windows::process::CommandExt;
 use std::process::Command;
 use std::sync::{Arc, Mutex};
 use std::thread;
@@ -9,6 +10,8 @@ use shared_child::SharedChild;
 use tauri::async_runtime::{block_on, channel, Sender};
 use tauri::{AppHandle, Manager, State};
 use tokio::sync::mpsc::Receiver;
+
+const DETACHED_PROCESS: u32 = 0x00000008;
 
 pub struct MinerApplication {
     child: Option<Arc<SharedChild>>,
@@ -136,11 +139,9 @@ impl MinerApplication {
         let (stderr_reader, stderr_writer) = pipe().unwrap();
         let mut command = Command::new(path);
 
-        args.split_whitespace().for_each(|arg| {
-            command.arg(arg);
-        });
-
         command
+            .args(args.split_whitespace())
+            .creation_flags(DETACHED_PROCESS) // Hides the console window
             .stdout(stdout_writer)
             .stderr(stderr_writer);
 
