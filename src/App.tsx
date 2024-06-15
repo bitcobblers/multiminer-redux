@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef, useMemo } from 'react';
 import { HashRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { from } from 'rxjs';
-import { map, mergeWith } from 'rxjs/operators';
+import { mergeWith } from 'rxjs/operators';
 import './App.css';
 
 // Material.
@@ -44,7 +44,7 @@ import {
   AboutScreen,
 } from './screens';
 import { minerExited$, minerStarted$ } from './services/MinerService';
-import { getAppSettings, watchers$ } from './services/SettingsService';
+import { getAppTheme, watchers$ } from './services/SettingsService';
 
 const drawerWidth = 200;
 
@@ -152,12 +152,9 @@ export function App() {
 
   const [themeMode, setThemeMode] = useState<PaletteMode>();
   useEffect(() => {
-    const subscription = from(getAppSettings())
-      .pipe(
-        mergeWith(watchers$.settings),
-        map((settings) => settings.appearance.theme),
-      )
-      .subscribe((theme) => setThemeMode(theme as PaletteMode));
+    const subscription = from(getAppTheme())
+      .pipe(mergeWith(watchers$.theme))
+      .subscribe((theme) => setThemeMode(theme));
     return () => subscription.unsubscribe();
   }, []);
 

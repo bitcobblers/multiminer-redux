@@ -2,6 +2,7 @@
 import { Subject } from 'rxjs';
 import { Store } from 'tauri-plugin-store-api';
 import { debug } from 'tauri-plugin-log-api';
+import { PaletteMode } from '@mui/material';
 import {
   Coin,
   Wallet,
@@ -17,10 +18,11 @@ class WatchersObservable {
   coins = new Subject<Coin[]>();
   miners = new Subject<Miner[]>();
   settings = new Subject<AppSettings>();
+  theme = new Subject<PaletteMode>();
   minerReleases = new Subject<MinerRelease[]>();
 }
 
-type SettingsTypes = Wallet[] & Coin[] & Miner[] & AppSettings & MinerRelease[];
+type SettingsTypes = Wallet[] & Coin[] & Miner[] & AppSettings & PaletteMode & MinerRelease[];
 
 const store = new Store('.settings.dat');
 
@@ -52,6 +54,9 @@ export const setMiners = (miners: Miner[]) => set('miners', miners);
 
 export const getAppSettings = () => get<AppSettings>('settings', DefaultSettings.settings);
 export const setAppSettings = (settings: AppSettings) => set('settings', settings);
+
+export const getAppTheme = () => get<PaletteMode>('theme', DefaultSettings.theme);
+export const setAppTheme = (theme: PaletteMode) => set('theme', theme);
 
 export const getMinerReleases = () =>
   get<MinerRelease[]>('minerReleases', DefaultSettings.minerReleases);
@@ -106,5 +111,6 @@ export const enableSettingsWatchers = () => {
   watchSetting('coins');
   watchSetting('miners');
   watchSetting('settings');
+  watchSetting('theme');
   watchSetting('minerReleases');
 };

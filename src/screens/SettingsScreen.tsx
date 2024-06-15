@@ -20,7 +20,7 @@ import { info, error } from 'tauri-plugin-log-api';
 import { appLogDir } from '@tauri-apps/api/path';
 import { invoke } from '@tauri-apps/api';
 import { AppSettings, DefaultSettings } from '../models';
-import { ConfigurableControl, ScreenHeader, ThemeToggle } from '../components';
+import { ConfigurableControl, ScreenHeader } from '../components';
 import { setAppSettings, importSettings, exportSettings } from '../services/SettingsService';
 import { useLoadData } from '../hooks';
 
@@ -126,7 +126,7 @@ export function SettingsScreen() {
         General Settings
       </Typography>
       <FormControl fullWidth>
-        <Stack direction="column" spacing={DefaultSpacing} sx={{ width: '15rem' }}>
+        <Stack direction="column" spacing={DefaultSpacing} sx={{ width: '17.7rem' }}>
           <ConfigurableControl description="The name that uniquely identifies this worker.">
             <TextField
               required
@@ -150,7 +150,7 @@ export function SettingsScreen() {
             />
           </ConfigurableControl>
         </Stack>
-        <Stack sx={{ width: '17.6rem', mt: 2 }}>
+        <Stack sx={{ width: '17.7rem', mt: 2 }}>
           <ConfigurableControl description="How should the app pick the next coin to mine.">
             <TextField
               label="Coin Strategy"
@@ -162,14 +162,6 @@ export function SettingsScreen() {
               <MenuItem value="skynet">Skynet (let the app decide)</MenuItem>
             </TextField>
           </ConfigurableControl>
-        </Stack>
-        <Divider sx={{ mt: 2 }} />
-        <Typography variant="h5" sx={{ my: 2 }}>
-          Appearance
-        </Typography>
-        <Stack direction="row" alignItems="center">
-          Theme:
-          <ThemeToggle />
         </Stack>
         <Divider sx={{ mt: 2 }} />
         <Typography variant="h5" sx={{ my: 2 }}>

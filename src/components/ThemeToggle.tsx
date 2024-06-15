@@ -1,7 +1,7 @@
 import { styled, useTheme } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
-import { AppearanceSettings } from '../models/AppSettings';
-import { getAppSettings, setAppSettings } from '../services/SettingsService';
+import { PaletteMode } from '@mui/material';
+import { setAppTheme } from '../services/SettingsService';
 
 const StyledSwitch = styled(Switch)(({ theme }) => ({
   width: 62,
@@ -52,10 +52,7 @@ const StyledSwitch = styled(Switch)(({ theme }) => ({
 
 export function ThemeToggle() {
   const currentTheme = useTheme();
-  const setTheme = async (theme: AppearanceSettings['theme']) => {
-    const appSettings = await getAppSettings();
-    await setAppSettings({ ...appSettings, appearance: { ...appSettings.appearance, theme } });
-  };
+  const setTheme = (theme: PaletteMode) => setAppTheme(theme);
 
   return (
     <StyledSwitch

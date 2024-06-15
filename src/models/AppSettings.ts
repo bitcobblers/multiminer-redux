@@ -6,13 +6,8 @@ export type GeneralSettings = {
   coinStrategy: CoinSelectionStrategy;
 };
 
-export type AppearanceSettings = {
-  theme: 'light' | 'dark';
-};
-
 export type AppSettings = {
   settings: GeneralSettings;
-  appearance: AppearanceSettings;
   pools: {
     etchash: string;
     kawpow: string;
