@@ -2,11 +2,14 @@ import { useState } from 'react';
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import DownloadIcon from '@mui/icons-material/Download';
 import { Stack, Tooltip, IconButton } from '@mui/material';
 
-import { Miner } from '../models';
+import { Miner, downloadState$ } from '../models';
 import { RemoveMinerDialog } from '../dialogs/RemoveMinerDialog';
 import { EditMinerDialog } from '../dialogs/EditMinerDialog';
+import { ensureMiner } from '../services/DownloadManager';
+import { useObservableState } from '../hooks';
 
 interface EditMinerControlsProps {
   miner: Miner;
@@ -21,6 +24,7 @@ export function EditMinerControls(props: EditMinerControlsProps) {
   const { miner, isDefault, existingMiners, onSave, onRemove } = props;
   const [editOpen, setEditOpen] = useState(false);
   const [removeOpen, setRemoveOpen] = useState(false);
+  const [downloadState] = useObservableState(downloadState$, false);
 
   const handleOnEditClick = () => {
     setEditOpen(true);
@@ -47,6 +51,12 @@ export function EditMinerControls(props: EditMinerControlsProps) {
     setRemoveOpen(false);
   };
 
+  const handleDownload = () => {
+    const { kind, version } = miner;
+
+    return ensureMiner(kind, version, true);
+  };
+
   return (
     <Stack direction="row" spacing={1}>
       <RemoveMinerDialog open={removeOpen} onClose={handleRemoveClose} />
@@ -65,16 +75,23 @@ export function EditMinerControls(props: EditMinerControlsProps) {
             : 'Delete Miner'
         }
       >
-        <div>
+        <span>
           <IconButton aria-label="Delete Miner" disabled={isDefault} onClick={handleOnRemoveClick}>
             <DeleteIcon />
           </IconButton>
-        </div>
+        </span>
       </Tooltip>
       <Tooltip title="Edit Miner">
         <IconButton aria-label="Edit Miner" onClick={handleOnEditClick}>
           <EditIcon />
         </IconButton>
+      </Tooltip>
+      <Tooltip title="Download">
+        <span>
+          <IconButton aria-label="Download Miner" disabled={downloadState} onClick={handleDownload}>
+            <DownloadIcon />
+          </IconButton>
+        </span>
       </Tooltip>
     </Stack>
   );

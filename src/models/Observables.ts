@@ -5,7 +5,11 @@ import { MinerState } from './MinerState';
 type VariantType = 'default' | 'error' | 'success' | 'warning' | 'info';
 
 export const appNotice$ = new Subject<{ variant: VariantType; message: string }>();
-export const minerState$ = new BehaviorSubject<MinerState>({ state: 'inactive', currentCoin: null });
+export const minerState$ = new BehaviorSubject<MinerState>({
+  state: 'inactive',
+  currentCoin: null,
+});
+export const downloadState$ = new BehaviorSubject<boolean>(false);
 export const enabledCoins$ = new BehaviorSubject<ConfiguredCoin[]>([]);
 export const refreshData$ = new Subject<number>();
 

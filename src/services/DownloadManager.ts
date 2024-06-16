@@ -2,7 +2,7 @@ import { debug, info, warn, error } from 'tauri-plugin-log-api';
 import { ResponseType, fetch, getClient } from '@tauri-apps/api/http';
 import { appLocalDataDir, downloadDir, join } from '@tauri-apps/api/path';
 import { fs, invoke } from '@tauri-apps/api';
-import { AVAILABLE_MINERS, MinerRelease, addAppNotice } from '../models';
+import { AVAILABLE_MINERS, MinerName, MinerRelease, addAppNotice, downloadState$ } from '../models';
 import { getMinerReleases, setMinerReleases } from './SettingsService';
 
 type ReleaseAsset = {
@@ -105,7 +105,7 @@ export async function syncMinerReleases() {
   }
 }
 
-export async function ensureMiner(name: string, version: string) {
+export async function ensureMiner(name: MinerName, version: string, verbose?: boolean) {
   const miner = (await getMinerReleases()).find((m) => m.name === name);
   const url = miner?.versions.find((r) => r.tag === version)?.url;
   const downloadFolder = await downloadDir();
@@ -113,41 +113,52 @@ export async function ensureMiner(name: string, version: string) {
   const savePath = await join(downloadFolder, `${name}-${version}.zip`);
   const installPath = await join(localFolder, 'miners', name, version);
 
-  if (await fs.exists(installPath)) {
-    info(`Miner ${name} version ${version} already installed.`);
+  try {
+    downloadState$.next(true);
+
+    if (await fs.exists(installPath)) {
+      info(`Miner ${name} version ${version} already installed.`);
+
+      if (verbose) {
+        addAppNotice('info', `Miner ${name} version ${version} already installed.`);
+      }
+
+      return true;
+    }
+
+    if (!url) {
+      addAppNotice(
+        'error',
+        `Unable to download miner '${name}': URL for version ${version} not found.`,
+      );
+
+      return false;
+    }
+
+    addAppNotice('info', `Installing ${name} ${version}.`);
+    info(`Downloading ${name} version ${version} from ${url} to ${savePath}`);
+
+    const client = await getClient();
+    const response = await client.get(url, {
+      responseType: ResponseType.Binary,
+    });
+
+    if (!response.ok) {
+      addAppNotice('error', `Failed to download miner '${name}': ${response.status}`);
+
+      return false;
+    }
+
+    await fs.writeBinaryFile(savePath, response.data as any);
+    info('Download complete.');
+
+    info('Installing miner');
+    await invoke('extract_zip', { path: savePath, savePath: installPath });
+    await arrangeMinerFiles(installPath);
+    info('Installation complete.');
+
     return true;
+  } finally {
+    downloadState$.next(false);
   }
-
-  if (!url) {
-    addAppNotice(
-      'error',
-      `Unable to download miner '${name}': URL for version ${version} not found.`,
-    );
-
-    return false;
-  }
-
-  addAppNotice('info', `Installing ${name} ${version}.`);
-  info(`Downloading ${name} version ${version} from ${url} to ${savePath}`);
-
-  const client = await getClient();
-  const response = await client.get(url, {
-    responseType: ResponseType.Binary,
-  });
-
-  if (!response.ok) {
-    addAppNotice('error', `Failed to download miner '${name}': ${response.status}`);
-
-    return false;
-  }
-
-  await fs.writeBinaryFile(savePath, response.data as any);
-  info('Download complete.');
-
-  info('Installing miner');
-  await invoke('extract_zip', { path: savePath, savePath: installPath });
-  await arrangeMinerFiles(installPath);
-  info('Installation complete.');
-
-  return true;
 }
