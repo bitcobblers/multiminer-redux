@@ -85,29 +85,34 @@ pub fn run_miner(
     let handle = app.app_handle();
 
     if context.is_none() {
-        let mut miner = MinerApplication::start(path, args).unwrap();
-        let mut rx = miner.recv.take().unwrap();
+        match MinerApplication::start(path, args) {
+            Ok(mut miner) => {
+                let mut rx = miner.recv.take().unwrap();
 
-        tauri::async_runtime::spawn(async move {
-            while let Some(event) = rx.recv().await {
-                let _ = match event {
-                    MinerEvent::Output(message) => {
-                        handle.emit_all("miner-output", MinerOutputPayload { message })
+                tauri::async_runtime::spawn(async move {
+                    while let Some(event) = rx.recv().await {
+                        let _ = match event {
+                            MinerEvent::Output(message) => {
+                                handle.emit_all("miner-output", MinerOutputPayload { message })
+                            }
+                            MinerEvent::Error(message) => {
+                                handle.emit_all("miner-error", MinerErrorPayload { error: message })
+                            }
+                            MinerEvent::Exited(code) => {
+                                handle.emit_all("miner-exited", MinerExitedPayload { code })
+                            }
+                        };
                     }
-                    MinerEvent::Error(message) => {
-                        handle.emit_all("miner-error", MinerErrorPayload { error: message })
-                    }
-                    MinerEvent::Exited(code) => {
-                        handle.emit_all("miner-exited", MinerExitedPayload { code })
-                    }
-                };
+                });
+
+                *context = Some(miner);
+                Ok(())
             }
-        });
-
-        *context = Some(miner)
+            Err(e) => Err(e),
+        }
+    } else {
+        Ok(())
     }
-
-    Ok(())
 }
 
 fn spawn_wait_for_exit(tx: Sender<MinerEvent>, child: Arc<SharedChild>) -> JoinHandle<()> {
@@ -145,21 +150,25 @@ impl MinerApplication {
             .stdout(stdout_writer)
             .stderr(stderr_writer);
 
-        let root_child = SharedChild::spawn(&mut command).expect("Could not execute miner");
-        let shared_child = Arc::new(root_child);
-        let (tx, rx) = channel(1);
+        match SharedChild::spawn(&mut command) {
+            Ok(root_child) => {
+                let shared_child = Arc::new(root_child);
+                let (tx, rx) = channel(1);
 
-        let stdout_task = spawn_reader(tx.clone(), stdout_reader);
-        let stderr_task = spawn_reader(tx.clone(), stderr_reader);
-        let wait_task = spawn_wait_for_exit(tx.clone(), shared_child.clone());
+                let stdout_task = spawn_reader(tx.clone(), stdout_reader);
+                let stderr_task = spawn_reader(tx.clone(), stderr_reader);
+                let wait_task = spawn_wait_for_exit(tx.clone(), shared_child.clone());
 
-        Ok(MinerApplication {
-            child: Some(shared_child),
-            recv: Some(rx),
-            stdout_task: Some(stdout_task),
-            stderr_task: Some(stderr_task),
-            wait_task: Some(wait_task),
-        })
+                Ok(MinerApplication {
+                    child: Some(shared_child),
+                    recv: Some(rx),
+                    stdout_task: Some(stdout_task),
+                    stderr_task: Some(stderr_task),
+                    wait_task: Some(wait_task),
+                })
+            }
+            Err(e) => Err(e.to_string()),
+        }
     }
 
     pub fn stop(&mut self) {

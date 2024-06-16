@@ -48,6 +48,38 @@ async function getReleases(owner: string, repo: string): Promise<MinerReleaseDat
   return null;
 }
 
+async function downloadMiner(name: MinerName, version: string, url: string, savePath: string) {
+  info(`Downloading ${name} version ${version} from ${url} to ${savePath}`);
+
+  const client = await getClient();
+  const response = await client.get(url, {
+    responseType: ResponseType.Binary,
+  });
+
+  if (!response.ok) {
+    addAppNotice('error', `Failed to download miner '${name}': ${response.status}`);
+
+    return false;
+  }
+
+  await fs.writeBinaryFile(savePath, response.data as any);
+  info('Download complete.');
+  return true;
+}
+
+async function extractZip(path: string, savePath: string) {
+  info(`Extracting ${path} to ${savePath}`);
+
+  const result = await invoke('extract_zip', { path, savePath })
+    .then(() => true)
+    .catch((e) => {
+      addAppNotice('error', e);
+      return false;
+    });
+
+  return result;
+}
+
 async function arrangeMinerFiles(path: string) {
   const rootFiles = await fs.readDir(path);
 
@@ -107,16 +139,18 @@ export async function syncMinerReleases() {
 
 export async function ensureMiner(name: MinerName, version: string, verbose?: boolean) {
   const miner = (await getMinerReleases()).find((m) => m.name === name);
+  const { exe } = AVAILABLE_MINERS.find((m) => m.name === name)!;
   const url = miner?.versions.find((r) => r.tag === version)?.url;
   const downloadFolder = await downloadDir();
   const localFolder = await appLocalDataDir();
   const savePath = await join(downloadFolder, `${name}-${version}.zip`);
-  const installPath = await join(localFolder, 'miners', name, version);
+  const installFolder = await join(localFolder, 'miners', name, version);
+  const installExe = await join(installFolder, exe);
 
   try {
     downloadState$.next(true);
 
-    if (await fs.exists(installPath)) {
+    if (await fs.exists(installExe)) {
       info(`Miner ${name} version ${version} already installed.`);
 
       if (verbose) {
@@ -136,27 +170,26 @@ export async function ensureMiner(name: MinerName, version: string, verbose?: bo
     }
 
     addAppNotice('info', `Installing ${name} ${version}.`);
-    info(`Downloading ${name} version ${version} from ${url} to ${savePath}`);
 
-    const client = await getClient();
-    const response = await client.get(url, {
-      responseType: ResponseType.Binary,
-    });
+    info('Cleaning installation path');
+    if (await fs.exists(installFolder)) {
+      await fs.removeDir(installFolder, {
+        recursive: true,
+      });
+    }
 
-    if (!response.ok) {
-      addAppNotice('error', `Failed to download miner '${name}': ${response.status}`);
-
+    if (!(await downloadMiner(name, version, url, savePath))) {
       return false;
     }
 
-    await fs.writeBinaryFile(savePath, response.data as any);
-    info('Download complete.');
-
     info('Installing miner');
-    await invoke('extract_zip', { path: savePath, savePath: installPath });
-    await arrangeMinerFiles(installPath);
-    info('Installation complete.');
 
+    if (!(await extractZip(savePath, installFolder))) {
+      return false;
+    }
+
+    await arrangeMinerFiles(installFolder);
+    info('Installation complete.');
     return true;
   } finally {
     downloadState$.next(false);

@@ -4,14 +4,15 @@ use zip::ZipArchive;
 
 #[tauri::command]
 pub fn extract_zip(path: String, save_path: String) -> Result<(), String> {
-    let reader = File::open(path)
-        .expect("Unable to open archive.");
+    match File::open(path) {
+        Ok(reader) => {
+            let mut archive = ZipArchive::new(reader).expect("Could not read archive contents.");
 
-    let mut archive = ZipArchive::new(reader)
-        .expect("Could not read archive contents.");
-
-    ZipArchive::extract(&mut archive, &save_path)
-        .expect("Could not extract files.");
-
-    Ok(())
+            ZipArchive::extract(&mut archive, &save_path).expect("Could not extract files.");
+            Ok(())
+        }
+        Err(e) => {
+            return Err(format!("Unable to open archive. {}", e));
+        }
+    }
 }

@@ -18,12 +18,17 @@ export async function startMiner(coin: string, miner: MinerInfo, version: string
   const minerPath = await join(localDir, 'miners', miner.name, version, miner.exe);
 
   info(`Starting miner from ${minerPath} with the following parameters: ${args}`);
+
   await invoke('run_miner', {
     path: minerPath,
     args,
-  });
-
-  minerStarted$.next({ coin });
+  })
+    .then(() => {
+      minerStarted$.next({ coin });
+    })
+    .catch((error) => {
+      addAppNotice('error', error);
+    });
 }
 
 export async function stopMiner() {
