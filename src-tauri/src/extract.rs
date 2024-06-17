@@ -11,8 +11,6 @@ pub fn extract_zip(path: String, save_path: String) -> Result<(), String> {
             ZipArchive::extract(&mut archive, &save_path).expect("Could not extract files.");
             Ok(())
         }
-        Err(e) => {
-            return Err(format!("Unable to open archive. {}", e));
-        }
+        Err(e) => Err(format!("Unable to open archive. {}", e)),
     }
 }
