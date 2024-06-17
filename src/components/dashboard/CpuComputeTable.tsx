@@ -1,4 +1,13 @@
-import { Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Typography } from '@mui/material';
+/* eslint-disable react/no-array-index-key */
+import {
+  Table,
+  TableContainer,
+  TableHead,
+  TableCell,
+  TableRow,
+  TableBody,
+  Typography,
+} from '@mui/material';
 import * as formatter from '../../services/Formatters';
 import { cpuStatistics$ } from '../../services/StatisticsAggregator';
 import { useObservableState } from '../../hooks';
@@ -17,22 +26,28 @@ export function CpuComputeTable() {
           <TableRow>
             <TableCell>Hashrate</TableCell>
             {cpu.timings.map((_t, index) => (
-              <TableCell>{index}</TableCell>
+              <TableCell key={index}>{index}</TableCell>
             ))}
           </TableRow>
         </TableHead>
         <TableBody>
           <TableRow>
             <TableCell>10s</TableCell>
-            {cpu.timings.map((t) => <TableCell>{formatter.hashrate(t.tenSeconds)}</TableCell>)}
+            {cpu.timings.map((t, i) => (
+              <TableCell key={i}>{formatter.hashrate(t.tenSeconds)}</TableCell>
+            ))}
           </TableRow>
           <TableRow>
             <TableCell>60s</TableCell>
-            {cpu.timings.map((t) => <TableCell>{formatter.hashrate(t.sixtySeconds)}</TableCell>)}
+            {cpu.timings.map((t, i) => (
+              <TableCell key={i}>{formatter.hashrate(t.sixtySeconds)}</TableCell>
+            ))}
           </TableRow>
           <TableRow>
             <TableCell>15m</TableCell>
-            {cpu.timings.map((t) => <TableCell>{formatter.hashrate(t.fifteenMinutes)}</TableCell>)}
+            {cpu.timings.map((t, i) => (
+              <TableCell key={i}>{formatter.hashrate(t.fifteenMinutes)}</TableCell>
+            ))}
           </TableRow>
         </TableBody>
       </Table>
