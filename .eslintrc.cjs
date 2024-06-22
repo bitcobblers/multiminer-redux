@@ -18,6 +18,7 @@ module.exports = {
     'react/jsx-no-useless-fragment': 'off',
     'react/jsx-one-expression-per-line': 'off',
     'react/function-component-definition': 'off',
+    'react/jsx-wrap-multilines': 'off',
     'jest/no-commented-out-tests': 'off',
     'promise/catch-or-return': 'off',
     'promise/always-return': 'off',
