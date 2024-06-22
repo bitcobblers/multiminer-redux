@@ -47,7 +47,7 @@ export function EditMinerDialog(props: EditMinerDialogProps) {
     watch,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isValid, isDirty },
   } = useForm<Omit<Miner, 'id'>>({ defaultValues: miner, mode: 'all' });
 
   const kind = watch('kind');
@@ -191,7 +191,11 @@ export function EditMinerDialog(props: EditMinerDialogProps) {
                 </Button>
               </Stack>
               <Divider />
-              <CustomDialogActions buttonType="submit" onCancel={handleOnCancel} />
+              <CustomDialogActions
+                buttonType="submit"
+                onCancel={handleOnCancel}
+                primaryButtonDisabled={!isValid || !isDirty}
+              />
             </Stack>
           </FormControl>
         </form>

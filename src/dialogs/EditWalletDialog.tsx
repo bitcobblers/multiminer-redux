@@ -2,7 +2,16 @@
 
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import { Dialog, DialogTitle, DialogContent, TextField, Stack, MenuItem, FormControl, Divider } from '@mui/material';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
+  Stack,
+  MenuItem,
+  FormControl,
+  Divider,
+} from '@mui/material';
 import { Wallet, Coin, ALL_CHAINS } from '../models';
 import { ChainMenuItem, UsedByCoins } from '../components';
 import { CustomDialogActions } from './CustomDialogActions';
@@ -25,7 +34,7 @@ export function EditWalletDialog(props: EditWalletDialogProps) {
     watch,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isValid, isDirty },
   } = useForm<Omit<Wallet, 'id'>>({ defaultValues: wallet, mode: 'all' });
 
   const chain = watch('network');
@@ -75,12 +84,22 @@ export function EditWalletDialog(props: EditWalletDialogProps) {
                 value={watch('name') ?? null}
                 {...register('name', {
                   required: 'A name is required for the wallet.',
-                  validate: (val) => (existingWallets.filter((w) => w.id !== wallet.id).find((w) => w.name === val) ? 'A wallet already exists with the same name.' : undefined),
+                  validate: (val) =>
+                    existingWallets.filter((w) => w.id !== wallet.id).find((w) => w.name === val)
+                      ? 'A wallet already exists with the same name.'
+                      : undefined,
                 })}
                 error={!!errors?.name}
                 helperText={errors?.name?.message}
               />
-              <TextField required label={blockchainLabel()} select disabled={shouldDisableBlockchainSelection()} value={watch('network') ?? null} {...register('network')}>
+              <TextField
+                required
+                label={blockchainLabel()}
+                select
+                disabled={shouldDisableBlockchainSelection()}
+                value={watch('network') ?? null}
+                {...register('network')}
+              >
                 {ALL_CHAINS.sort((a, b) => a.name.localeCompare(b.name)).map((n) => (
                   <MenuItem key={n.name} value={n.name}>
                     <ChainMenuItem chain={n} />
@@ -96,7 +115,8 @@ export function EditWalletDialog(props: EditWalletDialogProps) {
                   required: 'An address is required for the wallet.',
                   pattern: {
                     value: RegExp(chainInfo?.token_format ?? '/.*/'),
-                    message: 'The address provided does not match the format expected for this blockchain.',
+                    message:
+                      'The address provided does not match the format expected for this blockchain.',
                   },
                 })}
                 error={!!errors?.address}
@@ -109,7 +129,8 @@ export function EditWalletDialog(props: EditWalletDialogProps) {
                 {...register('memo', {
                   pattern: {
                     value: RegExp(chainInfo?.memo_format ?? '/.*/'),
-                    message: 'The memo provided does not match the format expected for this blockchain.',
+                    message:
+                      'The memo provided does not match the format expected for this blockchain.',
                   },
                 })}
                 error={!!errors?.memo}
@@ -118,7 +139,12 @@ export function EditWalletDialog(props: EditWalletDialogProps) {
               <UsedByCoins coins={coins} />
               <Divider />
             </Stack>
-            <CustomDialogActions buttonType="submit" buttonText={saveButtonTitle} onCancel={handleOnCancel} />
+            <CustomDialogActions
+              buttonType="submit"
+              buttonText={saveButtonTitle}
+              onCancel={handleOnCancel}
+              primaryButtonDisabled={!isValid || !isDirty}
+            />
           </FormControl>
         </form>
       </DialogContent>

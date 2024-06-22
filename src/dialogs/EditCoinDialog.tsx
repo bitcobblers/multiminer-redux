@@ -2,7 +2,18 @@
 
 import { useForm } from 'react-hook-form';
 import Dialog from '@mui/material/Dialog';
-import { Chip, DialogTitle, DialogContent, TextField, Stack, MenuItem, FormControl, Divider, FormControlLabel, Switch } from '@mui/material';
+import {
+  Chip,
+  DialogTitle,
+  DialogContent,
+  TextField,
+  Stack,
+  MenuItem,
+  FormControl,
+  Divider,
+  FormControlLabel,
+  Switch,
+} from '@mui/material';
 import { Wallet, Coin } from '../models';
 import { WalletMenuItem } from '../components/WalletMenuItem';
 import { CustomDialogActions } from './CustomDialogActions';
@@ -25,7 +36,7 @@ export function EditCoinDialog(props: EditCoinDialogProps) {
   const {
     register,
     watch,
-    formState: { errors },
+    formState: { errors, isDirty },
     handleSubmit,
     reset,
     setValue,
@@ -77,7 +88,17 @@ export function EditCoinDialog(props: EditCoinDialogProps) {
                   ))}
               </div>
               <Divider />
-              <FormControlLabel label="Enabled" control={<Switch name="enabled" checked={watch('enabled')} inputRef={register('enabled').ref} onChange={register('enabled').onChange} />} />
+              <FormControlLabel
+                label="Enabled"
+                control={
+                  <Switch
+                    name="enabled"
+                    checked={watch('enabled')}
+                    inputRef={register('enabled').ref}
+                    onChange={register('enabled').onChange}
+                  />
+                }
+              />
               <TextField
                 label={walletLabel()}
                 select
@@ -114,7 +135,11 @@ export function EditCoinDialog(props: EditCoinDialogProps) {
                 helperText={errors?.duration?.message}
               />
             </Stack>
-            <CustomDialogActions buttonType="submit" onCancel={handleOnCancel} />
+            <CustomDialogActions
+              buttonType="submit"
+              onCancel={handleOnCancel}
+              primaryButtonDisabled={!isDirty}
+            />
           </FormControl>
         </form>
       </DialogContent>

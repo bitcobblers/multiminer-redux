@@ -31,16 +31,20 @@ export function SettingsScreen() {
 
   const {
     register,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isDirty },
     handleSubmit,
     reset,
     watch,
-  } = useForm<AppSettings>({ defaultValues: DefaultSettings.settings });
+  } = useForm<AppSettings>({
+    defaultValues: DefaultSettings.settings,
+    mode: 'all',
+  });
 
   useLoadData(async ({ getAppSettings }) => {
     getAppSettings()
       .then((s) => reset(s))
       .catch((errorMessage) => {
+        enqueueSnackbar(`Unable to load settings: ${errorMessage}`, { variant: 'error' });
         error(`Unable to load settings: ${errorMessage}`);
       });
   });
@@ -50,9 +54,16 @@ export function SettingsScreen() {
     enqueueSnackbar('Settings updated.', {
       variant: 'success',
     });
+
+    reset(value);
   });
 
-  const onReset = () => {
+  const onReset = async () => {
+    await setAppSettings(DefaultSettings.settings);
+    enqueueSnackbar('Settings restored to defaults.', {
+      variant: 'success',
+    });
+
     reset(DefaultSettings.settings);
   };
 
@@ -223,7 +234,7 @@ export function SettingsScreen() {
         </Stack>
         <Divider sx={{ mt: 2, mb: 1 }} />
         <Stack direction="row">
-          <Button startIcon={<SaveIcon />} disabled={!isValid} onClick={onSave}>
+          <Button startIcon={<SaveIcon />} disabled={!isValid || !isDirty} onClick={onSave}>
             Save Changes
           </Button>
         </Stack>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/indent */
 import React from 'react';
 
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -22,8 +23,8 @@ interface EditWalletControlsProps {
 }
 
 export class EditWalletControls extends React.Component<
-EditWalletControlsProps,
-EditWalletControlsState
+  EditWalletControlsProps,
+  EditWalletControlsState
 > {
   constructor(props: EditWalletControlsProps) {
     super(props);
@@ -79,7 +80,7 @@ EditWalletControlsState
     const { wallet, existingWallets, coins } = this.props;
     const { editOpen, removeOpen } = this.state;
 
-    const usedCoins = coins.filter((c) => c.wallet === wallet.name);
+    const usedCoins = coins.filter((c) => c.wallet === wallet.id);
 
     return (
       <Stack direction="row" spacing={1}>
