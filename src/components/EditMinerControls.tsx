@@ -5,7 +5,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DownloadIcon from '@mui/icons-material/Download';
 import { Stack, Tooltip, IconButton } from '@mui/material';
 
-import { Miner, downloadState$ } from '../models';
+import { Miner, MinerRelease, downloadState$ } from '../models';
 import { RemoveMinerDialog } from '../dialogs/RemoveMinerDialog';
 import { EditMinerDialog } from '../dialogs/EditMinerDialog';
 import { ensureMiner } from '../services/DownloadManager';
@@ -16,12 +16,13 @@ interface EditMinerControlsProps {
   // eslint-disable-next-line react/require-default-props
   isDefault?: boolean;
   existingMiners: Miner[];
+  availableMiners: MinerRelease[];
   onSave: (miner: Miner) => void;
   onRemove: (name: string, id: string) => void;
 }
 
 export function EditMinerControls(props: EditMinerControlsProps) {
-  const { miner, isDefault, existingMiners, onSave, onRemove } = props;
+  const { miner, isDefault, existingMiners, availableMiners, onSave, onRemove } = props;
   const [editOpen, setEditOpen] = useState(false);
   const [removeOpen, setRemoveOpen] = useState(false);
   const [downloadState] = useObservableState(downloadState$, false);
@@ -64,6 +65,7 @@ export function EditMinerControls(props: EditMinerControlsProps) {
         open={editOpen}
         miner={miner}
         existingMiners={existingMiners}
+        availableMiners={availableMiners}
         autoReset={false}
         onSave={handleEditSave}
         onCancel={handleEditCancel}

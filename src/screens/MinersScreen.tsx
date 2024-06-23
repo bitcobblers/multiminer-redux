@@ -11,13 +11,11 @@ import {
   TableRow,
   TableBody,
   Table,
-  Tooltip,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import ErrorIcon from '@mui/icons-material/Error';
 import { useSnackbar } from 'notistack';
 
-import { Miner, AVAILABLE_ALGORITHMS } from '../models';
+import { Miner, MinerRelease } from '../models';
 import { setMiners, getAppSettings, setAppSettings } from '../services/SettingsService';
 
 import { ScreenHeader, EditMinerControls } from '../components';
@@ -29,7 +27,6 @@ const getEmptyMiner = (): Miner => ({
   kind: 'lolminer',
   name: '',
   version: '',
-  algorithm: 'etchash',
   parameters: '',
 });
 
@@ -38,10 +35,12 @@ export function MinersScreen() {
   const [newOpen, setNewOpen] = useState(false);
   const [newMiner, setNewMiner] = useState(getEmptyMiner());
   const [miners, setLoadedMiners] = useState(Array<Miner>());
+  const [availableMiners, setAvailableMiners] = useState(Array<MinerRelease>());
   const profile = useProfile();
 
-  useLoadData(async ({ getMiners }) => {
+  useLoadData(async ({ getMiners, getMinerReleases }) => {
     setLoadedMiners(await getMiners());
+    setAvailableMiners(await getMinerReleases());
   });
 
   const handleOnAddMiner = () => {
@@ -71,19 +70,6 @@ export function MinersScreen() {
     setNewOpen(false);
 
     enqueueSnackbar(`Miner ${miner.name} added.`, { variant: 'success' });
-  };
-
-  const validateMiner = (miner: Miner) => {
-    if (AVAILABLE_ALGORITHMS.find((alg) => alg.name === miner.algorithm) === undefined) {
-      return (
-        <Tooltip title="The configured algorithm is not supported.">
-          <ErrorIcon color="error" />
-        </Tooltip>
-      );
-    }
-
-    // eslint-disable-next-line react/jsx-no-useless-fragment
-    return <></>;
   };
 
   const removeMiner = async (name: string, id: string) => {
@@ -125,6 +111,7 @@ export function MinersScreen() {
           open={newOpen}
           miner={newMiner}
           existingMiners={miners}
+          availableMiners={availableMiners}
           autoReset
           onSave={addMiner}
           onCancel={() => setNewOpen(false)}
@@ -134,34 +121,29 @@ export function MinersScreen() {
             <TableHead>
               <TableRow>
                 <TableCell />
-                <TableCell />
                 <TableCell>Default</TableCell>
                 <TableCell>Name</TableCell>
                 <TableCell>Miner</TableCell>
                 <TableCell>Version</TableCell>
-                <TableCell>Algorithm</TableCell>
+                <TableCell>Pool</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {miners.map((m) => (
                 <TableRow key={m.id}>
-                  <TableCell>{validateMiner(m)}</TableCell>
                   <TableCell>
                     <EditMinerControls
                       miner={m}
                       isDefault={profile === m.name}
                       onSave={saveMiner}
                       existingMiners={miners}
+                      availableMiners={availableMiners}
                       onRemove={removeMiner}
                     />
                   </TableCell>
                   <TableCell>
                     {m.name === profile ? (
-                      <Button
-                        variant="outlined"
-                        size="small"
-                        disabled
-                      >
+                      <Button variant="outlined" size="small" disabled>
                         Default
                       </Button>
                     ) : (
@@ -177,7 +159,7 @@ export function MinersScreen() {
                   <TableCell>{m.name}</TableCell>
                   <TableCell>{m.kind}</TableCell>
                   <TableCell>{m.version}</TableCell>
-                  <TableCell>{m.algorithm}</TableCell>
+                  <TableCell>{m.pool}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

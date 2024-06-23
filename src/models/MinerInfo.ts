@@ -1,12 +1,14 @@
-import { MinerName, AlgorithmName, API_PORT } from './Enums';
+import { MinerName, AlgorithmName, API_PORT, AlgorithmKind } from './Enums';
 
 export type MinerInfo = {
   name: MinerName;
+  friendlyName: string;
   owner: string;
   repo: string;
   assetPattern: RegExp;
   optionsUrl: string;
   algorithms: AlgorithmName[];
+  kind: AlgorithmKind;
   exe: string;
   getArgs: (algorithm: AlgorithmName, cs: string, url: string) => string;
 };
@@ -14,7 +16,9 @@ export type MinerInfo = {
 export const AVAILABLE_MINERS: MinerInfo[] = [
   {
     name: 'lolminer',
+    friendlyName: 'lolMiner',
     algorithms: ['etchash', 'autolykos2'],
+    kind: 'GPU',
     owner: 'lolliedieb',
     repo: 'lolMiner-releases',
     assetPattern: /^.+Win64\.zip$/,
@@ -25,7 +29,9 @@ export const AVAILABLE_MINERS: MinerInfo[] = [
   },
   {
     name: 'nbminer',
+    friendlyName: 'NBMiner',
     algorithms: ['etchash', 'kawpow', 'autolykos2'],
+    kind: 'GPU',
     owner: 'NebuTech',
     repo: 'NBMiner',
     assetPattern: /^NBMiner.+_Win\.zip$/,
@@ -36,7 +42,9 @@ export const AVAILABLE_MINERS: MinerInfo[] = [
   },
   {
     name: 'trexminer',
+    friendlyName: 'T-Rex Miner',
     algorithms: ['etchash', 'kawpow', 'autolykos2'],
+    kind: 'GPU',
     owner: 'trexminer',
     repo: 't-rex',
     assetPattern: /^t-rex-.+win.zip$/,
@@ -47,7 +55,9 @@ export const AVAILABLE_MINERS: MinerInfo[] = [
   },
   {
     name: 'xmrig',
-    algorithms: ['randomx'],
+    friendlyName: 'XMRig',
+    algorithms: ['randomx', 'ghostrider'],
+    kind: 'CPU',
     owner: 'xmrig',
     repo: 'xmrig',
     assetPattern: /^xmrig.+win64\.zip$/,
