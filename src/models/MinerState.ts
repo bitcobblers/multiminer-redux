@@ -1,10 +1,7 @@
-import { MinerName } from './Enums';
-import { AlgorithmInfo } from './AlgorithmInfo';
+import { Miner } from './Miner';
 
 export type MinerState = {
   state: 'active' | 'inactive';
   currentCoin: string | null;
-  algorithm?: AlgorithmInfo;
-  profile?: string;
-  miner?: MinerName;
+  miner?: Miner;
 };

@@ -1,6 +1,6 @@
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 
-import { Miner } from '../../models';
+import { AVAILABLE_MINERS, MinerName } from '../../models';
 import { useLoadData, useObservableState, useProfile } from '../../hooks';
 import { getAppSettings, setAppSettings, watchers$ } from '../../services/SettingsService';
 
@@ -23,6 +23,9 @@ export function MinerSelector() {
     });
   };
 
+  const getMinerFriendlyName = (kind: MinerName) =>
+    AVAILABLE_MINERS.find((m) => m.name === kind)?.friendlyName ?? kind;
+
   return (
     <FormControl size="small" sx={{ minWidth: '12rem' }}>
       <InputLabel id="miner-label">Miner</InputLabel>
@@ -30,16 +33,21 @@ export function MinerSelector() {
         labelId="miner-label"
         sx={{ fontSize: '0.8rem' }}
         label="Miner"
-        value={profile ?? ''}
+        disabled={miners.length === 0}
+        value={miners.length > 0 ? profile : 'ignored'}
         onChange={($event) => setDefaultMiner($event.target.value)}
       >
-        {(miners ?? Array<Miner>())
-          .sort((a, b) => a.name.localeCompare(b.name))
-          .map((miner) => (
-            <MenuItem key={miner.name} value={miner.name}>
-              {miner.name} ({miner.kind})
-            </MenuItem>
-          ))}
+        {miners.length > 0 ? (
+          miners
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map(({ name, kind }) => (
+              <MenuItem key={name} value={name}>
+                {name} ({getMinerFriendlyName(kind)})
+              </MenuItem>
+            ))
+        ) : (
+          <MenuItem value="ignored">No miners defined</MenuItem>
+        )}
       </Select>
     </FormControl>
   );

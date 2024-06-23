@@ -21,7 +21,7 @@ export const DefaultSettings: SettingsSchemaType = {
   settings: {
     settings: {
       workerName: 'default',
-      defaultMiner: 'nbminer',
+      defaultMiner: '',
       coinStrategy: 'normal',
     },
     pools: {

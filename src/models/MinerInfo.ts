@@ -38,7 +38,7 @@ export const AVAILABLE_MINERS: MinerInfo[] = [
     optionsUrl: 'https://nbminer.info/documentation/arguments/',
     exe: 'nbminer.exe',
     getArgs: (alg, cs, url) =>
-      `-a ${alg} -o stratum+tcp://${url} -u ${cs} --no-color --cmd-output 1 --api 127.0.0.1:${API_PORT}`,
+      `-a ${alg} -o ${url} -u ${cs} --no-color --cmd-output 1 --api 127.0.0.1:${API_PORT}`,
   },
   {
     name: 'trexminer',
@@ -63,7 +63,12 @@ export const AVAILABLE_MINERS: MinerInfo[] = [
     assetPattern: /^xmrig.+win64\.zip$/,
     optionsUrl: 'https://xmrig.com/docs/miner/command-line-options',
     exe: 'xmrig.exe',
-    getArgs: (_alg, cs, url) =>
-      `-o ${url} -a rx -k -u ${cs} -p x --api-worker-id 127.0.0.1 --http-port ${API_PORT}`,
+    getArgs: (alg, cs, url) => {
+      const algMap: Record<string, string> = {
+        randomx: 'rx',
+        ghostrider: 'gr',
+      };
+      return `-o ${url} -a ${algMap[alg]} -k -u ${cs} -p x --api-worker-id 127.0.0.1 --http-port ${API_PORT}`;
+    },
   },
 ];

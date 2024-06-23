@@ -15,14 +15,7 @@ import {
 } from '@mui/material';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { open as openExternal } from '@tauri-apps/api/shell';
-import {
-  AVAILABLE_MINERS,
-  AVAILABLE_POOLS,
-  Miner,
-  MinerInfo,
-  MinerName,
-  MinerRelease,
-} from '../models';
+import { AVAILABLE_MINERS, AVAILABLE_POOLS, Miner, MinerInfo, MinerRelease } from '../models';
 import { MinerTypeMenuItem } from '../components/MinerTypeMenuItem';
 import {
   MiningPoolPortMenuItem,
@@ -97,14 +90,6 @@ export function EditMinerDialog(props: EditMinerDialogProps) {
         .filter((m) => m !== undefined) as MinerInfo[],
     [availableMiners],
   );
-
-  const pickMiner = (current: MinerName | undefined) => {
-    if (current && availableMinersAsMinerInfo.find((m) => m.name === current)) {
-      return current;
-    }
-
-    return availableMinersAsMinerInfo[0].name;
-  };
 
   const pickPool = (current: string | undefined) => {
     if (current && minerPools.find((pool) => pool.name === current)) {

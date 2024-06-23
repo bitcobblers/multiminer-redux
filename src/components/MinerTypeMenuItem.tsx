@@ -1,5 +1,5 @@
 import { Grid, Typography } from '@mui/material';
-import { MinerInfo, MiningPoolPortType } from '../models';
+import { MinerInfo } from '../models';
 
 export interface AlgorithmMenuItemProps {
   miner: MinerInfo;
