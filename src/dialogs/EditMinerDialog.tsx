@@ -15,7 +15,14 @@ import {
 } from '@mui/material';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { open as openExternal } from '@tauri-apps/api/shell';
-import { AVAILABLE_MINERS, AVAILABLE_POOLS, Miner, MinerInfo, MinerRelease } from '../models';
+import {
+  AVAILABLE_MINERS,
+  AVAILABLE_POOLS,
+  Miner,
+  MinerInfo,
+  MinerName,
+  MinerRelease,
+} from '../models';
 import { MinerTypeMenuItem } from '../components/MinerTypeMenuItem';
 import {
   MiningPoolPortMenuItem,
@@ -26,7 +33,7 @@ import { CustomDialogActions } from './CustomDialogActions';
 
 type EditMinerDialogProps = {
   open: boolean;
-  miner: Miner;
+  miner: Partial<Miner>;
   existingMiners: Miner[];
   availableMiners: MinerRelease[];
   autoReset: boolean;
@@ -52,7 +59,7 @@ export function EditMinerDialog(props: EditMinerDialogProps) {
   const minerPools = useMemo(() => {
     const selectedMiner = AVAILABLE_MINERS.find((m) => m.name === kind);
     const selectedMinerAlgorithms = selectedMiner?.algorithms ?? [];
-    return AVAILABLE_POOLS.filter((p) => selectedMinerAlgorithms.includes(p.algorithm.name));
+    return AVAILABLE_POOLS.filter((pool) => selectedMinerAlgorithms.includes(pool.algorithm.name));
   }, [kind]);
 
   const miningPoolPorts = useMemo(() => {
@@ -91,8 +98,16 @@ export function EditMinerDialog(props: EditMinerDialogProps) {
     [availableMiners],
   );
 
+  const pickMiner = (current: MinerName | undefined) => {
+    if (current && availableMinersAsMinerInfo.find((m) => m.name === current)) {
+      return current;
+    }
+
+    return availableMinersAsMinerInfo[0].name;
+  };
+
   const pickPool = (current: string | undefined) => {
-    if (current !== undefined && minerPools.find((pool) => pool.name === current)) {
+    if (current && minerPools.find((pool) => pool.name === current)) {
       return current;
     }
 
@@ -101,7 +116,7 @@ export function EditMinerDialog(props: EditMinerDialogProps) {
 
   const pickPort = (current: number | undefined) => {
     if (
-      current !== undefined &&
+      current &&
       minerPools.find(({ tcpPorts, sslPorts }) => [...tcpPorts, ...sslPorts].includes(current))
     ) {
       return current;
@@ -110,8 +125,8 @@ export function EditMinerDialog(props: EditMinerDialogProps) {
     return minerPools[0].tcpPorts[0];
   };
 
-  const pickVersion = (current: string) => {
-    if (current === undefined || minerTypeVersions.includes(current) === false) {
+  const pickVersion = (current: string | undefined) => {
+    if (!current || minerTypeVersions.includes(current) === false) {
       return minerTypeVersions[0];
     }
 
@@ -125,7 +140,7 @@ export function EditMinerDialog(props: EditMinerDialogProps) {
 
     const updatedMiner = {
       ...val,
-      id: miner.id,
+      id: miner.id!,
       version,
       pool,
       port,

@@ -5,7 +5,7 @@ export type Miner = {
   name: string;
   kind: MinerName;
   version: string;
-  pool?: string;
-  port?: number;
+  pool: string;
+  port: number;
   parameters: string;
 };

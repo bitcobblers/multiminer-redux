@@ -22,12 +22,10 @@ import { ScreenHeader, EditMinerControls } from '../components';
 import { EditMinerDialog } from '../dialogs/EditMinerDialog';
 import { useLoadData, useProfile } from '../hooks';
 
-const getEmptyMiner = (): Miner => ({
+const getEmptyMiner = (): Partial<Miner> => ({
   id: uuid(),
   kind: 'lolminer',
   name: '',
-  version: '',
-  parameters: '',
 });
 
 export function MinersScreen() {
