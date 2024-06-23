@@ -14,7 +14,7 @@ export function enableMonitors() {
   monitor$
     .pipe(
       withLatestFrom(minerState$),
-      filter(([, { state, miner }]) => state === 'active' && miner !== undefined),
+      filter(([, { state, miner }]) => state === 'active' && !!miner),
       map(([, { miner }]) => miner!),
     )
     .subscribe(async (miner) => {

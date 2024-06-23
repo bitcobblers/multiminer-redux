@@ -19,7 +19,7 @@ export const currentHashrate$ = merge(minerStatistics$, cpuStatistics$).pipe(
     hashrate,
     miner: AVAILABLE_MINERS.find((m) => m.name === miner?.kind),
   })),
-  filter(({ hashrate, miner }) => hashrate !== undefined && miner !== undefined),
+  filter(({ hashrate, miner }) => !!hashrate && !!miner),
   map(({ hashrate, miner }) => ({
     scale: miner!.kind === 'GPU' ? 'M' : ('K' as 'M' | 'K'),
     hashrate: hashrate!,
