@@ -24,12 +24,6 @@ export const DefaultSettings: SettingsSchemaType = {
       defaultMiner: '',
       coinStrategy: 'normal',
     },
-    pools: {
-      etchash: 'etchash.unmineable.com:3333',
-      kawpow: 'kp.unmineable.com:3333',
-      autolykos2: 'autolykos.unmineable.com:3333',
-      randomx: 'rx.unmineable.com:3333',
-    },
   },
   theme: 'dark',
   minerReleases: [],

@@ -8,10 +8,4 @@ export type GeneralSettings = {
 
 export type AppSettings = {
   settings: GeneralSettings;
-  pools: {
-    etchash: string;
-    kawpow: string;
-    autolykos2: string;
-    randomx: string;
-  };
 };
