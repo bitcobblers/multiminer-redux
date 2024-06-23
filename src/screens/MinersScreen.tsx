@@ -15,7 +15,7 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import { useSnackbar } from 'notistack';
 
-import { Miner, MinerRelease } from '../models';
+import { AVAILABLE_MINERS, Miner, MinerRelease } from '../models';
 import { setMiners, getAppSettings, setAppSettings } from '../services/SettingsService';
 
 import { ScreenHeader, EditMinerControls } from '../components';
@@ -155,7 +155,9 @@ export function MinersScreen() {
                     )}
                   </TableCell>
                   <TableCell>{m.name}</TableCell>
-                  <TableCell>{m.kind}</TableCell>
+                  <TableCell>
+                    {AVAILABLE_MINERS.find((x) => x.name === m.kind)!.friendlyName}
+                  </TableCell>
                   <TableCell>{m.version}</TableCell>
                   <TableCell>{m.pool}</TableCell>
                 </TableRow>
