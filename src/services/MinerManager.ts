@@ -14,7 +14,6 @@ import {
   MinerState,
   minerState$,
   addAppNotice,
-  MiningPool,
   AVAILABLE_POOLS,
 } from '../models';
 import { getMiners, getAppSettings, watchers$ as settingsWatcher$ } from './SettingsService';
@@ -72,16 +71,6 @@ function getConnectionString(
   }
 
   return `${symbol}:${sanitize(address)}:${sanitize(memo)}.${sanitize(name)}#${referral}`;
-}
-
-function getPoolUrl(pool: MiningPool, port: number) {
-  const isSsl = pool.sslPorts.includes(port);
-
-  if (isSsl) {
-    return `stratum+ssl://${pool.url}:${port}`;
-  }
-
-  return `${pool.url}:${port}`;
 }
 
 export async function selectCoin(
@@ -148,9 +137,9 @@ async function changeCoin(symbol: string | null) {
         getRandom(ALL_REFERRALS),
       );
 
-      const poolUrl = getPoolUrl(pool, miner.port);
+      const isSsl = pool.sslPorts.includes(miner.port);
       const filePath = await join(miner.version, minerInfo.exe);
-      const minerArgs = minerInfo.getArgs(pool.algorithm.name, cs, poolUrl);
+      const minerArgs = minerInfo.getArgs(pool.algorithm.name, cs, pool.url, miner.port, isSsl);
       const extraArgs = miner.parameters;
       const mergedArgs = `${minerArgs} ${extraArgs}`;
 
