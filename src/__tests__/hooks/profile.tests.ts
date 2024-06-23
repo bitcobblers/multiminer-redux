@@ -12,12 +12,6 @@ describe('Profile Hook', () => {
       defaultMiner: 'default',
       coinStrategy: 'normal',
     },
-    pools: {
-      etchash: '',
-      kawpow: '',
-      autolykos2: '',
-      randomx: '',
-    },
   };
 
   it('Returns appSettings setting by default.', async () => {
@@ -40,12 +34,6 @@ describe('Profile Hook', () => {
         workerName: '',
         defaultMiner: 'updated',
         coinStrategy: 'normal',
-      },
-      pools: {
-        etchash: '',
-        kawpow: '',
-        autolykos2: '',
-        randomx: '',
       },
     };
 

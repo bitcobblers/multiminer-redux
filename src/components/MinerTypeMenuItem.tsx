@@ -1,4 +1,4 @@
-import { Grid, Typography, Chip } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { MinerInfo } from '../models';
 
 export interface AlgorithmMenuItemProps {
@@ -10,13 +10,11 @@ export function MinerTypeMenuItem(props: AlgorithmMenuItemProps) {
 
   return (
     <Grid container>
-      <Grid item xs={4}>
-        <Typography>{miner.name}</Typography>
+      <Grid item xs={3}>
+        <Typography>{miner.friendlyName}</Typography>
       </Grid>
-      <Grid item xs={4}>
-        {miner.algorithms.map((alg) => (
-          <Chip key={alg} label={alg} />
-        ))}
+      <Grid>
+        <Typography>{miner.kind}</Typography>
       </Grid>
     </Grid>
   );

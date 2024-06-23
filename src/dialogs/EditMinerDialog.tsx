@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import Dialog from '@mui/material/Dialog';
 import {
@@ -15,32 +15,28 @@ import {
 } from '@mui/material';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { open as openExternal } from '@tauri-apps/api/shell';
-import {
-  AlgorithmName,
-  AVAILABLE_ALGORITHMS,
-  AVAILABLE_MINERS,
-  Miner,
-  MinerInfo,
-  MinerRelease,
-} from '../models';
-import { AlgorithmMenuItem } from '../components/AlgorithmMenuItem';
+import { AVAILABLE_MINERS, AVAILABLE_POOLS, Miner, MinerInfo, MinerRelease } from '../models';
 import { MinerTypeMenuItem } from '../components/MinerTypeMenuItem';
+import {
+  MiningPoolPortMenuItem,
+  MiningPoolPortMenuItemProps,
+} from '../components/MiningPoolPortMenuItem';
+import { MiningPoolMenuItem } from '../components/MiningPoolMenuItem';
 import { CustomDialogActions } from './CustomDialogActions';
-import { useLoadData } from '../hooks';
 
 type EditMinerDialogProps = {
   open: boolean;
-  miner: Miner;
+  miner: Partial<Miner>;
   existingMiners: Miner[];
+  availableMiners: MinerRelease[];
   autoReset: boolean;
   onSave: (miner: Miner) => void;
   onCancel: () => void;
 };
 
 export function EditMinerDialog(props: EditMinerDialogProps) {
-  const { open, miner, existingMiners, autoReset, onSave, onCancel, ...other } = props;
-
-  const [availableMiners, setAvailableMiners] = useState(Array<MinerRelease>());
+  const { open, miner, existingMiners, availableMiners, autoReset, onSave, onCancel, ...other } =
+    props;
 
   const {
     register,
@@ -51,12 +47,36 @@ export function EditMinerDialog(props: EditMinerDialogProps) {
   } = useForm<Omit<Miner, 'id'>>({ defaultValues: miner, mode: 'all' });
 
   const kind = watch('kind');
+  const poolName = watch('pool');
 
-  const minerTypeAlgorithms = useMemo(() => {
+  const minerPools = useMemo(() => {
     const selectedMiner = AVAILABLE_MINERS.find((m) => m.name === kind);
     const selectedMinerAlgorithms = selectedMiner?.algorithms ?? [];
-    return AVAILABLE_ALGORITHMS.filter((alg) => selectedMinerAlgorithms.includes(alg.name));
+    return AVAILABLE_POOLS.filter((pool) => selectedMinerAlgorithms.includes(pool.algorithm.name));
   }, [kind]);
+
+  const miningPoolPorts = useMemo(() => {
+    const selectedPool = minerPools.find((pool) => pool.name === poolName);
+    const tcpPorts = selectedPool?.tcpPorts ?? [];
+    const sslPorts = selectedPool?.sslPorts ?? [];
+
+    return [
+      ...tcpPorts.map(
+        (p) =>
+          ({
+            kind: 'tcp',
+            port: p,
+          }) as MiningPoolPortMenuItemProps,
+      ),
+      ...sslPorts.map(
+        (p) =>
+          ({
+            kind: 'ssl',
+            port: p,
+          }) as MiningPoolPortMenuItemProps,
+      ),
+    ];
+  }, [poolName]);
 
   const minerTypeVersions = useMemo(() => {
     const selectedMiner = availableMiners.find((m) => m.name === kind);
@@ -71,20 +91,27 @@ export function EditMinerDialog(props: EditMinerDialogProps) {
     [availableMiners],
   );
 
-  useLoadData(async ({ getMinerReleases }) => {
-    setAvailableMiners(await getMinerReleases());
-  });
-
-  const pickAlgorithm = (current: AlgorithmName) => {
-    if (current !== undefined && minerTypeAlgorithms.find((alg) => alg.name === current)) {
+  const pickPool = (current: string | undefined) => {
+    if (current && minerPools.find((pool) => pool.name === current)) {
       return current;
     }
 
-    return minerTypeAlgorithms[0].name;
+    return minerPools[0].name;
   };
 
-  const pickVersion = (current: string) => {
-    if (current === undefined || minerTypeVersions.includes(current) === false) {
+  const pickPort = (current: number | undefined) => {
+    if (
+      current &&
+      minerPools.find(({ tcpPorts, sslPorts }) => [...tcpPorts, ...sslPorts].includes(current))
+    ) {
+      return current;
+    }
+
+    return minerPools[0].tcpPorts[0];
+  };
+
+  const pickVersion = (current: string | undefined) => {
+    if (!current || minerTypeVersions.includes(current) === false) {
       return minerTypeVersions[0];
     }
 
@@ -93,12 +120,23 @@ export function EditMinerDialog(props: EditMinerDialogProps) {
 
   const handleOnSave = handleSubmit((val) => {
     const version = pickVersion(watch('version'));
-    const algorithm = pickAlgorithm(watch('algorithm'));
+    const pool = pickPool(watch('pool'));
+    const port = pickPort(watch('port'));
 
-    onSave({ ...val, id: miner.id, version, algorithm });
+    const updatedMiner = {
+      ...val,
+      id: miner.id!,
+      version,
+      pool,
+      port,
+    };
+
+    onSave(updatedMiner);
 
     if (autoReset) {
       reset(miner);
+    } else {
+      reset(updatedMiner);
     }
   });
 
@@ -138,7 +176,7 @@ export function EditMinerDialog(props: EditMinerDialogProps) {
                 error={!!errors?.name}
                 helperText={errors?.name?.message}
               />
-              <TextField required label="Miner" select value={watch('kind')} {...register('kind')}>
+              <TextField label="Miner" select value={watch('kind')} {...register('kind')}>
                 {availableMinersAsMinerInfo
                   .sort((a, b) => a.name.localeCompare(b.name))
                   .map((m) => (
@@ -148,7 +186,6 @@ export function EditMinerDialog(props: EditMinerDialogProps) {
                   ))}
               </TextField>
               <TextField
-                required
                 label="Version"
                 select
                 value={pickVersion(watch('version'))}
@@ -161,15 +198,21 @@ export function EditMinerDialog(props: EditMinerDialogProps) {
                 ))}
               </TextField>
               <TextField
-                required
-                label="Algorithm"
+                label="Mining Pool"
                 select
-                value={pickAlgorithm(watch('algorithm'))}
-                {...register('algorithm')}
+                value={pickPool(watch('pool'))}
+                {...register('pool')}
               >
-                {minerTypeAlgorithms.map((alg) => (
-                  <MenuItem key={alg.name} value={alg.name}>
-                    <AlgorithmMenuItem algorithm={alg} />
+                {minerPools.map((pool) => (
+                  <MenuItem key={pool.name} value={pool.name}>
+                    <MiningPoolMenuItem pool={pool} />
+                  </MenuItem>
+                ))}
+              </TextField>
+              <TextField label="Port" select value={pickPort(watch('port'))} {...register('port')}>
+                {miningPoolPorts.map(({ kind: portKind, port }) => (
+                  <MenuItem key={port} value={port}>
+                    <MiningPoolPortMenuItem kind={portKind} port={port} />
                   </MenuItem>
                 ))}
               </TextField>
@@ -183,7 +226,7 @@ export function EditMinerDialog(props: EditMinerDialogProps) {
                 />
                 <Button
                   startIcon={<OpenInNewIcon />}
-                  size="small"
+                  size="large"
                   variant="outlined"
                   onClick={openReference}
                 >

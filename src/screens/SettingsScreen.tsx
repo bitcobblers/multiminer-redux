@@ -23,6 +23,8 @@ import { AppSettings, DefaultSettings } from '../models';
 import { ConfigurableControl, ScreenHeader } from '../components';
 import { setAppSettings, importSettings, exportSettings } from '../services/SettingsService';
 import { useLoadData } from '../hooks';
+import { MiningPoolControl } from '../components/MiningPoolControl';
+import { AVAILABLE_POOLS } from '../models/MiningPools';
 
 // react-hook-form's API requires prop spreading to register controls
 /* eslint-disable react/jsx-props-no-spreading */
@@ -176,61 +178,18 @@ export function SettingsScreen() {
         </Stack>
         <Divider sx={{ mt: 2 }} />
         <Typography variant="h5" sx={{ my: 2 }}>
-          Connection URLs
+          Mining Pools
         </Typography>
-        <Stack direction="column" spacing={DefaultSpacing} sx={{ width: '25rem' }}>
-          <ConfigurableControl description="The URL to use when connecting to a mining pool using the etchash algorithm.">
-            <TextField
-              required
-              spellCheck="false"
-              label="Etchash"
-              fullWidth
-              {...register('pools.etchash', {
-                required: 'A pool url must be specified.',
-              })}
-              error={!!errors?.pools?.etchash}
-              helperText={errors?.pools?.etchash?.message}
+        <Stack direction="column" spacing={DefaultSpacing}>
+          {AVAILABLE_POOLS.map((pool) => (
+            <MiningPoolControl
+              key={pool.name}
+              name={pool.name}
+              url={pool.url}
+              tcpPorts={pool.tcpPorts}
+              sslPorts={pool.sslPorts}
             />
-          </ConfigurableControl>
-          <ConfigurableControl description="The URL to use when connecting to a mining pool using the kawpow algorithm.">
-            <TextField
-              required
-              spellCheck="false"
-              label="Kawpow"
-              fullWidth
-              {...register('pools.kawpow', {
-                required: 'A pool url must be specified.',
-              })}
-              error={!!errors?.pools?.kawpow}
-              helperText={errors?.pools?.kawpow?.message}
-            />
-          </ConfigurableControl>
-          <ConfigurableControl description="The URL to use when connecting to a mining pool using the autolykos algorithm.">
-            <TextField
-              required
-              spellCheck="false"
-              label="Autolykos"
-              fullWidth
-              {...register('pools.autolykos2', {
-                required: 'A pool url must be specified.',
-              })}
-              error={!!errors?.pools?.autolykos2}
-              helperText={errors?.pools?.autolykos2?.message}
-            />
-          </ConfigurableControl>
-          <ConfigurableControl description="The URL to use when connecting to a mining pool using the randomx algorithm.">
-            <TextField
-              required
-              spellCheck="false"
-              label="RandomX"
-              fullWidth
-              {...register('pools.randomx', {
-                required: 'A pool url must be specified.',
-              })}
-              error={!!errors?.pools?.randomx}
-              helperText={errors?.pools?.randomx?.message}
-            />
-          </ConfigurableControl>
+          ))}
         </Stack>
         <Divider sx={{ mt: 2, mb: 1 }} />
         <Stack direction="row">

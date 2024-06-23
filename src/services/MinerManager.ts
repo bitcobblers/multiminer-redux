@@ -7,7 +7,6 @@ import {
   ALL_REFERRALS,
   CoinDefinition,
   AVAILABLE_MINERS,
-  AVAILABLE_ALGORITHMS,
   Miner,
   Coin,
   MinerInfo,
@@ -15,7 +14,7 @@ import {
   MinerState,
   minerState$,
   addAppNotice,
-  AlgorithmName,
+  AVAILABLE_POOLS,
 } from '../models';
 import { getMiners, getAppSettings, watchers$ as settingsWatcher$ } from './SettingsService';
 import { ensureMiner } from './DownloadManager';
@@ -42,8 +41,8 @@ function getRandom<T>(array: Array<T>) {
   return array[Math.floor(Math.random() * array.length)];
 }
 
-function lookupAlgorithm(name: AlgorithmName) {
-  return AVAILABLE_ALGORITHMS.find((alg) => alg.name === name);
+function lookupPool(name: string) {
+  return AVAILABLE_POOLS.find((pool) => pool.name === name)!;
 }
 
 function lookupCoin(symbol: string | null, coins: Coin[]) {
@@ -79,10 +78,8 @@ export async function selectCoin(
   onError: (message: string) => void,
   onSuccess: (selection: CoinSelection) => Promise<void>,
 ) {
-  const { profile, currentCoin } = minerState$.getValue();
+  const { miner, currentCoin } = minerState$.getValue();
   const appSettings = await config.getAppSettings();
-  const allMiners = await config.getMiners();
-  const miner = allMiners.find((m) => m.name === profile);
   const minerInfo = AVAILABLE_MINERS.find((m) => m.name === miner?.kind);
   const selectCoinStrategy = coinStrategies[appSettings.settings.coinStrategy ?? 'normal'];
 
@@ -130,6 +127,7 @@ async function changeCoin(symbol: string | null) {
     async (selection) => {
       const appSettings = await config.getAppSettings();
       const { miner, minerInfo, coin, wallet } = selection;
+      const pool = lookupPool(miner.pool);
 
       const cs = getConnectionString(
         coin.symbol,
@@ -138,15 +136,12 @@ async function changeCoin(symbol: string | null) {
         appSettings.settings.workerName,
         getRandom(ALL_REFERRALS),
       );
+
+      const isSsl = pool.sslPorts.includes(miner.port);
       const filePath = await join(miner.version, minerInfo.exe);
-      const minerArgs = minerInfo.getArgs(miner.algorithm, cs, appSettings.pools[miner.algorithm]);
+      const minerArgs = minerInfo.getArgs(pool.algorithm.name, cs, pool.url, miner.port, isSsl);
       const extraArgs = miner.parameters;
       const mergedArgs = `${minerArgs} ${extraArgs}`;
-
-      if (AVAILABLE_ALGORITHMS.find((alg) => alg.name === miner.algorithm) === undefined) {
-        addAppNotice('error', `Mining using the ${miner.algorithm} algorithm is not supported.`);
-        return;
-      }
 
       debug(
         `Selected coin ${coin.symbol} to run for ${coin.duration} hours.  Path: ${filePath} -- Args: ${mergedArgs}`,
@@ -164,12 +159,7 @@ async function changeCoin(symbol: string | null) {
 
 export async function setProfile(profile: string) {
   const miner = (await getMiners()).find((m) => m.name === profile);
-
-  if (miner !== undefined) {
-    updateState({ profile, miner: miner.kind, algorithm: lookupAlgorithm(miner.algorithm) });
-  } else {
-    updateState({ profile });
-  }
+  updateState({ miner });
 }
 
 export async function nextCoin(symbol?: string) {
@@ -189,9 +179,7 @@ export async function startMiner() {
 
 async function getDefaultMiner(defaultMiner: string) {
   const miners = await getMiners();
-  const miner = miners.find((m) => m.name === defaultMiner);
-
-  return miner !== undefined ? miner : miners[0];
+  return miners.find((m) => m.name === defaultMiner);
 }
 
 export async function initializeMinerManager() {
@@ -199,9 +187,7 @@ export async function initializeMinerManager() {
   const defaultMiner = await getDefaultMiner(appSettings.settings.defaultMiner);
 
   updateState({
-    profile: defaultMiner.name,
-    miner: defaultMiner.kind,
-    algorithm: lookupAlgorithm(defaultMiner.algorithm),
+    miner: defaultMiner,
   });
 
   miningService.minerExited$.subscribe(() => {
@@ -229,10 +215,11 @@ export async function initializeMinerManager() {
 
   settingsWatcher$.settings.subscribe(async (updatedAppSettings) => {
     const miner = await getDefaultMiner(updatedAppSettings.settings.defaultMiner);
-    updateState({
-      profile: miner.name,
-      miner: miner.kind,
-      algorithm: lookupAlgorithm(miner.algorithm),
-    });
+    updateState({ miner });
+  });
+
+  settingsWatcher$.miners.subscribe(async (updatedMiners) => {
+    const miner = updatedMiners.find((m) => m.name === minerState$.getValue().miner?.name);
+    updateState({ miner });
   });
 }

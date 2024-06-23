@@ -14,11 +14,12 @@ import NextIcon from '@mui/icons-material/FastForward';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 // Services.
-import { minerState$, refreshData$ } from '../models';
+import { useMemo, useState } from 'react';
+import { AVAILABLE_POOLS, Miner, refreshData$ } from '../models';
 import { startMiner, stopMiner, nextCoin } from '../services/MinerManager';
 
 // Hooks.
-import { useProfile, useMinerActive, useObservableState } from '../hooks';
+import { useProfile, useMinerActive, useLoadData } from '../hooks';
 
 // Screens.
 import { ScreenHeader } from '../components';
@@ -34,7 +35,16 @@ import {
 export function HomeScreen(): JSX.Element {
   const profile = useProfile();
   const minerActive = useMinerActive();
-  const [minerState] = useObservableState(minerState$, null);
+  const [miners, setLoadedMiners] = useState(Array<Miner>());
+
+  useLoadData(async ({ getMiners }) => {
+    setLoadedMiners(await getMiners());
+  });
+
+  const minerPool = useMemo(() => {
+    const miner = miners.find((m) => m.name === profile);
+    return miner ? AVAILABLE_POOLS.find((pool) => pool.name === miner.pool) : undefined;
+  }, [profile]);
 
   const dashboards = [
     {
@@ -45,22 +55,22 @@ export function HomeScreen(): JSX.Element {
     {
       header: 'Summary',
       component: <GpuSummaryTable />,
-      show: () => minerState?.algorithm?.kind === 'GPU',
+      show: () => minerPool?.algorithm.kind === 'GPU',
     },
     {
       header: 'Summary',
       component: <CpuSummaryTable />,
-      show: () => minerState?.algorithm?.kind === 'CPU',
+      show: () => minerPool?.algorithm.kind === 'CPU',
     },
     {
       header: 'CPUs',
       component: <CpuComputeTable />,
-      show: () => minerState?.algorithm?.kind === 'CPU',
+      show: () => minerPool?.algorithm.kind === 'CPU',
     },
     {
       header: 'GPUs',
       component: <GpuComputeTable />,
-      show: () => minerState?.algorithm?.kind === 'GPU',
+      show: () => minerPool?.algorithm.kind === 'GPU',
     },
     {
       header: 'Graphs',

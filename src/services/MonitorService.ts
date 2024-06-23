@@ -14,11 +14,11 @@ export function enableMonitors() {
   monitor$
     .pipe(
       withLatestFrom(minerState$),
-      map(([, miner]) => miner),
-      filter(({ state }) => state === 'active'),
+      filter(([, { state, miner }]) => state === 'active' && !!miner),
+      map(([, { miner }]) => miner!),
     )
-    .subscribe(async ({ miner }) => {
-      const monitor = monitors.find((m) => m.name === miner);
+    .subscribe(async (miner) => {
+      const monitor = monitors.find((m) => m.name === miner.kind);
 
       if (monitor) {
         const results = await Promise.allSettled(
