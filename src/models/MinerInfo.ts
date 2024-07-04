@@ -10,6 +10,7 @@ export type MinerInfo = {
   algorithms: AlgorithmName[];
   kind: AlgorithmKind;
   exe: string;
+  hidden: boolean; // sets DETACHED_PROCESS flag for child_process.spawn
   getArgs: (
     algorithm: AlgorithmName,
     cs: string,
@@ -30,6 +31,7 @@ export const AVAILABLE_MINERS: MinerInfo[] = [
     assetPattern: /^.+Win64\.zip$/,
     optionsUrl: 'https://lolminer.site/documentation/arguments/',
     exe: 'lolminer.exe',
+    hidden: true,
     getArgs: (alg, cs, url, port, isSsl) => {
       const algMap: Record<string, string> = {
         etchash: 'ETCHASH',
@@ -51,6 +53,7 @@ export const AVAILABLE_MINERS: MinerInfo[] = [
     assetPattern: /^NBMiner.+_Win\.zip$/,
     optionsUrl: 'https://nbminer.info/documentation/arguments/',
     exe: 'nbminer.exe',
+    hidden: true,
     getArgs: (alg, cs, url, port, isSsl) => {
       const prefix = isSsl ? 'stratum+ssl://' : '';
       return `-a ${alg} -o ${prefix}${url}:${port} -u ${cs} --no-color --cmd-output 1 --api 127.0.0.1:${API_PORT}`;
@@ -66,6 +69,7 @@ export const AVAILABLE_MINERS: MinerInfo[] = [
     assetPattern: /^t-rex-.+win.zip$/,
     optionsUrl: 'https://trexminer.info/documentation/arguments/',
     exe: 't-rex.exe',
+    hidden: false,
     getArgs: (alg, cs, url, port, isSsl) => {
       const prefix = isSsl ? 'stratum+ssl://' : '';
 
@@ -82,6 +86,7 @@ export const AVAILABLE_MINERS: MinerInfo[] = [
     assetPattern: /^xmrig.+win64\.zip$/,
     optionsUrl: 'https://xmrig.com/docs/miner/command-line-options',
     exe: 'xmrig.exe',
+    hidden: true,
     getArgs: (alg, cs, url, port, isSsl) => {
       const algMap: Record<string, string> = {
         randomx: 'rx',

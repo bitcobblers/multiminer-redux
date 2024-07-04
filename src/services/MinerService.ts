@@ -21,6 +21,7 @@ export async function startMiner(coin: string, miner: MinerInfo, version: string
 
   await invoke('run_miner', {
     path: minerPath,
+    hidden: miner.hidden,
     args,
   })
     .then(() => {
