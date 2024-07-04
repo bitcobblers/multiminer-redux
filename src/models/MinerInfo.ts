@@ -29,7 +29,8 @@ export const AVAILABLE_MINERS: MinerInfo[] = [
     owner: 'lolliedieb',
     repo: 'lolMiner-releases',
     assetPattern: /^.+Win64\.zip$/,
-    optionsUrl: 'https://lolminer.site/documentation/arguments/',
+    optionsUrl:
+      'https://github.com/Lolliedieb/lolMiner-releases?tab=readme-ov-file#options-supported-by-lolminer',
     exe: 'lolminer.exe',
     hidden: true,
     getArgs: (alg, cs, url, port, isSsl) => {
@@ -51,7 +52,7 @@ export const AVAILABLE_MINERS: MinerInfo[] = [
     owner: 'NebuTech',
     repo: 'NBMiner',
     assetPattern: /^NBMiner.+_Win\.zip$/,
-    optionsUrl: 'https://nbminer.info/documentation/arguments/',
+    optionsUrl: 'https://github.com/NebuTech/NBMiner?tab=readme-ov-file#cmd-options',
     exe: 'nbminer.exe',
     hidden: true,
     getArgs: (alg, cs, url, port, isSsl) => {
@@ -67,7 +68,7 @@ export const AVAILABLE_MINERS: MinerInfo[] = [
     owner: 'trexminer',
     repo: 't-rex',
     assetPattern: /^t-rex-.+win.zip$/,
-    optionsUrl: 'https://trexminer.info/documentation/arguments/',
+    optionsUrl: 'https://github.com/trexminer/T-Rex/blob/master/README.md#usage',
     exe: 't-rex.exe',
     hidden: false,
     getArgs: (alg, cs, url, port, isSsl) => {
