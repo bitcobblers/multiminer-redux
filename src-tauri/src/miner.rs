@@ -77,6 +77,7 @@ pub fn stop_miner(miner_state: State<MinerState>) -> Result<(), String> {
 #[tauri::command]
 pub fn run_miner(
     path: String,
+    hidden: bool,
     args: String,
     miner_state: State<MinerState>,
     app: AppHandle,
@@ -85,7 +86,7 @@ pub fn run_miner(
     let handle = app.app_handle();
 
     if context.is_none() {
-        match MinerApplication::start(path, args) {
+        match MinerApplication::start(path, hidden, args) {
             Ok(mut miner) => {
                 let mut rx = miner.recv.take().unwrap();
 
@@ -139,16 +140,19 @@ fn spawn_reader<T: Read + Send + 'static>(tx: Sender<MinerEvent>, pipe: T) -> Jo
 }
 
 impl MinerApplication {
-    pub fn start(path: String, args: String) -> Result<MinerApplication, String> {
+    pub fn start(path: String, hidden: bool, args: String) -> Result<MinerApplication, String> {
         let (stdout_reader, stdout_writer) = pipe().unwrap();
         let (stderr_reader, stderr_writer) = pipe().unwrap();
         let mut command = Command::new(path);
 
         command
             .args(args.split_whitespace())
-            .creation_flags(DETACHED_PROCESS) // Hides the console window
             .stdout(stdout_writer)
             .stderr(stderr_writer);
+
+        if hidden {
+            command.creation_flags(DETACHED_PROCESS);
+        }
 
         match SharedChild::spawn(&mut command) {
             Ok(root_child) => {
