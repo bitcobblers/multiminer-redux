@@ -1,15 +1,25 @@
-import { Table, TableContainer, TableCell, TableHead, TableRow, TableBody, Typography } from '@mui/material';
+import {
+  Table,
+  TableContainer,
+  TableCell,
+  TableHead,
+  TableRow,
+  TableBody,
+  Typography,
+} from '@mui/material';
 import * as formatter from '../../services/Formatters';
-import { minerStatistics$ } from '../../services/StatisticsAggregator';
+import { currentGpuSummary$ } from '../../services/StatisticsAggregator';
 import { useObservableState } from '../../hooks';
 
 export function GpuSummaryTable() {
-  const [miner] = useObservableState(minerStatistics$, null);
-  const { hashrate, accepted, rejected, power, efficiency, difficulty, uptime } = miner ?? {};
+  const [miner] = useObservableState(currentGpuSummary$, null);
 
-  if (miner === null || Object.values(miner).find((x) => x !== undefined) === undefined) {
+  if (!miner) {
     return <Typography>No data to display!</Typography>;
   }
+
+  const { summary, pool } = miner;
+  const { hashrate, accepted, rejected, power, efficiency, difficulty, uptime } = summary;
 
   return (
     <TableContainer>
@@ -27,11 +37,13 @@ export function GpuSummaryTable() {
         </TableHead>
         <TableBody>
           <TableRow>
-            <TableCell>{formatter.hashrate(hashrate, 'M')}</TableCell>
+            <TableCell>{formatter.hashrate(hashrate, pool.algorithm.scale)}</TableCell>
             <TableCell>{formatter.found(accepted, rejected)}</TableCell>
             <TableCell>{formatter.shares(accepted, rejected)}</TableCell>
             <TableCell>{formatter.power(power)}</TableCell>
-            <TableCell>{formatter.efficiency(efficiency)}</TableCell>
+            <TableCell>
+              {formatter.efficiency(efficiency, pool.algorithm.efficiencyScale)}
+            </TableCell>
             <TableCell>{formatter.difficulty(difficulty)}</TableCell>
             <TableCell>{formatter.uptime(uptime)}</TableCell>
           </TableRow>

@@ -2,10 +2,7 @@ import * as formatter from '../../services/Formatters';
 
 describe('Formatters Service', () => {
   describe('Hashrate For Empty Values', () => {
-    const cases = [
-      null,
-      undefined,
-    ];
+    const cases = [null, undefined];
 
     test.each(cases)('%p', (given) => {
       // Act.
@@ -17,17 +14,17 @@ describe('Formatters Service', () => {
   });
 
   describe('Hashrate Formatting', () => {
-    it('Should return raw number if no scale provided.', () => {
+    it('Should return hash/sec number if no scale provided.', () => {
       // Act.
       const result = formatter.hashrate(10);
 
       // Assert.
-      expect(result).toBe('10');
+      expect(result).toBe('10H/s');
     });
 
     it('Should return unaltered suffix for M', () => {
       // Act.
-      const result = formatter.hashrate(10, 'M');
+      const result = formatter.hashrate(10, 'MH/s');
 
       // Assert.
       expect(result).toBe('10MH/s');
@@ -35,7 +32,7 @@ describe('Formatters Service', () => {
 
     it('Should return scaled number scaled by 1000 for K', () => {
       // Act.
-      const result = formatter.hashrate(1000, 'K');
+      const result = formatter.hashrate(1000, 'KH/s');
 
       // Assert.
       expect(result).toBe('1KH/s');

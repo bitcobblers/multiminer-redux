@@ -1,28 +1,59 @@
 import { BehaviorSubject, filter, map, merge, withLatestFrom } from 'rxjs';
 import { minerStarted$ } from './MinerService';
 import {
-  AVAILABLE_MINERS,
+  AVAILABLE_POOLS,
   CpuStatistic,
   GpuStatistic,
   MinerStatistic,
   minerState$,
 } from '../models';
 
+const gpuStatistics$ = new BehaviorSubject<GpuStatistic[]>([]);
+const minerStatistics$ = new BehaviorSubject<MinerStatistic>({});
+
 export const cpuStatistics$ = new BehaviorSubject<CpuStatistic>({});
-export const gpuStatistics$ = new BehaviorSubject<GpuStatistic[]>([]);
-export const minerStatistics$ = new BehaviorSubject<MinerStatistic>({});
 
 export const currentHashrate$ = merge(minerStatistics$, cpuStatistics$).pipe(
   withLatestFrom(minerState$),
-  filter(([, { state }]) => state === 'active'),
+  filter(([, { state, miner }]) => state === 'active' && !!miner),
   map(([{ hashrate }, { miner }]) => ({
     hashrate,
-    miner: AVAILABLE_MINERS.find((m) => m.name === miner?.kind),
+    pool: AVAILABLE_POOLS.find((p) => p.name === miner!.pool),
   })),
-  filter(({ hashrate, miner }) => !!hashrate && !!miner),
-  map(({ hashrate, miner }) => ({
-    scale: miner!.kind === 'GPU' ? 'M' : ('K' as 'M' | 'K'),
+  filter(({ hashrate, pool }) => !!hashrate && !!pool),
+  map(({ hashrate, pool }) => ({
+    scale: pool!.algorithm.scale ?? 'K',
     hashrate: hashrate!,
+  })),
+);
+
+export const currentGpuSummary$ = minerStatistics$.pipe(
+  withLatestFrom(minerState$),
+  filter(([, { state, miner }]) => state === 'active' && !!miner),
+  map(([summary, { miner }]) => ({
+    summary,
+    miner,
+    pool: AVAILABLE_POOLS.find((p) => p.name === miner!.pool),
+  })),
+  filter(({ pool }) => !!pool),
+  map(({ summary, pool }) => ({
+    summary,
+    pool: pool!,
+  })),
+);
+
+export const currentGpuStats$ = gpuStatistics$.pipe(
+  withLatestFrom(minerState$),
+  filter(([, { state, miner }]) => state === 'active' && !!miner),
+  map(([gpus, { miner }]) => ({
+    gpus,
+    miner,
+    pool: AVAILABLE_POOLS.find((p) => p.name === miner!.pool),
+  })),
+  filter(({ pool }) => !!pool),
+  map(({ gpus, pool }) => ({
+    gpus,
+    pool: pool!,
   })),
 );
 

@@ -36,7 +36,7 @@ export function CpuSummaryTable() {
         </TableHead>
         <TableBody>
           <TableRow>
-            <TableCell>{formatter.hashrate(hashrate, 'K')}</TableCell>
+            <TableCell>{formatter.hashrate(hashrate, 'KH/s')}</TableCell>
             <TableCell>{formatter.number(accepted)}</TableCell>
             <TableCell>{formatter.number(rejected)}</TableCell>
             <TableCell>{formatter.number(cores)}</TableCell>
