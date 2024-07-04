@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import { Separator } from '../Separator';
 import { useObservableState, useMinerActive } from '../../hooks';
-import { minerState$, downloadState$ } from '../../models';
+import { minerState$, downloadState$, HashrateUnit } from '../../models';
 import * as formatter from '../../services/Formatters';
 import { currentHashrate$ } from '../../services/StatisticsAggregator';
 
@@ -19,7 +19,7 @@ function CurrentCoin(active: boolean, name: string | null | undefined) {
   );
 }
 
-function HashRate(active: boolean, hashrate: number | undefined, scale?: 'M' | 'K') {
+function HashRate(active: boolean, hashrate: number | undefined, scale: HashrateUnit | undefined) {
   return (
     active && (
       <>

@@ -34,19 +34,19 @@ export function CpuComputeTable() {
           <TableRow>
             <TableCell>10s</TableCell>
             {cpu.timings.map((t, i) => (
-              <TableCell key={i}>{formatter.hashrate(t.tenSeconds)}</TableCell>
+              <TableCell key={i}>{formatter.hashrate(t.tenSeconds, 'H/s')}</TableCell>
             ))}
           </TableRow>
           <TableRow>
             <TableCell>60s</TableCell>
             {cpu.timings.map((t, i) => (
-              <TableCell key={i}>{formatter.hashrate(t.sixtySeconds)}</TableCell>
+              <TableCell key={i}>{formatter.hashrate(t.sixtySeconds, 'H/s')}</TableCell>
             ))}
           </TableRow>
           <TableRow>
             <TableCell>15m</TableCell>
             {cpu.timings.map((t, i) => (
-              <TableCell key={i}>{formatter.hashrate(t.fifteenMinutes)}</TableCell>
+              <TableCell key={i}>{formatter.hashrate(t.fifteenMinutes, 'H/s')}</TableCell>
             ))}
           </TableRow>
         </TableBody>

@@ -23,7 +23,7 @@ export const AVAILABLE_MINERS: MinerInfo[] = [
   {
     name: 'lolminer',
     friendlyName: 'lolMiner',
-    algorithms: ['etchash', 'autolykos2'],
+    algorithms: ['etchash', 'autolykos2', 'beamhash'],
     kind: 'GPU',
     owner: 'lolliedieb',
     repo: 'lolMiner-releases',
@@ -31,8 +31,14 @@ export const AVAILABLE_MINERS: MinerInfo[] = [
     optionsUrl: 'https://lolminer.site/documentation/arguments/',
     exe: 'lolminer.exe',
     getArgs: (alg, cs, url, port, isSsl) => {
+      const algMap: Record<string, string> = {
+        etchash: 'ETCHASH',
+        autolykos2: 'AUTOLYCOS2',
+        beamhash: 'BEAM-III',
+      };
+
       const prefix = isSsl ? 'stratum+ssl://' : '';
-      return `--algo ${alg.toLocaleUpperCase()} --pool ${prefix}${url}:${port} --user ${cs} --nocolor --apiport ${API_PORT}`;
+      return `--algo ${algMap[alg]} --pool ${prefix}${url}:${port} --user ${cs} --nocolor --apiport ${API_PORT}`;
     },
   },
   {

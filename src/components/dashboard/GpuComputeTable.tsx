@@ -1,14 +1,24 @@
-import { Table, TableContainer, TableCell, TableHead, TableRow, TableBody, Typography } from '@mui/material';
+import {
+  Table,
+  TableContainer,
+  TableCell,
+  TableHead,
+  TableRow,
+  TableBody,
+  Typography,
+} from '@mui/material';
 import * as formatter from '../../services/Formatters';
-import { gpuStatistics$ } from '../../services/StatisticsAggregator';
+import { currentGpuStats$ } from '../../services/StatisticsAggregator';
 import { useObservableState } from '../../hooks';
 
 export function GpuComputeTable() {
-  const [gpus] = useObservableState(gpuStatistics$, []);
+  const [miner] = useObservableState(currentGpuStats$, null);
 
-  if (gpus.length === 0) {
+  if (!miner || miner.gpus.length === 0) {
     return <Typography>No data to display!</Typography>;
   }
+
+  const { gpus, pool } = miner;
 
   return (
     <TableContainer>
@@ -33,10 +43,12 @@ export function GpuComputeTable() {
             <TableRow key={gpu.id}>
               <TableCell>{gpu.id}</TableCell>
               <TableCell>{gpu.name}</TableCell>
-              <TableCell>{formatter.hashrate(gpu.hashrate, 'M')}</TableCell>
+              <TableCell>{formatter.hashrate(gpu.hashrate, pool.algorithm.scale)}</TableCell>
               <TableCell>{formatter.shares(gpu.accepted, gpu.rejected)}</TableCell>
               <TableCell>{formatter.power(gpu.power)}</TableCell>
-              <TableCell>{formatter.efficiency(gpu.efficiency)}</TableCell>
+              <TableCell>
+                {formatter.efficiency(gpu.efficiency, pool.algorithm.efficiencyScale)}
+              </TableCell>
               <TableCell>{formatter.clockSpeed(gpu.coreClock)}</TableCell>
               <TableCell>{formatter.clockSpeed(gpu.memClock)}</TableCell>
               <TableCell>{formatter.temperature(gpu.coreTemperature)}</TableCell>

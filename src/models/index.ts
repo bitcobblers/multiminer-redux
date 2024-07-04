@@ -7,6 +7,8 @@ export {
   type AlgorithmKind,
   type AlgorithmName,
   type CoinSelectionStrategy,
+  type HashrateUnit,
+  type HashrateEfficiencyUnit,
   type MinerName,
   type MiningPoolPortType,
   API_PORT,

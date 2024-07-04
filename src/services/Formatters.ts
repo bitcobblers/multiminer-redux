@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/indent */
+import { HashrateUnit, HashrateEfficiencyUnit } from '../models';
+
 export function number(value: number | undefined, maxDigits = 8) {
   return value === undefined
     ? 'N/A'
@@ -8,26 +11,28 @@ export function currency(value: number | undefined, maxDigits = 2) {
   return value === undefined
     ? 'N/A'
     : value.toLocaleString('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: maxDigits,
-    });
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: maxDigits,
+      });
 }
 
-export function hashrate(value: number | undefined | null, scale?: 'M' | 'K') {
+export function hashrate(value: number | undefined | null, scale?: HashrateUnit) {
   if (value === undefined || value === null) {
     return 'N/A';
   }
 
-  if (scale === 'M') {
-    return `${number(value, 2)}MH/s`;
+  switch (scale) {
+    case 'KH/s':
+      return `${number(value / 1000, 2)}${scale}`;
+    case 'MH/s':
+      return `${number(value, 2)}${scale}`;
+    case 'Sol/s':
+      return `${number(value, 1)}${scale}`;
+    default:
+      return `${number(value, 0)}H/s`;
   }
-  if (scale === 'K') {
-    return `${number(value / 1000, 2)}KH/s`;
-  }
-
-  return number(value, 0);
 }
 
 export function shares(accepted: number | undefined, rejected: number | undefined) {
@@ -42,13 +47,12 @@ export function power(value: number | undefined) {
   return value === undefined ? 'N/A' : `${number(value, 2)}W`;
 }
 
-export function efficiency(value: number | undefined) {
+export function efficiency(value: number | undefined, scale?: HashrateEfficiencyUnit) {
   if (value === undefined) {
     return 'N/A';
   }
 
-  // TODO: This needs special logic to handle miners that report this in KH/W vs MH/W.
-  return `${number(value, 2)}KH/W`;
+  return `${number(value, 2)}${scale ?? ''}`;
 }
 
 export function clockSpeed(speed: number | undefined) {

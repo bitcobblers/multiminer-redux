@@ -35,6 +35,9 @@ export type AlgorithmName =
   | 'randomx'
   | 'ghostrider';
 
+export type HashrateUnit = 'H/s' | 'KH/s' | 'MH/s' | 'GH/s' | 'TH/s' | 'Sol/s';
+export type HashrateEfficiencyUnit = 'KH/W' | 'MH/W' | 'GH/W' | 'Sol/W';
+
 export type MiningPoolPortType = 'tcp' | 'ssl';
 
 export type CoinSelectionStrategy = 'normal' | 'skynet';
