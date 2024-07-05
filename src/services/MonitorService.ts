@@ -2,13 +2,19 @@ import { interval, withLatestFrom, map, filter } from 'rxjs';
 import { debug, error, warn } from 'tauri-plugin-log-api';
 import { ResponseType, fetch } from '@tauri-apps/api/http';
 import { minerState$, API_PORT } from '../models';
-import { lolminerMonitor, nbminerMonitor, trexminerMonitor, xmrigMonitor } from './monitors';
+import {
+  gminerMonitor,
+  lolminerMonitor,
+  nbminerMonitor,
+  trexminerMonitor,
+  xmrigMonitor,
+} from './monitors';
 
 const UPDATE_INTERVAL = 1000 * 5;
 const monitor$ = interval(UPDATE_INTERVAL);
 
 export function enableMonitors() {
-  const monitors = [nbminerMonitor, lolminerMonitor, trexminerMonitor, xmrigMonitor];
+  const monitors = [gminerMonitor, lolminerMonitor, nbminerMonitor, trexminerMonitor, xmrigMonitor];
   const monitorNames = monitors.map((m) => m.name);
 
   monitor$
