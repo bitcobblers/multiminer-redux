@@ -1,6 +1,6 @@
 export const API_PORT = 60090;
 
-export type MinerName = 'gminer' | 'lolminer' | 'nbminer' | 'phoenixminer' | 'trexminer' | 'xmrig';
+export type MinerName = 'gminer' | 'lolminer' | 'nbminer' | 'trexminer' | 'xmrig';
 export type AlgorithmKind = 'CPU' | 'GPU' | 'ASIC';
 export type AlgorithmName =
   // ASIC
