@@ -44,7 +44,17 @@ function makeMiner<T extends AlgorithmName>(
 
 export const AVAILABLE_MINERS = [
   makeMiner(
-    ['etchash', 'ethash'],
+    [
+      'autolykos2',
+      'beamhash',
+      'etchash',
+      'ethash',
+      'firopow',
+      'kawpow',
+      'karlsenhash',
+      'octopus',
+      'sha512',
+    ],
     'gminer',
     'GMiner',
     'develsoftware',
@@ -59,7 +69,7 @@ export const AVAILABLE_MINERS = [
   ),
 
   makeMiner(
-    ['etchash', 'autolykos2', 'beamhash'],
+    ['autolykos2', 'beamhash', 'blake3', 'etchash', 'ethash', 'karlsenhash'],
     'lolminer',
     'lolMiner',
     'lolliedieb',
@@ -71,9 +81,12 @@ export const AVAILABLE_MINERS = [
     true,
     (alg, cs, url) => {
       const algMap: Record<typeof alg, string> = {
-        etchash: 'ETCHASH',
         autolykos2: 'AUTOLYKOS2',
         beamhash: 'BEAM-III',
+        blake3: 'ALEPH',
+        etchash: 'ETCHASH',
+        ethash: 'ETHASH',
+        karlsenhash: 'KARLSEN',
       };
 
       return `--algo ${algMap[alg]} --pool ${url} --user ${cs} --nocolor --apiport ${API_PORT}`;
@@ -81,7 +94,7 @@ export const AVAILABLE_MINERS = [
   ),
 
   makeMiner(
-    ['etchash', 'kawpow', 'autolykos2'],
+    ['autolykos2', 'beamhash', 'etchash', 'ethash', 'kawpow', 'octopus'],
     'nbminer',
     'NBMiner',
     'NebuTech',
@@ -91,12 +104,22 @@ export const AVAILABLE_MINERS = [
     'GPU',
     'nbminer.exe',
     true,
-    (alg, cs, url) =>
-      `--algo ${alg} --url ${url} --user ${cs} --no-color --cmd-output 1 --api 127.0.0.1:${API_PORT}`,
+    (alg, cs, url) => {
+      const algMap: Record<typeof alg, string> = {
+        autolykos2: 'autolykos2',
+        beamhash: 'beamv3',
+        etchash: 'etchash',
+        ethash: 'ethash',
+        kawpow: 'kawpow',
+        octopus: 'octopus',
+      };
+
+      return `--algo ${algMap[alg]} --url ${url} --user ${cs} --no-color --cmd-output 1 --api 127.0.0.1:${API_PORT}`;
+    },
   ),
 
   makeMiner(
-    ['etchash', 'kawpow', 'autolykos2'],
+    ['autolykos2', 'blake3', 'etchash', 'ethash', 'firopow', 'kawpow', 'octopus'],
     'trexminer',
     'T-Rex Miner',
     'trexminer',
@@ -127,7 +150,7 @@ export const AVAILABLE_MINERS = [
         ghostrider: 'gr',
       };
 
-      return `-o ${url} -a ${algMap[alg]} -k -u ${cs} -p x --api-worker-id 127.0.0.1 --http-port ${API_PORT}`;
+      return `--url ${url} --algo ${algMap[alg]} --keepalive --user ${cs} --pass x --api-worker-id 127.0.0.1 --http-port ${API_PORT}`;
     },
   ),
 ];
