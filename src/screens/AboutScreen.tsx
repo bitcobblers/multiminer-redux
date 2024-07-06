@@ -3,7 +3,7 @@ import { Button, Container, Divider, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { useState } from 'react';
 import { open } from '@tauri-apps/api/shell';
-import { getName, getVersion } from '@tauri-apps/api/app';
+import { getName, getVersion, getTauriVersion } from '@tauri-apps/api/app';
 import { ScreenHeader } from '../components';
 import { useLoadData } from '../hooks';
 
@@ -21,10 +21,12 @@ function ExternalLink(props: { label: string; text: string; url: string }) {
 export function AboutScreen(): JSX.Element {
   const [appName, setAppName] = useState('');
   const [appVersion, setAppVersion] = useState('');
+  const [tauriVersion, setTauriVersion] = useState('');
 
   useLoadData(async () => {
     setAppName(await getName());
     setAppVersion(await getVersion());
+    setTauriVersion(await getTauriVersion());
   });
 
   return (
@@ -33,6 +35,7 @@ export function AboutScreen(): JSX.Element {
       <Box sx={{ my: 2 }}>
         <Typography variant="h6">Application Name - BitCobblers {appName}</Typography>
         <Typography variant="h6">Application Version - {appVersion}</Typography>
+        <Typography variant="h6">Tauri Version - {tauriVersion}</Typography>
         <Button onClick={() => open('https://github.com/bitcobblers/multiminer')} sx={{ my: 1 }}>
           <GitHub />
           &nbsp;Project Page

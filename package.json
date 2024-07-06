@@ -92,7 +92,7 @@
     "@emotion/styled": "^11.11.5",
     "@mui/icons-material": "^5.16.0",
     "@mui/material": "^5.15.20",
-    "@tauri-apps/api": "^1",
+    "@tauri-apps/api": "^1.6.0",
     "chart.js": "^4.4.3",
     "dateformat": "^5.0.3",
     "notistack": "^3.0.1",
@@ -108,7 +108,7 @@
   },
   "devDependencies": {
     "@stylistic/eslint-plugin": "^2.3.0",
-    "@tauri-apps/cli": "^1",
+    "@tauri-apps/cli": "^1.6.0",
     "@testing-library/react": "^16.0.0",
     "@types/dateformat": "^5.0.2",
     "@types/jest": "^29.5.12",
