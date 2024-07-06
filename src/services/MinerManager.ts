@@ -73,6 +73,11 @@ function getConnectionString(
   return `${symbol}:${sanitize(address)}:${sanitize(memo)}.${sanitize(name)}#${referral}`;
 }
 
+function getUrl(url: string, port: number, isSsl: boolean) {
+  const prefix = isSsl ? 'stratum+ssl://' : '';
+  return `${prefix}${url}:${port}`;
+}
+
 export async function selectCoin(
   symbol: string | null,
   onError: (message: string) => void,
@@ -128,6 +133,7 @@ async function changeCoin(symbol: string | null) {
       const appSettings = await config.getAppSettings();
       const { miner, minerInfo, coin, wallet } = selection;
       const pool = lookupPool(miner.pool);
+      const isSsl = pool.sslPorts.includes(miner.port);
 
       const cs = getConnectionString(
         coin.symbol,
@@ -137,9 +143,9 @@ async function changeCoin(symbol: string | null) {
         getRandom(ALL_REFERRALS),
       );
 
-      const isSsl = pool.sslPorts.includes(miner.port);
+      const url = getUrl(pool.url, miner.port, isSsl);
       const filePath = await join(miner.version, minerInfo.exe);
-      const minerArgs = minerInfo.getArgs(pool.algorithm.name, cs, pool.url, miner.port, isSsl);
+      const minerArgs = minerInfo.getArgs(pool.algorithm.name, cs, url);
       const extraArgs = miner.parameters;
       const mergedArgs = `${minerArgs} ${extraArgs}`;
 

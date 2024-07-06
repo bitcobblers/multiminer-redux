@@ -11,121 +11,123 @@ export type MinerInfo = {
   kind: AlgorithmKind;
   exe: string;
   hidden: boolean; // sets DETACHED_PROCESS flag for child_process.spawn
-  getArgs: (
-    algorithm: AlgorithmName,
-    cs: string,
-    url: string,
-    port: number,
-    isSsl: boolean,
-  ) => string;
+  getArgs: (algorithm: AlgorithmName, cs: string, url: string) => string;
 };
 
-export const AVAILABLE_MINERS: MinerInfo[] = [
-  {
-    name: 'gminer',
-    friendlyName: 'GMiner',
-    algorithms: ['etchash', 'ethash', 'firopow', 'karlsenhash', 'kawpow', 'octopus'],
-    kind: 'GPU',
-    owner: 'develsoftware',
-    repo: 'GMinerRelease',
-    assetPattern: /^.+_windows64\.zip$/,
-    optionsUrl: 'https://github.com/develsoftware/GMinerRelease?tab=readme-ov-file#miner-options',
-    exe: 'miner.exe',
-    hidden: true,
-    getArgs: (alg, cs, url, port, isSsl) => {
-      const algMap: Record<string, string> = {
-        etchash: 'etchash',
-        ethash: 'ethash',
-        firopow: 'firopow',
-        karlsenhash: 'karlsenhash',
-        kawpow: 'kawpow',
-        octopus: 'octopus',
-        sha512: 'sh512_256d',
-        autolykos2: 'autolykos2',
-        beamhash: 'beamhash',
-      };
+function makeMiner<T extends AlgorithmName>(
+  algorithms: T[],
+  name: MinerName,
+  friendlyName: string,
+  owner: string,
+  repo: string,
+  assetPattern: RegExp,
+  optionsUrl: string,
+  kind: AlgorithmKind,
+  exe: string,
+  hidden: boolean,
+  getArgs: (algorithm: T, cs: string, url: string) => string,
+): MinerInfo {
+  return {
+    name,
+    friendlyName,
+    owner,
+    repo,
+    assetPattern,
+    optionsUrl,
+    algorithms,
+    kind,
+    exe,
+    hidden,
+    getArgs: (alg, cs, url) => getArgs(alg as T, cs, url),
+  };
+}
 
-      const prefix = isSsl ? 'stratum+ssl://' : '';
+export const AVAILABLE_MINERS = [
+  makeMiner(
+    ['etchash', 'ethash'],
+    'gminer',
+    'GMiner',
+    'develsoftware',
+    'GMinerRelease',
+    /^.+_windows64\.zip$/,
+    'https://github.com/develsoftware/GMinerRelease?tab=readme-ov-file#miner-options',
+    'GPU',
+    'miner.exe',
+    true,
+    (alg, cs, url) =>
+      `--algo ${alg} --server ${url} --user ${cs} --color 0 --watchdog 0 --api ${API_PORT}`,
+  ),
 
-      return `--algo ${algMap[alg]} --server ${prefix}${url}:${port} --user ${cs} --color 0 --watchdog 0 --api ${API_PORT}`;
-    },
-  },
-  {
-    name: 'lolminer',
-    friendlyName: 'lolMiner',
-    algorithms: ['etchash', 'autolykos2', 'beamhash'],
-    kind: 'GPU',
-    owner: 'lolliedieb',
-    repo: 'lolMiner-releases',
-    assetPattern: /^.+Win64\.zip$/,
-    optionsUrl:
-      'https://github.com/Lolliedieb/lolMiner-releases?tab=readme-ov-file#options-supported-by-lolminer',
-    exe: 'lolminer.exe',
-    hidden: true,
-    getArgs: (alg, cs, url, port, isSsl) => {
-      const algMap: Record<string, string> = {
+  makeMiner(
+    ['etchash', 'autolykos2', 'beamhash'],
+    'lolminer',
+    'lolMiner',
+    'lolliedieb',
+    'lolMiner-releases',
+    /^.+Win64\.zip$/,
+    'https://github.com/Lolliedieb/lolMiner-releases?tab=readme-ov-file#options-supported-by-lolminer',
+    'GPU',
+    'lolminer.exe',
+    true,
+    (alg, cs, url) => {
+      const algMap: Record<typeof alg, string> = {
         etchash: 'ETCHASH',
-        autolykos2: 'AUTOLYCOS2',
+        autolykos2: 'AUTOLYKOS2',
         beamhash: 'BEAM-III',
       };
 
-      const prefix = isSsl ? 'stratum+ssl://' : '';
-      return `--algo ${algMap[alg]} --pool ${prefix}${url}:${port} --user ${cs} --nocolor --apiport ${API_PORT}`;
+      return `--algo ${algMap[alg]} --pool ${url} --user ${cs} --nocolor --apiport ${API_PORT}`;
     },
-  },
-  {
-    name: 'nbminer',
-    friendlyName: 'NBMiner',
-    algorithms: ['etchash', 'kawpow', 'autolykos2'],
-    kind: 'GPU',
-    owner: 'NebuTech',
-    repo: 'NBMiner',
-    assetPattern: /^NBMiner.+_Win\.zip$/,
-    optionsUrl: 'https://github.com/NebuTech/NBMiner?tab=readme-ov-file#cmd-options',
-    exe: 'nbminer.exe',
-    hidden: true,
-    getArgs: (alg, cs, url, port, isSsl) => {
-      const prefix = isSsl ? 'stratum+ssl://' : '';
-      return `-a ${alg} -o ${prefix}${url}:${port} -u ${cs} --no-color --cmd-output 1 --api 127.0.0.1:${API_PORT}`;
-    },
-  },
-  {
-    name: 'trexminer',
-    friendlyName: 'T-Rex Miner',
-    algorithms: ['etchash', 'kawpow', 'autolykos2'],
-    kind: 'GPU',
-    owner: 'trexminer',
-    repo: 't-rex',
-    assetPattern: /^t-rex-.+win.zip$/,
-    optionsUrl: 'https://github.com/trexminer/T-Rex/blob/master/README.md#usage',
-    exe: 't-rex.exe',
-    hidden: false,
-    getArgs: (alg, cs, url, port, isSsl) => {
-      const prefix = isSsl ? 'stratum+ssl://' : '';
+  ),
 
-      return `-a ${alg} -o ${prefix}${url}:${port} -u ${cs} -p x --api-bind-http 127.0.0.1:${API_PORT} --api-read-only --no-color`;
-    },
-  },
-  {
-    name: 'xmrig',
-    friendlyName: 'XMRig',
-    algorithms: ['randomx', 'ghostrider'],
-    kind: 'CPU',
-    owner: 'xmrig',
-    repo: 'xmrig',
-    assetPattern: /^xmrig.+win64\.zip$/,
-    optionsUrl: 'https://xmrig.com/docs/miner/command-line-options',
-    exe: 'xmrig.exe',
-    hidden: true,
-    getArgs: (alg, cs, url, port, isSsl) => {
-      const algMap: Record<string, string> = {
+  makeMiner(
+    ['etchash', 'kawpow', 'autolykos2'],
+    'nbminer',
+    'NBMiner',
+    'NebuTech',
+    'NBMiner',
+    /^NBMiner.+_Win\.zip$/,
+    'https://github.com/NebuTech/NBMiner?tab=readme-ov-file#cmd-options',
+    'GPU',
+    'nbminer.exe',
+    true,
+    (alg, cs, url) =>
+      `--algo ${alg} --url ${url} --user ${cs} --no-color --cmd-output 1 --api 127.0.0.1:${API_PORT}`,
+  ),
+
+  makeMiner(
+    ['etchash', 'kawpow', 'autolykos2'],
+    'trexminer',
+    'T-Rex Miner',
+    'trexminer',
+    't-rex',
+    /^t-rex-.+win.zip$/,
+    'https://github.com/trexminer/T-Rex/blob/master/README.md#usage',
+    'GPU',
+    't-rex.exe',
+    false,
+    (alg, cs, url) =>
+      `--algo ${alg} --url ${url} --user ${cs} --pass x --api-bind-http 127.0.0.1:${API_PORT} --api-read-only --no-color`,
+  ),
+
+  makeMiner(
+    ['randomx', 'ghostrider'],
+    'xmrig',
+    'XMRig',
+    'xmrig',
+    'xmrig',
+    /^xmrig.+win64\.zip$/,
+    'https://xmrig.com/docs/miner/command-line-options',
+    'CPU',
+    'xmrig.exe',
+    true,
+    (alg, cs, url) => {
+      const algMap: Record<typeof alg, string> = {
         randomx: 'rx',
         ghostrider: 'gr',
       };
 
-      const prefix = isSsl ? 'stratum+ssl://' : '';
-
-      return `-o ${prefix}${url}:${port} -a ${algMap[alg]} -k -u ${cs} -p x --api-worker-id 127.0.0.1 --http-port ${API_PORT}`;
+      return `-o ${url} -a ${algMap[alg]} -k -u ${cs} -p x --api-worker-id 127.0.0.1 --http-port ${API_PORT}`;
     },
-  },
+  ),
 ];
