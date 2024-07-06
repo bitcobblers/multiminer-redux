@@ -22,6 +22,35 @@ export type MinerInfo = {
 
 export const AVAILABLE_MINERS: MinerInfo[] = [
   {
+    name: 'gminer',
+    friendlyName: 'GMiner',
+    algorithms: ['etchash', 'ethash', 'firopow', 'karlsenhash', 'kawpow', 'octopus'],
+    kind: 'GPU',
+    owner: 'develsoftware',
+    repo: 'GMinerRelease',
+    assetPattern: /^.+_windows64\.zip$/,
+    optionsUrl: 'https://github.com/develsoftware/GMinerRelease?tab=readme-ov-file#miner-options',
+    exe: 'miner.exe',
+    hidden: true,
+    getArgs: (alg, cs, url, port, isSsl) => {
+      const algMap: Record<string, string> = {
+        etchash: 'etchash',
+        ethash: 'ethash',
+        firopow: 'firopow',
+        karlsenhash: 'karlsenhash',
+        kawpow: 'kawpow',
+        octopus: 'octopus',
+        sha512: 'sh512_256d',
+        autolykos2: 'autolykos2',
+        beamhash: 'beamhash',
+      };
+
+      const prefix = isSsl ? 'stratum+ssl://' : '';
+
+      return `--algo ${algMap[alg]} --server ${prefix}${url}:${port} --user ${cs} --color 0 --watchdog 0 --api ${API_PORT}`;
+    },
+  },
+  {
     name: 'lolminer',
     friendlyName: 'lolMiner',
     algorithms: ['etchash', 'autolykos2', 'beamhash'],
