@@ -45,10 +45,10 @@ export function AboutScreen(): JSX.Element {
       <Box sx={{ my: 2 }}>
         <Typography variant="h6">Miners</Typography>
         <Box sx={{ ml: 1 }}>
+          <ExternalLink label="GMiner" text="Website" url="https://gminer.info/" />
           <ExternalLink label="LolMiner" text="Website" url="https://lolminer.site/" />
+          <ExternalLink label="NBMiner" text="Website" url="https://nbminer.com/" />
           <ExternalLink label="T-Rex" text="Website" url="https://trex-miner.com/" />
-          <ExternalLink label="PhoenixMiner" text="Website" url="https://phoenixminer.org/" />
-          <ExternalLink label="NBMiner" text="Website" url="https://nbminer.info/" />
           <ExternalLink label="XMRig" text="Website" url="https://xmrig.com/" />
         </Box>
       </Box>
