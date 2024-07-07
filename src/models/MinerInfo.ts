@@ -46,7 +46,7 @@ export const AVAILABLE_MINERS = [
   makeMiner(
     'gminer',
     [
-      'autolykos2',
+      'autolykos',
       'beamhash',
       'etchash',
       'ethash',
@@ -64,13 +64,26 @@ export const AVAILABLE_MINERS = [
     'GPU',
     'miner.exe',
     true,
-    (alg, cs, url) =>
-      `--algo ${alg} --server ${url} --user ${cs} --color 0 --watchdog 0 --api ${API_PORT}`,
+    (alg, cs, url) => {
+      const algMap: Record<typeof alg, string> = {
+        autolykos: 'autolykos2',
+        beamhash: 'beam',
+        etchash: 'etchash',
+        ethash: 'ethash',
+        firopow: 'firopow',
+        kawpow: 'kawpow',
+        karlsenhash: 'karlsen',
+        octopus: 'octopus',
+        sha512: 'sha512',
+      };
+
+      return `--algo ${algMap[alg]} --server ${url} --user ${cs} --color 0 --watchdog 0 --api ${API_PORT}`;
+    },
   ),
 
   makeMiner(
     'lolminer',
-    ['autolykos2', 'beamhash', 'blake3', 'etchash', 'ethash', 'karlsenhash'],
+    ['autolykos', 'beamhash', 'blake3', 'etchash', 'ethash', 'karlsenhash'],
     'lolMiner',
     'lolliedieb',
     'lolMiner-releases',
@@ -81,7 +94,7 @@ export const AVAILABLE_MINERS = [
     true,
     (alg, cs, url) => {
       const algMap: Record<typeof alg, string> = {
-        autolykos2: 'AUTOLYKOS2',
+        autolykos: 'AUTOLYKOS2',
         beamhash: 'BEAM-III',
         blake3: 'ALEPH',
         etchash: 'ETCHASH',
@@ -95,7 +108,7 @@ export const AVAILABLE_MINERS = [
 
   makeMiner(
     'nbminer',
-    ['autolykos2', 'beamhash', 'etchash', 'ethash', 'kawpow', 'octopus'],
+    ['autolykos', 'beamhash', 'etchash', 'ethash', 'kawpow', 'octopus'],
     'NBMiner',
     'NebuTech',
     'NBMiner',
@@ -106,7 +119,7 @@ export const AVAILABLE_MINERS = [
     true,
     (alg, cs, url) => {
       const algMap: Record<typeof alg, string> = {
-        autolykos2: 'autolykos2',
+        autolykos: 'autolykos2',
         beamhash: 'beamv3',
         etchash: 'etchash',
         ethash: 'ethash',
@@ -121,7 +134,7 @@ export const AVAILABLE_MINERS = [
   makeMiner(
     'rigel',
     [
-      'autolykos2',
+      'autolykos',
       'etchash',
       'ethash',
       'karlsenhash',
@@ -142,7 +155,7 @@ export const AVAILABLE_MINERS = [
     false,
     (alg, cs, url) => {
       const algMap: Record<typeof alg, string> = {
-        autolykos2: 'autolykos2',
+        autolykos: 'autolykos2',
         etchash: 'etchash',
         ethash: 'ethash',
         karlsenhash: 'karlsenhash',
@@ -160,7 +173,7 @@ export const AVAILABLE_MINERS = [
 
   makeMiner(
     'trexminer',
-    ['autolykos2', 'blake3', 'etchash', 'ethash', 'firopow', 'kawpow', 'octopus'],
+    ['autolykos', 'blake3', 'etchash', 'ethash', 'firopow', 'kawpow', 'octopus'],
     'T-Rex Miner',
     'trexminer',
     't-rex',
@@ -169,8 +182,19 @@ export const AVAILABLE_MINERS = [
     'GPU',
     't-rex.exe',
     false,
-    (alg, cs, url) =>
-      `--algo ${alg} --url ${url} --user ${cs} --pass x --api-bind-http 127.0.0.1:${API_PORT} --api-read-only --no-color`,
+    (alg, cs, url) => {
+      const algMap: Record<typeof alg, string> = {
+        autolykos: 'autolykos2',
+        blake3: 'blake3',
+        etchash: 'etchash',
+        ethash: 'ethash',
+        firopow: 'firopow',
+        kawpow: 'kawpow',
+        octopus: 'octopus',
+      };
+
+      return `--algo ${algMap[alg]} --url ${url} --user ${cs} --pass x --api-bind-http 127.0.0.1:${API_PORT} --api-read-only --no-color`;
+    },
   ),
 
   makeMiner(

@@ -17,7 +17,7 @@ export type AlgorithmName =
   | 'zhash'
 
   // GPU (4GB)
-  | 'autolykos2'
+  | 'autolykos'
   | 'blake3'
   | 'etchash'
   | 'nexapow'
