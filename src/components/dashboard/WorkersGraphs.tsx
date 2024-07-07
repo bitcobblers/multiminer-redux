@@ -17,6 +17,7 @@ import { Tabs, Tab, Typography } from '@mui/material';
 import { TabPanel } from '..';
 import { AlgorithmStat, unmineableWorkers$ } from '../../services/UnmineableFeed';
 import { useObservableState } from '../../hooks';
+import { AlgorithmName, AVAILABLE_ALGORITHMS } from '../../models';
 
 function shrink<T>(items: T[]) {
   let result = items;
@@ -74,7 +75,8 @@ function WorkersGraph(props: {
     .reduce((previous, current) => Number(previous) + Number(current), 0);
 
   const timestamps = shrink(stat?.chart.calculated.timestamps).map((ts) =>
-    dateFormat(new Date(ts), 'yyyy/mm/dd HH:MM:ss'));
+    dateFormat(new Date(ts), 'yyyy/mm/dd HH:MM:ss'),
+  );
   const calculatedData = shrink(stat?.chart.calculated.data);
   const reportedData = shrink(stat?.chart.reported.data);
 
@@ -110,7 +112,7 @@ export function WorkersGraphs() {
     ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
   }, []);
 
-  if (workers === null) {
+  if (!workers) {
     return <p>No data to display!</p>;
   }
 
@@ -118,27 +120,27 @@ export function WorkersGraphs() {
     setTabIndex(value);
   };
 
+  const populatedTabs = (Object.keys(workers) as AlgorithmName[])
+    .filter((pool) => !!workers[pool]?.workers?.length)
+    .map((pool, index) => ({
+      pool,
+      index,
+      info: AVAILABLE_ALGORITHMS.find((a) => a.name === pool)!,
+    }));
+
   return (
     <div>
       <Tabs value={tabIndex} onChange={tabClicked}>
-        <Tab label="Etchash" />
-        <Tab label="Kawpow" />
-        <Tab label="Autolykos" />
-        <Tab label="RandomX" />
+        {populatedTabs.map((tab) => (
+          <Tab key={tab.index} label={tab.pool} />
+        ))}
       </Tabs>
 
-      <TabPanel value={tabIndex} index={0}>
-        <WorkersGraph algorithm="Etchash" stat={workers?.etchash} scale="MH/s" />
-      </TabPanel>
-      <TabPanel value={tabIndex} index={1}>
-        <WorkersGraph algorithm="Kawpow" stat={workers?.kawpow} scale="MH/s" />
-      </TabPanel>
-      <TabPanel value={tabIndex} index={2}>
-        <WorkersGraph algorithm="Autolykos" stat={workers?.autolykos} scale="MH/s" />
-      </TabPanel>
-      <TabPanel value={tabIndex} index={3}>
-        <WorkersGraph algorithm="RandomX" stat={workers?.randomx} scale="H/s" />
-      </TabPanel>
+      {populatedTabs.map(({ pool, index, info }) => (
+        <TabPanel key={index} value={tabIndex} index={index}>
+          <WorkersGraph algorithm={info.name} stat={workers[pool]} scale={info.scale} />
+        </TabPanel>
+      ))}
     </div>
   );
 }

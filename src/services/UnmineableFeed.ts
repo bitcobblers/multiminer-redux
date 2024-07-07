@@ -2,7 +2,7 @@ import { withLatestFrom, map, ReplaySubject, timer, throttleTime, filter } from 
 import { debug } from 'tauri-plugin-log-api';
 import { open as openExternal } from '@tauri-apps/api/shell';
 import { fetch, ResponseType } from '@tauri-apps/api/http';
-import { ConfiguredCoin, minerState$, enabledCoins$, refreshData$ } from '../models';
+import { AlgorithmName, ConfiguredCoin, minerState$, enabledCoins$, refreshData$ } from '../models';
 
 type TimeSeries = {
   data: number[];
@@ -28,11 +28,8 @@ export type AlgorithmStat = {
   chart: Chart;
 };
 
-export type UnmineableStats = {
-  etchash: AlgorithmStat;
-  kawpow: AlgorithmStat;
-  autolykos: AlgorithmStat;
-  randomx: AlgorithmStat;
+type UnmineableStats = {
+  [key in AlgorithmName]?: AlgorithmStat;
 };
 
 export type UnmineableCoin = {
@@ -115,10 +112,31 @@ function updateWorkers(uuid: string) {
       const raw = JSON.parse(w);
 
       return {
-        etchash: raw.data.etchash,
-        kawpow: raw.data.kawpow,
+        scrypt: raw.data.scrypt,
+        sha256: raw.data.sha256,
+
+        ethashb3: raw.data.ethashb3,
+        karlsenhash: raw.data.karlsenhash,
+        pyrinhash: raw.data.pyrinhash,
+        sha512: raw.data.sha512,
+        xelishash: raw.data.xelishash,
+        zelhash: raw.data.zelhash,
+        zhash: raw.data.zhash,
+
         autolykos: raw.data.autolykos,
+        blake3: raw.data.blake3,
+        etchash: raw.data.etchash,
+        nexapow: raw.data.nexapow,
+
+        beamhash: raw.data.beamhash,
+        dynexsolve: raw.data.dynexsolve,
+        ethash: raw.data.ethash,
+        firopow: raw.data.firopow,
+        fishash: raw.data.fishash,
+        octopus: raw.data.octopus,
+
         randomx: raw.data.randomx,
+        ghostrider: raw.data.ghostrider,
       } as UnmineableStats;
     })
     .then((stats) => {
@@ -132,10 +150,10 @@ async function updateCoins(coins: ConfiguredCoin[]) {
   const queriedCoins = await Promise.allSettled(
     coins.map((cm) => updateCoin(cm.symbol, cm.address)),
   );
-  const fullfilledCoins = queriedCoins
+  const fulfilledCoins = queriedCoins
     .filter(({ status }) => status === 'fulfilled')
     .map((p) => (p as PromiseFulfilledResult<UnmineableCoin | null>).value);
-  const updatedCoins = fullfilledCoins.filter((c): c is UnmineableCoin => c !== null);
+  const updatedCoins = fulfilledCoins.filter((c): c is UnmineableCoin => c !== null);
   const currentCoin = coins.find((c) => c.current);
 
   unmineableCoins$.next(updatedCoins);
@@ -169,26 +187,3 @@ refreshData$
   .subscribe(({ coins }) => {
     updateCoins(coins);
   });
-
-minerState$.pipe(filter((s) => s.state === 'active')).subscribe(() => {
-  const blankStat = () => ({
-    workers: [],
-    chart: {
-      reported: {
-        data: [],
-        timestamps: [],
-      },
-      calculated: {
-        data: [],
-        timestamps: [],
-      },
-    },
-  });
-
-  unmineableWorkers$.next({
-    etchash: blankStat(),
-    kawpow: blankStat(),
-    autolykos: blankStat(),
-    randomx: blankStat(),
-  });
-});
