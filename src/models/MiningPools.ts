@@ -1,6 +1,7 @@
 import { AVAILABLE_ALGORITHMS, AlgorithmInfo } from './AlgorithmInfo';
+import { AlgorithmName } from './Enums';
 
-function getAlgorithm(name: string) {
+function getAlgorithm(name: AlgorithmName) {
   return AVAILABLE_ALGORITHMS.find((a) => a.name === name)!;
 }
 
@@ -84,7 +85,7 @@ export const AVAILABLE_POOLS: MiningPool[] = [
   {
     name: 'Autolykos',
     url: 'autolykos.unmineable.com',
-    algorithm: getAlgorithm('autolykos2'),
+    algorithm: getAlgorithm('autolykos'),
     tcpPorts: [3333, 13333, 80],
     sslPorts: [4444, 443],
   },
