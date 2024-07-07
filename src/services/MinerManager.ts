@@ -74,7 +74,7 @@ function getConnectionString(
 }
 
 function getUrl(url: string, port: number, isSsl: boolean) {
-  const prefix = isSsl ? 'stratum+ssl://' : '';
+  const prefix = isSsl ? 'stratum+ssl://' : 'stratum+tcp://';
   return `${prefix}${url}:${port}`;
 }
 
