@@ -6,6 +6,7 @@ import {
   gminerMonitor,
   lolminerMonitor,
   nbminerMonitor,
+  rigelMonitor,
   trexminerMonitor,
   xmrigMonitor,
 } from './monitors';
@@ -14,7 +15,15 @@ const UPDATE_INTERVAL = 1000 * 5;
 const monitor$ = interval(UPDATE_INTERVAL);
 
 export function enableMonitors() {
-  const monitors = [gminerMonitor, lolminerMonitor, nbminerMonitor, trexminerMonitor, xmrigMonitor];
+  const monitors = [
+    gminerMonitor,
+    lolminerMonitor,
+    nbminerMonitor,
+    rigelMonitor,
+    trexminerMonitor,
+    xmrigMonitor,
+  ];
+
   const monitorNames = monitors.map((m) => m.name);
 
   monitor$

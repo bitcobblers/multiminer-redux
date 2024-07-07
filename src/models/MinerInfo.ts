@@ -15,8 +15,8 @@ export type MinerInfo = {
 };
 
 function makeMiner<T extends AlgorithmName>(
-  algorithms: T[],
   name: MinerName,
+  algorithms: T[],
   friendlyName: string,
   owner: string,
   repo: string,
@@ -44,6 +44,7 @@ function makeMiner<T extends AlgorithmName>(
 
 export const AVAILABLE_MINERS = [
   makeMiner(
+    'gminer',
     [
       'autolykos2',
       'beamhash',
@@ -55,7 +56,6 @@ export const AVAILABLE_MINERS = [
       'octopus',
       'sha512',
     ],
-    'gminer',
     'GMiner',
     'develsoftware',
     'GMinerRelease',
@@ -69,8 +69,8 @@ export const AVAILABLE_MINERS = [
   ),
 
   makeMiner(
-    ['autolykos2', 'beamhash', 'blake3', 'etchash', 'ethash', 'karlsenhash'],
     'lolminer',
+    ['autolykos2', 'beamhash', 'blake3', 'etchash', 'ethash', 'karlsenhash'],
     'lolMiner',
     'lolliedieb',
     'lolMiner-releases',
@@ -94,8 +94,8 @@ export const AVAILABLE_MINERS = [
   ),
 
   makeMiner(
-    ['autolykos2', 'beamhash', 'etchash', 'ethash', 'kawpow', 'octopus'],
     'nbminer',
+    ['autolykos2', 'beamhash', 'etchash', 'ethash', 'kawpow', 'octopus'],
     'NBMiner',
     'NebuTech',
     'NBMiner',
@@ -119,8 +119,48 @@ export const AVAILABLE_MINERS = [
   ),
 
   makeMiner(
-    ['autolykos2', 'blake3', 'etchash', 'ethash', 'firopow', 'kawpow', 'octopus'],
+    'rigel',
+    [
+      'autolykos2',
+      'etchash',
+      'ethash',
+      'karlsenhash',
+      'kawpow',
+      'nexapow',
+      'octopus',
+      'pyrinhash',
+      'sha512',
+      'xelishash',
+    ],
+    'Rigel',
+    'rigelminer',
+    'rigel',
+    /^rigel-.+-win\.zip$/,
+    'https://github.com/rigelminer/rigel?tab=readme-ov-file#usage',
+    'GPU',
+    'rigel.exe',
+    false,
+    (alg, cs, url) => {
+      const algMap: Record<typeof alg, string> = {
+        autolykos2: 'autolykos2',
+        etchash: 'etchash',
+        ethash: 'ethash',
+        karlsenhash: 'karlsenhash',
+        kawpow: 'kawpow',
+        nexapow: 'nexapow',
+        octopus: 'octopus',
+        pyrinhash: 'pyrinhash',
+        sha512: 'sha512256d',
+        xelishash: 'xelishash',
+      };
+
+      return `--algorithm ${algMap[alg]} --url ${url} --username ${cs} --api-bind 127.0.0.1:${API_PORT} --no-colour --no-watchdog`;
+    },
+  ),
+
+  makeMiner(
     'trexminer',
+    ['autolykos2', 'blake3', 'etchash', 'ethash', 'firopow', 'kawpow', 'octopus'],
     'T-Rex Miner',
     'trexminer',
     't-rex',
@@ -134,8 +174,8 @@ export const AVAILABLE_MINERS = [
   ),
 
   makeMiner(
-    ['randomx', 'ghostrider'],
     'xmrig',
+    ['randomx', 'ghostrider'],
     'XMRig',
     'xmrig',
     'xmrig',
