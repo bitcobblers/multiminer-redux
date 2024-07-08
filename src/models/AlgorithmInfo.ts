@@ -16,7 +16,7 @@ export const AVAILABLE_ALGORITHMS: AlgorithmInfo[] = [
   { name: 'karlsenhash', kind: 'GPU', scale: 'MH/s', efficiencyScale: 'KH/W', minRam: 3 },
   { name: 'pyrinhash', kind: 'GPU', scale: 'MH/s', efficiencyScale: 'KH/W', minRam: 3 },
   { name: 'sha512', kind: 'GPU', scale: 'MH/s', efficiencyScale: 'KH/W', minRam: 3 },
-  { name: 'xelishash', kind: 'GPU', scale: 'MH/s', efficiencyScale: 'KH/W', minRam: 3 },
+  { name: 'xelishash', kind: 'GPU', scale: 'KH/s', efficiencyScale: 'H/W', minRam: 3 },
   { name: 'zelhash', kind: 'GPU', scale: 'MH/s', efficiencyScale: 'KH/W', minRam: 3 },
   { name: 'zhash', kind: 'GPU', scale: 'MH/s', efficiencyScale: 'KH/W', minRam: 3 },
 

@@ -132,6 +132,27 @@ export const AVAILABLE_MINERS = [
   ),
 
   makeMiner(
+    'onezero',
+    ['dynexsolve', 'xelishash'],
+    'OneZeroMiner',
+    'OneZeroMiner',
+    'onezerominer',
+    /^onezerominer-win64.+\.zip$/,
+    'https://github.com/OneZeroMiner/onezerominer?tab=readme-ov-file#options',
+    'GPU',
+    'onezerominer.exe',
+    true,
+    (alg, cs, url) => {
+      const algMap: Record<typeof alg, string> = {
+        dynexsolve: 'dynex',
+        xelishash: 'xelis',
+      };
+
+      return `--algo ${algMap[alg]} --pool ${url} --wallet ${cs} --api-port ${API_PORT}`;
+    },
+  ),
+
+  makeMiner(
     'rigel',
     [
       'autolykos',

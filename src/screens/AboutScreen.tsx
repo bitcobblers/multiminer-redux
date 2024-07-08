@@ -48,6 +48,12 @@ export function AboutScreen(): JSX.Element {
           <ExternalLink label="GMiner" text="Website" url="https://gminer.info/" />
           <ExternalLink label="LolMiner" text="Website" url="https://lolminer.site/" />
           <ExternalLink label="NBMiner" text="Website" url="https://nbminer.com/" />
+          <ExternalLink
+            label="OneZero"
+            text="Website"
+            url="https://github.com/OneZeroMiner/onezerominer"
+          />
+          <ExternalLink label="Rigel" text="Website" url="https://github.com/rigelminer/rigel" />
           <ExternalLink label="T-Rex" text="Website" url="https://trex-miner.com/" />
           <ExternalLink label="XMRig" text="Website" url="https://xmrig.com/" />
         </Box>

@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/indent */
 import { HashrateUnit, HashrateEfficiencyUnit } from '../models';
 
-export function number(value: number | undefined, maxDigits = 8) {
-  return value === undefined
+export function number(value: number | null | undefined, maxDigits = 8) {
+  return value === undefined || value === null
     ? 'N/A'
     : value.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: maxDigits });
 }
 
-export function currency(value: number | undefined, maxDigits = 2) {
-  return value === undefined
+export function currency(value: number | null | undefined, maxDigits = 2) {
+  return !value
     ? 'N/A'
     : value.toLocaleString('en-US', {
         style: 'currency',
@@ -19,7 +19,7 @@ export function currency(value: number | undefined, maxDigits = 2) {
 }
 
 export function hashrate(value: number | undefined | null, scale?: HashrateUnit) {
-  if (value === undefined || value === null) {
+  if (!value) {
     return 'N/A';
   }
 
@@ -43,32 +43,28 @@ export function found(accepted: number | undefined, rejected: number | undefined
   return number((accepted ?? 0) + (rejected ?? 0));
 }
 
-export function power(value: number | undefined) {
-  return value === undefined ? 'N/A' : `${number(value, 2)}W`;
+export function power(value: number | null | undefined) {
+  return !value ? 'N/A' : `${number(value, 2)}W`;
 }
 
-export function efficiency(value: number | undefined, scale?: HashrateEfficiencyUnit) {
-  if (value === undefined) {
-    return 'N/A';
-  }
-
-  return `${number(value, 2)}${scale ?? ''}`;
+export function efficiency(value: number | null | undefined, scale?: HashrateEfficiencyUnit) {
+  return !value ? 'N/A' : `${number(value, 2)}${scale ?? ''}`;
 }
 
-export function clockSpeed(speed: number | undefined) {
-  return speed === undefined ? 'N/A' : `${speed.toLocaleString()}MHz`;
+export function clockSpeed(speed: number | null | undefined) {
+  return !speed ? 'N/A' : `${speed.toLocaleString()}MHz`;
 }
 
-export function temperature(value: number | undefined) {
-  return value === undefined ? 'N/A' : `${value}°`;
+export function temperature(value: number | null | undefined) {
+  return !value ? 'N/A' : `${value}°`;
 }
 
-export function percentage(percent: number | undefined) {
-  return percent === undefined ? 'N/A' : `${number(percent, 2)}%`;
+export function percentage(percent: number | null | undefined) {
+  return !percent ? 'N/A' : `${number(percent, 2)}%`;
 }
 
-export function difficulty(value: string | undefined) {
-  return value === undefined ? 'N/A' : `${value}`;
+export function difficulty(value: string | null | undefined) {
+  return !value ? 'N/A' : `${value}`;
 }
 
 export function progress(mined: number | undefined, threshold: number | undefined) {
@@ -81,8 +77,8 @@ export function minedValue(mined: number | undefined, price: number | undefined)
   return mined === undefined || price === undefined ? currency(0) : currency(mined * price);
 }
 
-export function uptime(value: number | undefined) {
-  if (value === undefined) {
+export function uptime(value: number | null | undefined) {
+  if (!value) {
     return 'N/A';
   }
 
