@@ -1,6 +1,7 @@
 export { monitor as gminerMonitor } from './GMinerMonitor';
 export { monitor as lolminerMonitor } from './LolminerMonitor';
 export { monitor as nbminerMonitor } from './NbminerMonitor';
+export { monitor as onezeroMonitor } from './OneZeroMinerMonitor';
 export { monitor as rigelMonitor } from './RigelMonitor';
 export { monitor as trexminerMonitor } from './TrexMinerMonitor';
 export { monitor as xmrigMonitor } from './XmrigMonitor';

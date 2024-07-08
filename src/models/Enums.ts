@@ -1,6 +1,15 @@
 export const API_PORT = 60090;
 
-export type MinerName = 'gminer' | 'lolminer' | 'nbminer' | 'rigel' | 'trexminer' | 'xmrig';
+export type MinerName =
+  | 'gminer'
+  | 'lolminer'
+  | 'nbminer'
+  | 'onezero'
+  | 'rigel'
+  | 'srbminer'
+  | 'trexminer'
+  | 'xmrig';
+
 export type AlgorithmKind = 'CPU' | 'GPU' | 'ASIC';
 export type AlgorithmName =
   // ASIC
@@ -36,7 +45,7 @@ export type AlgorithmName =
   | 'ghostrider';
 
 export type HashrateUnit = 'H/s' | 'KH/s' | 'MH/s' | 'GH/s' | 'TH/s' | 'Sol/s';
-export type HashrateEfficiencyUnit = 'KH/W' | 'MH/W' | 'GH/W' | 'Sol/W';
+export type HashrateEfficiencyUnit = 'H/W' | 'KH/W' | 'MH/W' | 'GH/W' | 'Sol/W';
 
 export type MiningPoolPortType = 'tcp' | 'ssl';
 
