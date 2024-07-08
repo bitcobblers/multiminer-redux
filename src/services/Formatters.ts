@@ -27,7 +27,9 @@ export function hashrate(value: number | undefined | null, scale?: HashrateUnit)
     case 'KH/s':
       return `${number(value / 1000, 2)}${scale}`;
     case 'MH/s':
-      return `${number(value, 2)}${scale}`;
+      return `${number(value / 1000000, 2)}${scale}`;
+    case 'GH/s':
+      return `${number(value / 1000000000, 2)}${scale}`;
     case 'Sol/s':
       return `${number(value, 1)}${scale}`;
     default:
@@ -44,23 +46,40 @@ export function found(accepted: number | undefined, rejected: number | undefined
 }
 
 export function power(value: number | null | undefined) {
-  return !value ? 'N/A' : `${number(value, 2)}W`;
+  return value === undefined || value === null ? 'N/A' : `${number(value, 2)}W`;
 }
 
 export function efficiency(value: number | null | undefined, scale?: HashrateEfficiencyUnit) {
-  return !value ? 'N/A' : `${number(value, 2)}${scale ?? ''}`;
+  if (!value || !scale) {
+    return 'N/A';
+  }
+
+  switch (scale) {
+    case 'H/W':
+      return `${number(value, 2)}${scale}`;
+    case 'KH/W':
+      return `${number(value / 1000, 2)}${scale}`;
+    case 'MH/W':
+      return `${number(value / 1000000, 2)}${scale}`;
+    case 'GH/W':
+      return `${number(value / 1000000000, 2)}${scale}`;
+    case 'Sol/W':
+      return `${number(value, 1)}${scale}`;
+    default:
+      return `${number(value, 2)}`;
+  }
 }
 
 export function clockSpeed(speed: number | null | undefined) {
-  return !speed ? 'N/A' : `${speed.toLocaleString()}MHz`;
+  return speed === undefined || speed === null ? 'N/A' : `${speed.toLocaleString()}MHz`;
 }
 
 export function temperature(value: number | null | undefined) {
-  return !value ? 'N/A' : `${value}°`;
+  return value === undefined || value === null ? 'N/A' : `${value}°`;
 }
 
 export function percentage(percent: number | null | undefined) {
-  return !percent ? 'N/A' : `${number(percent, 2)}%`;
+  return percent === undefined || percent === null ? 'N/A' : `${number(percent, 2)}%`;
 }
 
 export function difficulty(value: string | null | undefined) {

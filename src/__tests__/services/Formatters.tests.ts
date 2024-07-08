@@ -1,3 +1,4 @@
+import { HashrateEfficiencyUnit, HashrateUnit } from '../../models';
 import * as formatter from '../../services/Formatters';
 
 describe('Formatters Service', () => {
@@ -13,35 +14,153 @@ describe('Formatters Service', () => {
     });
   });
 
-  describe('Hashrate Formatting', () => {
-    it('Should return hash/sec number if no scale provided.', () => {
+  describe('Hashrate Scaling', () => {
+    const cases: { scale?: HashrateUnit; given: number; expected: string }[] = [
+      { scale: undefined, given: 10, expected: '10H/s' },
+      { scale: 'KH/s', given: 1000, expected: '1KH/s' },
+      { scale: 'MH/s', given: 1000000, expected: '1MH/s' },
+      { scale: 'GH/s', given: 1000000000, expected: '1GH/s' },
+      { scale: 'Sol/s', given: 1, expected: '1Sol/s' },
+    ];
+
+    test.each(cases)('%p', ({ scale, given, expected }) => {
       // Act.
-      const result = formatter.hashrate(10);
+      const result = formatter.hashrate(given, scale);
 
       // Assert.
-      expect(result).toBe('10H/s');
+      expect(result).toBe(expected);
     });
+  });
 
-    it('Should return unaltered suffix for M', () => {
+  describe('Power', () => {
+    const cases = [
+      { given: undefined, expected: 'N/A' },
+      { given: null, expected: 'N/A' },
+      { given: 0, expected: '0W' },
+      { given: 1, expected: '1W' },
+      { given: 1.5, expected: '1.5W' },
+    ];
+
+    test.each(cases)('%p', ({ given, expected }) => {
       // Act.
-      const result = formatter.hashrate(10, 'MH/s');
+      const result = formatter.power(given);
 
       // Assert.
-      expect(result).toBe('10MH/s');
+      expect(result).toBe(expected);
     });
+  });
 
-    it('Should return scaled number scaled by 1000 for K', () => {
+  describe('Efficiency For Empty Values', () => {
+    const cases: { value?: number | null; scale?: HashrateEfficiencyUnit }[] = [
+      { value: null, scale: 'H/W' },
+      { value: undefined, scale: 'H/W' },
+      { value: 1, scale: undefined },
+    ];
+
+    test.each(cases)('%p', ({ value, scale }) => {
       // Act.
-      const result = formatter.hashrate(1000, 'KH/s');
+      const result = formatter.efficiency(value, scale);
 
       // Assert.
-      expect(result).toBe('1KH/s');
+      expect(result).toBe('N/A');
+    });
+  });
+
+  describe('Efficiency Scaling', () => {
+    const cases: { scale?: HashrateEfficiencyUnit; given: number; expected: string }[] = [
+      { given: 1, expected: 'N/A' },
+      { scale: 'H/W', given: 1, expected: '1H/W' },
+      { scale: 'KH/W', given: 1000, expected: '1KH/W' },
+      { scale: 'MH/W', given: 1000000, expected: '1MH/W' },
+      { scale: 'GH/W', given: 1000000000, expected: '1GH/W' },
+      { scale: 'Sol/W', given: 1, expected: '1Sol/W' },
+    ];
+
+    test.each(cases)('%p', ({ scale, given, expected }) => {
+      // Act.
+      const result = formatter.efficiency(given, scale);
+
+      // Assert.
+      expect(result).toBe(expected);
+    });
+  });
+
+  describe('Clock Speed', () => {
+    const cases = [
+      { given: undefined, expected: 'N/A' },
+      { given: null, expected: 'N/A' },
+      { given: 0, expected: '0MHz' },
+      { given: 1, expected: '1MHz' },
+      { given: 1000, expected: '1,000MHz' },
+    ];
+
+    test.each(cases)('%p', ({ given, expected }) => {
+      // Act.
+      const result = formatter.clockSpeed(given);
+
+      // Assert.
+      expect(result).toBe(expected);
+    });
+  });
+
+  describe('Temperature', () => {
+    const cases = [
+      { given: undefined, expected: 'N/A' },
+      { given: null, expected: 'N/A' },
+      { given: 0, expected: '0°' },
+      { given: 1, expected: '1°' },
+      { given: 1.5, expected: '1.5°' },
+    ];
+
+    test.each(cases)('%p', ({ given, expected }) => {
+      // Act.
+      const result = formatter.temperature(given);
+
+      // Assert.
+      expect(result).toBe(expected);
+    });
+  });
+
+  describe('Percentage', () => {
+    const cases = [
+      { given: undefined, expected: 'N/A' },
+      { given: null, expected: 'N/A' },
+      { given: 0, expected: '0%' },
+      { given: 0.5, expected: '0.5%' },
+      { given: 1, expected: '1%' },
+      { given: 1.5, expected: '1.5%' },
+    ];
+
+    test.each(cases)('%p', ({ given, expected }) => {
+      // Act.
+      const result = formatter.percentage(given);
+
+      // Assert.
+      expect(result).toBe(expected);
+    });
+  });
+
+  describe('Difficulty', () => {
+    const cases = [
+      { given: undefined, expected: 'N/A' },
+      { given: null, expected: 'N/A' },
+      { given: '1', expected: '1' },
+      { given: '1.5', expected: '1.5' },
+    ];
+
+    test.each(cases)('%p', ({ given, expected }) => {
+      // Act.
+      const result = formatter.difficulty(given);
+
+      // Assert.
+      expect(result).toBe(expected);
     });
   });
 
   describe('Uptime', () => {
     const cases = [
-      { expected: 'N/A' },
+      { given: undefined, expected: 'N/A' },
+      { given: null, expected: 'N/A' },
       { given: 1, expected: '1s' },
       { given: 1.5, expected: '1s' },
       { given: 60, expected: '1min' },
@@ -74,7 +193,7 @@ describe('Formatters Service', () => {
 
   describe('Duration', () => {
     const cases = [
-      { expected: 'N/A' },
+      { given: undefined, expected: 'N/A' },
       { given: 1, expected: '1hr' },
       { given: 24, expected: '1d' },
       { given: 30, expected: '1d 6hr' },

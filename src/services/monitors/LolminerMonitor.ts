@@ -50,16 +50,28 @@ function updateStats(stats: MinerAppStatistics) {
 
   addGpuStats(
     stats.Workers.map((worker) => {
-      const hashrate = stats.Algorithms[0].Worker_Performance[worker.Index];
-      const efficiency =
-        hashrate === 0 || worker.Power === 0 ? 0 : (hashrate / worker.Power) * 1000;
+      const hashrate = stats.Algorithms.map(
+        (alg) => alg.Worker_Performance[worker.Index] * alg.Performance_Factor,
+      ).reduce((a, b) => a + b, 0);
+
+      const efficiency = hashrate === 0 || worker.Power === 0 ? 0 : hashrate / worker.Power;
+
+      const accepted = stats.Algorithms.map((alg) => alg.Worker_Accepted[worker.Index]).reduce(
+        (a, b) => a + b,
+        0,
+      );
+
+      const rejected = stats.Algorithms.map((alg) => alg.Worker_Rejected[worker.Index]).reduce(
+        (a, b) => a + b,
+        0,
+      );
 
       return {
         id: worker.Index.toString(),
         name: worker.Name,
         hashrate,
-        accepted: stats.Algorithms[0].Worker_Accepted[worker.Index],
-        rejected: stats.Algorithms[0].Worker_Rejected[worker.Index],
+        accepted,
+        rejected,
         power: worker.Power,
         efficiency,
         coreClock: worker.CCLK,
@@ -71,15 +83,26 @@ function updateStats(stats: MinerAppStatistics) {
     }),
   );
 
-  const totalHashrate = stats.Algorithms[0].Total_Performance;
+  const totalHashrate = stats.Algorithms.map(
+    (alg) => alg.Total_Performance * alg.Performance_Factor,
+  ).reduce((a, b) => a + b, 0);
+
   const totalPower = stats.Workers.map((w) => w.Power).reduce((a, b) => a + b, 0);
-  const totalEfficiency =
-    totalHashrate === 0 || totalPower === 0 ? 0 : (totalHashrate / totalPower) * 1000;
+  const totalEfficiency = totalHashrate === 0 || totalPower === 0 ? 0 : totalHashrate / totalPower;
+  const totalAccepted = stats.Algorithms.map((alg) => alg.Total_Accepted).reduce(
+    (a, b) => a + b,
+    0,
+  );
+
+  const totalRejected = stats.Algorithms.map((alg) => alg.Total_Rejected).reduce(
+    (a, b) => a + b,
+    0,
+  );
 
   addMinerStat({
     hashrate: totalHashrate,
-    accepted: stats.Algorithms[0].Total_Accepted,
-    rejected: stats.Algorithms[0].Total_Rejected,
+    accepted: totalAccepted,
+    rejected: totalRejected,
     power: totalPower,
     efficiency: totalEfficiency,
     uptime: stats.Session.Uptime,

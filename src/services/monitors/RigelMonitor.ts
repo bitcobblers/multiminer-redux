@@ -126,11 +126,11 @@ function updateStats(stats: MinerAppStatistics) {
   addGpuStats(
     stats.devices.map((device) => {
       const deviceStats = aggregateStats(device.solution_stat);
-      const hashrate = aggregateHashrates(device.hashrate) / 1000000;
+      const hashrate = aggregateHashrates(device.hashrate);
       const efficiency =
         hashrate === 0 || device.monitoring_info.power_usage === 0
           ? 0
-          : (hashrate / stats.power_usage) * 1000;
+          : hashrate / stats.power_usage;
 
       return {
         id: device.id.toString(),
@@ -150,9 +150,9 @@ function updateStats(stats: MinerAppStatistics) {
   );
 
   const totalStats = aggregateStats(stats.solution_stat);
-  const totalHashrate = aggregateHashrates(stats.hashrate) / 1000000;
+  const totalHashrate = aggregateHashrates(stats.hashrate);
   const totalEfficiency =
-    totalHashrate === 0 || stats.power_usage === 0 ? 0 : (totalHashrate / stats.power_usage) * 1000;
+    totalHashrate === 0 || stats.power_usage === 0 ? 0 : totalHashrate / stats.power_usage;
 
   addMinerStat({
     hashrate: totalHashrate,
