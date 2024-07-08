@@ -56,12 +56,12 @@ type MinerAppStatistics = {
 function updateStats(stats: MinerAppStatistics) {
   addGpuStats(
     stats.miner.devices.map((device) => {
-      const efficiency = device.power === 0 ? undefined : device.hashrate_raw / 1000 / device.power;
+      const efficiency = device.power === 0 ? undefined : device.hashrate_raw / device.power;
 
       return {
         id: device.id.toString(),
         name: device.info,
-        hashrate: device.hashrate_raw / 1000000,
+        hashrate: device.hashrate_raw,
         accepted: device.accepted_shares,
         rejected: device.rejected_shares,
         power: device.power,
@@ -78,10 +78,10 @@ function updateStats(stats: MinerAppStatistics) {
   const totalEfficiency =
     stats.miner.total_power_consume === 0
       ? undefined
-      : stats.miner.total_hashrate_raw / 1000 / stats.miner.total_power_consume;
+      : stats.miner.total_hashrate_raw / stats.miner.total_power_consume;
 
   addMinerStat({
-    hashrate: stats.miner.total_hashrate_raw / 1000000,
+    hashrate: stats.miner.total_hashrate_raw,
     accepted: stats.stratum.accepted_shares,
     rejected: stats.stratum.rejected_shares,
     power: stats.miner.total_power_consume,

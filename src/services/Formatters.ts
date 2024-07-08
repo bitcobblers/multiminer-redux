@@ -27,7 +27,9 @@ export function hashrate(value: number | undefined | null, scale?: HashrateUnit)
     case 'KH/s':
       return `${number(value / 1000, 2)}${scale}`;
     case 'MH/s':
-      return `${number(value, 2)}${scale}`;
+      return `${number(value / 1000000, 2)}${scale}`;
+    case 'GH/s':
+      return `${number(value / 1000000000, 2)}${scale}`;
     case 'Sol/s':
       return `${number(value, 1)}${scale}`;
     default:
@@ -48,6 +50,25 @@ export function power(value: number | null | undefined) {
 }
 
 export function efficiency(value: number | null | undefined, scale?: HashrateEfficiencyUnit) {
+  if (!value || !scale) {
+    return 'N/A';
+  }
+
+  switch (scale) {
+    case 'H/W':
+      return `${number(value, 2)}${scale}`;
+    case 'KH/W':
+      return `${number(value / 1000, 2)}${scale}`;
+    case 'MH/W':
+      return `${number(value / 1000000, 2)}${scale}`;
+    case 'GH/W':
+      return `${number(value / 1000000000, 2)}${scale}`;
+    case 'Sol/W':
+      return `${number(value, 1)}${scale}`;
+    default:
+      return `${number(value, 2)}`;
+  }
+
   return !value ? 'N/A' : `${number(value, 2)}${scale ?? ''}`;
 }
 
