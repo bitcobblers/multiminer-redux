@@ -46,7 +46,7 @@ export function found(accepted: number | undefined, rejected: number | undefined
 }
 
 export function power(value: number | null | undefined) {
-  return !value ? 'N/A' : `${number(value, 2)}W`;
+  return value === undefined || value === null ? 'N/A' : `${number(value, 2)}W`;
 }
 
 export function efficiency(value: number | null | undefined, scale?: HashrateEfficiencyUnit) {
@@ -68,20 +68,18 @@ export function efficiency(value: number | null | undefined, scale?: HashrateEff
     default:
       return `${number(value, 2)}`;
   }
-
-  return !value ? 'N/A' : `${number(value, 2)}${scale ?? ''}`;
 }
 
 export function clockSpeed(speed: number | null | undefined) {
-  return !speed ? 'N/A' : `${speed.toLocaleString()}MHz`;
+  return speed === undefined || speed === null ? 'N/A' : `${speed.toLocaleString()}MHz`;
 }
 
 export function temperature(value: number | null | undefined) {
-  return !value ? 'N/A' : `${value}°`;
+  return value === undefined || value === null ? 'N/A' : `${value}°`;
 }
 
 export function percentage(percent: number | null | undefined) {
-  return !percent ? 'N/A' : `${number(percent, 2)}%`;
+  return percent === undefined || percent === null ? 'N/A' : `${number(percent, 2)}%`;
 }
 
 export function difficulty(value: string | null | undefined) {
