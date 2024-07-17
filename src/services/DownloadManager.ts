@@ -1,5 +1,5 @@
 import { debug, info, warn, error } from 'tauri-plugin-log-api';
-import { ResponseType, fetch, getClient } from '@tauri-apps/api/http';
+import { fetch } from '@tauri-apps/api/http';
 import { appLocalDataDir, downloadDir, join } from '@tauri-apps/api/path';
 import { fs, invoke } from '@tauri-apps/api';
 import { AVAILABLE_MINERS, MinerName, MinerRelease, addAppNotice, downloadState$ } from '../models';
@@ -51,20 +51,14 @@ async function getReleases(owner: string, repo: string): Promise<MinerReleaseDat
 async function downloadMiner(name: MinerName, version: string, url: string, savePath: string) {
   info(`Downloading ${name} version ${version} from ${url} to ${savePath}`);
 
-  const client = await getClient();
-  const response = await client.get(url, {
-    responseType: ResponseType.Binary,
-  });
+  const result = await invoke('download_file', { url, savePath })
+    .then(() => true)
+    .catch((e) => {
+      addAppNotice('error', e);
+      return false;
+    });
 
-  if (!response.ok) {
-    addAppNotice('error', `Failed to download miner '${name}': ${response.status}`);
-
-    return false;
-  }
-
-  await fs.writeBinaryFile(savePath, response.data as any);
-  info('Download complete.');
-  return true;
+  return result;
 }
 
 async function extractZip(path: string, savePath: string) {
@@ -81,29 +75,26 @@ async function extractZip(path: string, savePath: string) {
 }
 
 async function arrangeMinerFiles(path: string) {
-  const rootFiles = await fs.readDir(path);
+  info('Arranging miner files');
 
-  debug(`found ${rootFiles.length} files`);
+  const result = await invoke('arrange_miner_files', { path })
+    .then(() => true)
+    .catch((e) => {
+      addAppNotice('error', e);
+      return false;
+    });
 
-  if (rootFiles.length > 1) {
-    return;
-  }
-
-  const allFiles = await fs.readDir(rootFiles[0].path);
-
-  // Move all of the files to the root.
-  for (const file of allFiles) {
-    const newPath = await join(path, file.name!);
-
-    debug(`moving ${file.path} to ${newPath}`);
-
-    await fs.renameFile(file.path, newPath);
-  }
-
-  await fs.removeDir(rootFiles[0].path);
+  return result;
 }
 
 export async function syncMinerReleases() {
+  const currentMinerReleases = await getMinerReleases();
+
+  if (currentMinerReleases.length > 0) {
+    info('Using cached miner releases.');
+    return;
+  }
+
   const miners = await Promise.all(
     AVAILABLE_MINERS.map(async (desc) => {
       const releases = await getReleases(desc.owner, desc.repo);
