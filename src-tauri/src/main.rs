@@ -3,7 +3,7 @@
 
 use tauri_plugin_log::{self, LogTarget};
 
-mod extract;
+mod install;
 mod logging;
 mod miner;
 
@@ -15,9 +15,9 @@ async fn main() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
-            extract::arrange_miner_files,
-            extract::download_file,
-            extract::extract_zip,
+            install::arrange_miner_files,
+            install::download_file,
+            install::extract_zip,
             miner::is_miner_running,
             miner::run_miner,
             miner::stop_miner,
